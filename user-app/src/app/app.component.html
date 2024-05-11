@@ -1,0 +1,19 @@
+<google-map [center]="center"
+            [zoom] = 15
+            (mapClick)="moveMap($event)"
+>
+  <map-marker
+    #marker="mapMarker"
+    [position]="marker_a"
+    (mapClick)="openInfoWindow(marker)"
+  ></map-marker>
+  <map-marker
+    #marker="mapMarker"
+    [position]="marker_b"
+    (mapClick)="openInfoWindow(marker)"
+  ></map-marker>
+  <map-polyline [path]="vertices"></map-polyline>
+  <map-info-window>info about marker</map-info-window>
+</google-map>
+<div>Latitude: {{display?.lat}}</div>
+<div>Longitude: {{display?.lng}}</div>
