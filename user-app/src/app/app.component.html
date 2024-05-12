@@ -1,19 +1,25 @@
-<google-map [center]="center"
-            [zoom] = 15
-            (mapClick)="moveMap($event)"
->
-  <map-marker
-    #marker="mapMarker"
-    [position]="marker_a"
-    (mapClick)="openInfoWindow(marker)"
-  ></map-marker>
-  <map-marker
-    #marker="mapMarker"
-    [position]="marker_b"
-    (mapClick)="openInfoWindow(marker)"
-  ></map-marker>
-  <map-polyline [path]="vertices"></map-polyline>
-  <map-info-window>info about marker</map-info-window>
+<google-map height="700" width="700" [center]="center!"
+            [zoom] = 16
+            (mapClick)="moveMap($event)">
+    <map-marker
+      #markera="mapMarker"
+      [position]="markerA!"
+      (mapClick)="openInfoWindow(markera)">
+    </map-marker>
+    <map-marker
+      #markerb="mapMarker"
+      [position]="markerB!"
+      (mapClick)="openInfoWindow(markerb)">
+    </map-marker>
+    <map-marker
+        #marker_center="mapMarker"
+        [position]="markerCenter!"
+        [visible]="false">
+    </map-marker>
+    <map-polyline [path]="route!"></map-polyline>
+    <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
+                      Time: {{time | number:'1.0-2'}} minutes </map-info-window>
 </google-map>
+
 <div>Latitude: {{display?.lat}}</div>
 <div>Longitude: {{display?.lng}}</div>
