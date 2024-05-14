@@ -1,15 +1,15 @@
-<google-map height="700" width="700" [center]="center!"
-            [zoom] = 16
+<google-map height="500" width="800" [center]="center!"
+            [zoom] = 15
             (mapClick)="moveMap($event)">
     <map-marker
       #markera="mapMarker"
-      [position]="markerA!"
-      (mapClick)="openInfoWindow(markera)">
+      [position]="markerA!">
+      <!--(mapClick)="openInfoWindow(markera)"-->
     </map-marker>
     <map-marker
       #markerb="mapMarker"
-      [position]="markerB!"
-      (mapClick)="openInfoWindow(markerb)">
+      [position]="markerB!">
+      <!--(mapClick)="openInfoWindow(markerb)"-->
     </map-marker>
     <map-marker
         #marker_center="mapMarker"
@@ -20,6 +20,7 @@
     <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
                       Time: {{time | number:'1.0-2'}} minutes </map-info-window>
 </google-map>
-
-<div>Latitude: {{display?.lat}}</div>
-<div>Longitude: {{display?.lng}}</div>
+<div class="latLng">
+<div id="lat">Latitude: {{display?.lat}}</div>
+<div id="lng">Longitude: {{display?.lng}}</div>
+</div>
