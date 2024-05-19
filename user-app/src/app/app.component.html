@@ -1,26 +1,42 @@
-<google-map height="500" width="800" [center]="center!"
-            [zoom] = 15
-            (mapClick)="moveMap($event)">
+<div id="first_map">
+  <google-map height="500" width="600" [center]="center!"
+              [zoom] = 15
+              (mapClick)="addMarkerToMap($event)">
+      <map-marker
+        #markera="mapMarker"
+        [position]="markerA!"
+        [visible]="draw_path_button_clicked!">
+        <!--(mapClick)="openInfoWindow(markera)"-->
+      </map-marker>
+      <map-marker
+        #markerb="mapMarker"
+        [position]="markerB!"
+        [visible]="draw_path_button_clicked!">>
+
+        <!--(mapClick)="openInfoWindow(markerb)"-->
+      </map-marker>
+      <map-marker
+          #marker_center="mapMarker"
+          [position]="markerCenter!"
+          [visible]="false">
+      </map-marker>
     <map-marker
-      #markera="mapMarker"
-      [position]="markerA!">
-      <!--(mapClick)="openInfoWindow(markera)"-->
+      *ngFor="let mark of route"
+
+      #mark="mapMarker"
+      [position]="mark!"
+      [visible]="path_markers_visibility!">
     </map-marker>
-    <map-marker
-      #markerb="mapMarker"
-      [position]="markerB!">
-      <!--(mapClick)="openInfoWindow(markerb)"-->
-    </map-marker>
-    <map-marker
-        #marker_center="mapMarker"
-        [position]="markerCenter!"
-        [visible]="false">
-    </map-marker>
-    <map-polyline [path]="route!"></map-polyline>
-    <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
-                      Time: {{time | number:'1.0-2'}} minutes </map-info-window>
-</google-map>
-<div class="latLng">
-<div id="lat">Latitude: {{display?.lat}}</div>
-<div id="lng">Longitude: {{display?.lng}}</div>
+    <map-polyline *ngIf="draw_path_button_clicked" [path]="route!"></map-polyline>
+    <p>distance: {{distance}}</p>
+    <p>time: {{time}}</p>
+      <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
+                        Time: {{time | number:'1.0-2'}} minutes </map-info-window>
+  </google-map>
+  <div class="latLng">
+    <div class="lat">Latitude: {{display?.lat}}</div>
+    <div class="lng">Longitude: {{display?.lng}}</div>
+  </div>
+  <button (click)="drawButtonClicked()">stworz trase</button>
+  <button (click)="clearButtonClicked()">wyczysc</button>
 </div>

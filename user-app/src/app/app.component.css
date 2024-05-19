@@ -4,12 +4,12 @@
 
 :host {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
-#lat, #lng {
+.lat, .lng {
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;
@@ -22,4 +22,14 @@
   gap: 10px;
 }
 
+#first_map{
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+}
 
+#second_map{
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
