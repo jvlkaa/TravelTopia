@@ -11,8 +11,7 @@
       <map-marker
         #markerb="mapMarker"
         [position]="markerB!"
-        [visible]="draw_path_button_clicked!">>
-
+        [visible]="draw_path_button_clicked!">
         <!--(mapClick)="openInfoWindow(markerb)"-->
       </map-marker>
       <map-marker
@@ -22,21 +21,19 @@
       </map-marker>
     <map-marker
       *ngFor="let mark of route"
-
       #mark="mapMarker"
       [position]="mark!"
       [visible]="path_markers_visibility!">
     </map-marker>
+
     <map-polyline *ngIf="draw_path_button_clicked" [path]="route!"></map-polyline>
-    <p>distance: {{distance}}</p>
-    <p>time: {{time}}</p>
-      <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
+    <map-info-window> Distance:  {{distance | number:'1.0-2'}}  km <br>
                         Time: {{time | number:'1.0-2'}} minutes </map-info-window>
   </google-map>
   <div class="latLng">
     <div class="lat">Latitude: {{display?.lat}}</div>
     <div class="lng">Longitude: {{display?.lng}}</div>
   </div>
-  <button (click)="drawButtonClicked()">stworz trase</button>
-  <button (click)="clearButtonClicked()">wyczysc</button>
+  <button class="trasa_button" (click)="drawButtonClicked()">stworz trase</button>
+  <button class = "wyczysc_button" (click)="clearButtonClicked()">wyczysc</button>
 </div>

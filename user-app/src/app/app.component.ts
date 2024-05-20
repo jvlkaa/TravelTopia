@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {GoogleMap, MapInfoWindow, MapMarker, MapPolyline} from "@angular/google-maps";
 import {mark} from "@angular/compiler-cli/src/ngtsc/perf/src/clock";
 import {GoogleMapsService} from "./service/google-maps.service";
@@ -8,7 +8,7 @@ import {GoogleMapsService} from "./service/google-maps.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, AfterViewChecked {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
   @ViewChild(MapPolyline) mapPolyline: MapPolyline | undefined;
   @ViewChild('marker_center') markerCenterEl: MapMarker | undefined;
@@ -30,16 +30,20 @@ export class AppComponent implements OnInit{
     this.path_markers_visibility = true;
   }
 
-  /*ngAfterViewInit() {
+  ngAfterViewChecked() {
+    // This will be called after every view check
     if (this.mapPolyline && this.mapPolyline.polyline) {
       this.mapPolyline.polyline.addListener('click', (event: google.maps.MapMouseEvent) => {
-        if (this.markerCenterEl) {
-          this.markerCenterEl.position = this.markerCenter!; // ensure this is updated correctly
-          this.openInfoWindow(this.markerCenterEl);
-        }
-      });
+        this.onPolylineClick();
+      })
     }
-  }*/
+  }
+  onPolylineClick() {
+    if (this.markerCenterEl && this.markerCenter) {
+      this.markerCenterEl.position = this.markerCenter;
+      this.openInfoWindow(this.markerCenterEl);
+    }
+  }
 
   calculateDistance(route: google.maps.LatLngLiteral[] ){
     this.distance = 0;
@@ -57,14 +61,18 @@ export class AppComponent implements OnInit{
   }
 
   calculateCenterMarker(){
-    this.markerCenter = this.route![Math.floor(this.route!.length/2)]
+    if (this.route!.length > 0) {
+      this.markerCenter = this.route![Math.floor(this.route!.length / 2)];
+    }
   }
 
   openInfoWindow(marker: MapMarker) {
     this.calculateCenterMarker()
     this.calculateDistance(this.route!);
     this.calculateTime();
-    this.infoWindow!.open(marker);
+    if (this.infoWindow) {
+      this.infoWindow.open(marker);
+    }
   }
 
   moveMap(event: google.maps.MapMouseEvent) {
@@ -79,22 +87,16 @@ export class AppComponent implements OnInit{
   drawButtonClicked(){
     this.draw_path_button_clicked = true;
     this.path_markers_visibility = false;
-    this.markerA = this.route![0];
-    this.markerB = this.route![this.route!.length-1];
-    this.center = {
-      lat : this.route!.reduce((acc, currVal) => acc + currVal.lat, 0)/this.route!.length,
-      lng: this.route!.reduce((acc, currVal) => acc + currVal.lng, 0)/this.route!.length
-    }
-    this.calculateCenterMarker();
-    this.calculateDistance(this.route!);
-    this.calculateTime();
-    if (this.mapPolyline && this.mapPolyline.polyline) {
-      this.mapPolyline.polyline.addListener('click', (event: google.maps.MapMouseEvent) => {
-        if (this.markerCenterEl) {
-          this.markerCenterEl.position = this.markerCenter!; // ensure this is updated correctly
-          this.openInfoWindow(this.markerCenterEl);
-        }
-      });
+    if (this.route!.length > 0) {
+      this.markerA = this.route![0];
+      this.markerB = this.route![this.route!.length - 1];
+      this.center = {
+        lat: this.route!.reduce((acc, currVal) => acc + currVal.lat, 0) / this.route!.length,
+        lng: this.route!.reduce((acc, currVal) => acc + currVal.lng, 0) / this.route!.length
+      }
+      this.calculateCenterMarker();
+      this.calculateDistance(this.route!);
+      this.calculateTime();
     }
   }
 
