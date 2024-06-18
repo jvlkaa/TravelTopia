@@ -25,7 +25,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              {
+                "input": "./node_modules/ol/ol.css",
+                "bundleName": "ol",
+                "inject": false
+              }
             ],
             "scripts": []
           },
@@ -87,7 +92,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              {
+                "input": "./node_modules/ol/ol.css",
+                "bundleName": "ol",
+                "inject": false
+              }
             ],
             "scripts": []
           }

@@ -1,50 +1,97 @@
-import {AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {GoogleMap, MapInfoWindow, MapMarker, MapPolyline} from "@angular/google-maps";
-import {mark} from "@angular/compiler-cli/src/ngtsc/perf/src/clock";
-import {GoogleMapsService} from "./service/google-maps.service";
+import {Component, OnInit} from '@angular/core';
+// @ts-ignore
+import Map from 'ol/Map';
+// @ts-ignore
+import View from 'ol/View';
+// @ts-ignore
+import { OSM } from 'ol/source';
+// @ts-ignore
+import VectorLayer from 'ol/layer/Vector';
+// @ts-ignore
+import VectorSource from 'ol/source/Vector';
+// @ts-ignore
+import Feature from 'ol/Feature';
+// @ts-ignore
+import { Point, LineString } from 'ol/geom';
+// @ts-ignore
+import { fromLonLat, toLonLat  } from 'ol/proj';
+// @ts-ignore
+import TileLayer from 'ol/layer/Tile';
+// @ts-ignore
+import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+// @ts-ignore
+import { MapBrowserEvent } from 'ol';
+// @ts-ignore
+import Overlay from 'ol/Overlay';
+import {PointService} from "./point/service/point.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewChecked {
-  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow | undefined;
-  @ViewChild(MapPolyline) mapPolyline: MapPolyline | undefined;
-  @ViewChild('marker_center') markerCenterEl: MapMarker | undefined;
-  title = 'user-app';
-  display: google.maps.LatLngLiteral | undefined;
-  route: google.maps.LatLngLiteral[] |undefined;
-  center : google.maps.LatLngLiteral |undefined;
-  markerA : google.maps.LatLngLiteral | undefined;
-  markerB : google.maps.LatLngLiteral | undefined;
-  markerCenter: google.maps.LatLngLiteral | undefined;
-  distance = 0;
-  time = 0;
-  draw_path_button_clicked : boolean | undefined;
-  path_markers_visibility : boolean | undefined;
+export class AppComponent implements OnInit {
+  private map!: Map;
+  private coordinates: { lat: number; lng: number } | undefined;
+  private route: { lat: number; lng: number }[] = [];
+  private markerCenter: { lat: number; lng: number } | undefined;
+  private distance = 0;
+  private time = 0;
+  private pointsSource: VectorSource = new VectorSource();
+  private pointsLayer: VectorLayer = new VectorLayer({
+    source: this.pointsSource
+  });
+  private routeSource: VectorSource = new VectorSource();
+  private routeLayer: VectorLayer = new VectorLayer({
+    source: this.routeSource
+  });
+  private routeInfo: Overlay;
+
+  constructor(private pointService: PointService){}
 
   ngOnInit() {
     this.route = [];
-    this.draw_path_button_clicked = false;
-    this.path_markers_visibility = true;
+    this.map = new Map({
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'map',
+      view: new View({
+        center: fromLonLat([18.578207, 54.423506]),
+        zoom: 10,
+        maxZoom: 50,
+      }),
+    });
+    this.map.addLayer(this.pointsLayer);
+    //event dodawania markerow
+    this.map.on('click', (event: MapBrowserEvent<any>) => {
+      this.moveMap(event);
+      this.addMarkerToMap(event);
+    });
+    //informacje o trasie
+    const routePopupContainer = document.getElementById('popup')!;
+    const routePopupCloser = document.getElementById('popup-closer')!;
+    this.routeInfo = new Overlay({
+      element: routePopupContainer,
+    });
+    this.map.addOverlay(this.routeInfo);
+    routePopupCloser.onclick = () => {
+      this.routeInfo.setPosition(undefined);
+    };
+    //event do wyswietlania informacji o trasie
+    this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
+      this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
+        if (layer === this.routeLayer) {
+          this.openInfoWindow(event.coordinate);
+        }
+      });
+    });
+
   }
 
-  ngAfterViewChecked() {
-    // This will be called after every view check
-    if (this.mapPolyline && this.mapPolyline.polyline) {
-      this.mapPolyline.polyline.addListener('click', (event: google.maps.MapMouseEvent) => {
-        this.onPolylineClick();
-      })
-    }
-  }
-  onPolylineClick() {
-    if (this.markerCenterEl && this.markerCenter) {
-      this.markerCenterEl.position = this.markerCenter;
-      this.openInfoWindow(this.markerCenterEl);
-    }
-  }
-
+  /* calculating route distance */
   calculateDistance(route: google.maps.LatLngLiteral[] ){
     this.distance = 0;
     for (let i = 1; i <route.length; i++) {
@@ -56,53 +103,128 @@ export class AppComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  /* calculating travel time */
   calculateTime(){
     this.time = this.distance/5*60;  //[minutes], simple conversion: average human speed is 5km/h
   }
 
+  /* calculating center of the map camera */
   calculateCenterMarker(){
     if (this.route!.length > 0) {
       this.markerCenter = this.route![Math.floor(this.route!.length / 2)];
     }
   }
 
-  openInfoWindow(marker: MapMarker) {
+  /* showing information about the route */
+  openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
     this.calculateDistance(this.route!);
     this.calculateTime();
-    if (this.infoWindow) {
-      this.infoWindow.open(marker);
-    }
+    const popupContent = document.getElementById('popup-content')!;
+    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km <br/>Time: ${this.time.toFixed(2)} min</p>`;
+    this.routeInfo.setPosition(coordinate);
   }
 
-  moveMap(event: google.maps.MapMouseEvent) {
-    this.display = (event.latLng!.toJSON());
+  /* showing the location of clicked place on the map */
+  moveMap(event: MapBrowserEvent<any>) {
+    const lonLat = toLonLat(event.coordinate);
+    this.coordinates = {
+      lat: lonLat[1],
+      lng: lonLat[0]
+    };
   }
 
-  addMarkerToMap(event: google.maps.MapMouseEvent){
-    this.display = (event.latLng!.toJSON());
-    this.route?.push(event.latLng!.toJSON());
+  /* adding marker on the map in the place clicked by the user - to create custome route */
+  addMarkerToMap(event: MapBrowserEvent<any>){
+    const coordinate = event.coordinate;
+    const lonLat = toLonLat(coordinate);
+    this.route.push({ lat: lonLat[1], lng: lonLat[0] });
+
+    const marker = new Feature({
+      geometry: new Point(coordinate)
+    });
+    marker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+
+    this.pointsSource.addFeature(marker);
   }
 
   drawButtonClicked(){
-    this.draw_path_button_clicked = true;
-    this.path_markers_visibility = false;
-    if (this.route!.length > 0) {
-      this.markerA = this.route![0];
-      this.markerB = this.route![this.route!.length - 1];
-      this.center = {
-        lat: this.route!.reduce((acc, currVal) => acc + currVal.lat, 0) / this.route!.length,
-        lng: this.route!.reduce((acc, currVal) => acc + currVal.lng, 0) / this.route!.length
-      }
+    if (this.route.length > 1) {
+      //route
+      const lineCoordinates = this.route.map(point => fromLonLat([point.lng, point.lat]));
+      const lineFeature = new Feature({
+        geometry: new LineString(lineCoordinates)
+      });
+      lineFeature.setStyle(new Style({
+        stroke: new Stroke({
+          color: 'magenta',
+          width: 4
+        })
+      }));
+      this.routeSource.addFeature(lineFeature);
+      // start
+      const markerA = new Feature({
+        geometry: new Point(fromLonLat([this.route[0].lng, this.route[0].lat]))
+      });
+      markerA.setStyle(new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: '../assets/location-icon.png',
+          scale: 0.05
+        })
+      }));
+      this.routeSource.addFeature(markerA);
+      //finish
+      const markerB = new Feature({
+        geometry: new Point(fromLonLat([this.route[this.route.length - 1].lng,
+          this.route[this.route.length - 1].lat]))
+      });
+      markerB.setStyle(new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: '../assets/location-icon.png',
+          scale: 0.05
+        })
+      }));
+      this.routeSource.addFeature(markerB);
+      //center of view
       this.calculateCenterMarker();
-      this.calculateDistance(this.route!);
-      this.calculateTime();
+      const centerLonLat = fromLonLat([this.markerCenter!.lng, this.markerCenter!.lat]);
+      this.map.getView().setCenter(centerLonLat);
+      //changing layer
+      this.map.removeLayer(this.pointsLayer);
+      this.map.addLayer(this.routeLayer);
     }
   }
 
+  /* clearing the created route */
   clearButtonClicked(){
-    this.route?.splice(0,this.route?.length);
-    this.draw_path_button_clicked = false;
-    this.path_markers_visibility = true;
+    this.route.splice(0, this.route.length);
+    this.pointsSource.clear();
+    this.routeSource.clear();
+    this.map.removeLayer(this.routeLayer);
+    this.map.addLayer(this.pointsLayer);
+
+    const popupContent = document.getElementById('popup-content')!;
+    popupContent.innerHTML = ``;
+  }
+
+  getCoordinates(){
+    return this.coordinates;
+  }
+
+  addButtonClicked(){
+    if (this.route.length > 0) {
+      for(let r of this.route){
+          const point: Point = {latitude: r.lat, longitude: r.lng};
+          this.pointService.addPoint(point).subscribe();
+        }
+    }
   }
 }

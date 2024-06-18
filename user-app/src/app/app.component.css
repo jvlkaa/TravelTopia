@@ -22,14 +22,24 @@
   gap: 10px;
 }
 
-#first_map{
+#div_map{
   display: flex;
   flex-direction: column;
   padding: 50px;
 }
 
-#second_map{
+
+.map {
   display: flex;
   flex-direction: column;
+  width: 600px;
+  height: 500px;
   padding: 20px;
+}
+
+#popup-content{
+  font-size: small;
+  background: whitesmoke;
+  padding: 1px;
+  border-radius: 5px;
 }
