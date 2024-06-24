@@ -9,7 +9,7 @@
   justify-content: center;
 }
 
-.lat, .lng, .trasa_button, .wyczysc_button {
+.lat, .lng, .trasa_button, .wyczysc_button, .dodaj_button {
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;

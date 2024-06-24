@@ -1,4 +1,5 @@
-﻿using backend_app.Models;
+﻿using backend_app.Dto;
+using backend_app.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -30,6 +31,23 @@ namespace backend_app.Services
         {
             var result = await mongoCollection.DeleteOneAsync(x => x.id == id);
             return result.DeletedCount > 0;
+        }
+
+        public async Task<PointId> getPointIdAsync(double latitude, double longitude)
+        {
+            var filter = Builders<Point>.Filter.And(
+            Builders<Point>.Filter.Eq(x => x.latitude, latitude),
+            Builders<Point>.Filter.Eq(x => x.longitude, longitude));
+
+            Point point = await mongoCollection.Find(filter).SingleOrDefaultAsync();
+            if (point != null) {
+                PointId pointid = new PointId()
+                {
+                    id = point.id
+                };
+                return pointid;
+            }
+            return null;
         }
     }
 }

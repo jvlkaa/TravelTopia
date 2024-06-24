@@ -22,10 +22,10 @@ namespace backend_app.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRoutes()
+        public async Task<IActionResult> GetPoints()
         {
-            var routes = await _pointService.GetPointsAsync();
-            return Ok(routes);
+            var points = await _pointService.GetPointsAsync();
+            return Ok(points);
         }
 
         [HttpDelete("{id}")]
@@ -49,6 +49,20 @@ namespace backend_app.Controllers
             if (result)
             {
                 return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("{latitude}/{longitude}")]
+        public async Task<IActionResult> GetPointId(double latitude, double longitude)
+        {
+            var result = await _pointService.getPointIdAsync(latitude, longitude);
+            if(result != null)
+            {
+                return Ok(result);
             }
             else
             {

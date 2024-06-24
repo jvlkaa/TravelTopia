@@ -24,6 +24,9 @@ import { MapBrowserEvent } from 'ol';
 // @ts-ignore
 import Overlay from 'ol/Overlay';
 import {PointService} from "./point/service/point.service";
+import {RouteService} from "./route/service/route.service";
+import {Route} from "./route/model/route";
+import {PointId} from "./point/model/pointId";
 
 @Component({
   selector: 'app-root',
@@ -47,7 +50,7 @@ export class AppComponent implements OnInit {
   });
   private routeInfo: Overlay;
 
-  constructor(private pointService: PointService){}
+  constructor(private pointService: PointService, private routeService: RouteService){}
 
   ngOnInit() {
     this.route = [];
@@ -219,12 +222,26 @@ export class AppComponent implements OnInit {
     return this.coordinates;
   }
 
+  /* adding points and route to database */
   addButtonClicked(){
     if (this.route.length > 0) {
+      const idList: Route = {
+        name: 'Example Route',
+        routePoints: []
+      };
       for(let r of this.route){
           const point: Point = {latitude: r.lat, longitude: r.lng};
-          this.pointService.addPoint(point).subscribe();
-        }
+          this.pointService.addPoint(point).subscribe(() => {
+            this.pointService.getPoint(point).subscribe(response => {
+              const pointId: PointId = response;
+              console.log(pointId.id)
+              idList.routePoints.push(pointId.id)
+              if (idList.routePoints.length === this.route.length) {
+                this.routeService.addRoute(idList).subscribe();
+              }
+            })
+          });
+      }
     }
   }
 }

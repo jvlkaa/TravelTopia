@@ -10,7 +10,7 @@ namespace backend_app.Models
         public string? id { get; set; }
 
         [BsonElement("latitude")]
-        public double latidute { get; set; }
+        public double latitude { get; set; }
 
         [BsonElement("longitude")]
         public double longitude { get; set; }
