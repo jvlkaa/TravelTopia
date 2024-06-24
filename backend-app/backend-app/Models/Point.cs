@@ -5,10 +5,6 @@ namespace backend_app.Models
 {
     public class Point
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? id { get; set; }
-
         [BsonElement("latitude")]
         public double latitude { get; set; }
 

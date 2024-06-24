@@ -13,7 +13,6 @@ namespace backend_app.Models
         public string name { get; set; }
 
         [BsonElement("points")]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ICollection<string> routePoints { get; set; } = new List<string>();
+        public ICollection<Point> routePoints { get; set; } = new List<Point>();
     }
 }

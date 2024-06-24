@@ -231,16 +231,20 @@ export class AppComponent implements OnInit {
       };
       for(let r of this.route){
           const point: Point = {latitude: r.lat, longitude: r.lng};
-          this.pointService.addPoint(point).subscribe(() => {
-            this.pointService.getPoint(point).subscribe(response => {
-              const pointId: PointId = response;
-              console.log(pointId.id)
-              idList.routePoints.push(pointId.id)
-              if (idList.routePoints.length === this.route.length) {
-                this.routeService.addRoute(idList).subscribe();
-              }
-            })
-          });
+          idList.routePoints.push(point);
+          if(idList.routePoints.length == this.route.length){
+            this.routeService.addRoute(idList).subscribe();
+          }
+          // this.pointService.addPoint(point).subscribe(() => {
+          //   this.pointService.getPoint(point).subscribe(response => {
+          //     const pointId: PointId = response;
+          //     console.log(pointId.id)
+          //     idList.routePoints.push(pointId.id)
+          //     if (idList.routePoints.length === this.route.length) {
+          //       this.routeService.addRoute(idList).subscribe();
+          //     }
+          //   })
+          // });
       }
     }
   }

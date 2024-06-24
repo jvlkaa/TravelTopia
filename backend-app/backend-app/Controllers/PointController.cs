@@ -28,47 +28,47 @@ namespace backend_app.Controllers
             return Ok(points);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePoint(string id)
-        {
-            var result = await _pointService.deletePointAsync(id);
-            if (result)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeletePoint(string id)
+        //{
+        //    var result = await _pointService.deletePointAsync(id);
+        //    if (result)
+        //    {
+        //        return NoContent();
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePoint(string id, [FromBody] Point point)
-        {
-            var result = await _pointService.replacePointAsync(id, point);
-            if (result)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdatePoint(string id, [FromBody] Point point)
+        //{
+        //    var result = await _pointService.replacePointAsync(id, point);
+        //    if (result)
+        //    {
+        //        return NoContent();
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
-        [HttpGet("{latitude}/{longitude}")]
-        public async Task<IActionResult> GetPointId(double latitude, double longitude)
-        {
-            var result = await _pointService.getPointIdAsync(latitude, longitude);
-            if(result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //[HttpGet("{latitude}/{longitude}")]
+        //public async Task<IActionResult> GetPointId(double latitude, double longitude)
+        //{
+        //    var result = await _pointService.getPointIdAsync(latitude, longitude);
+        //    if(result != null)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
     }
 }
