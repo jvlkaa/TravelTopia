@@ -1,14 +1,28 @@
 <div id="div_map">
-  <div id="map" class="map"></div>
-    <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-      <div id="popup-content"></div>
+  <div id="map-container">
+    <div id="map" class="map"></div>
+      <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
+    <div class="latLng">
+      <div class="lat">Latitude: {{getCoordinates()?.lat}}</div>
+      <div class="lng">Longitude: {{getCoordinates()?.lng}}</div>
     </div>
-  <div class="latLng">
-    <div class="lat">Latitude: {{getCoordinates()?.lat}}</div>
-    <div class="lng">Longitude: {{getCoordinates()?.lng}}</div>
+    <div class="buttons">
+      <button class="trasa_button" (click)="drawButtonClicked()">Stwórz trase</button>
+      <button class = "wyczysc_button" (click)="clearButtonClicked()">Wyczyść trase</button>
+      <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
+    </div>
+    <div class="route-input">
+      <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
+      <button class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
+    </div>
   </div>
-  <button class="trasa_button" (click)="drawButtonClicked()">Stwórz trase</button>
-  <button class = "wyczysc_button" (click)="clearButtonClicked()">Wyczyść trase</button>
-  <button class = "dodaj_button" (click)="addButtonClicked()">Dodaj trase</button>
+  <div id="list-container">
+    <h2>Trasy</h2>
+    <ul>
+      <li id ="li-routes" *ngFor="let route of routes">{{ route.name }}</li>
+    </ul>
+  </div>
 </div>

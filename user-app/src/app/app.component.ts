@@ -27,6 +27,8 @@ import {PointService} from "./point/service/point.service";
 import {RouteService} from "./route/service/route.service";
 import {Route} from "./route/model/route";
 import {PointId} from "./point/model/pointId";
+import {Routes} from "./route/model/routes";
+import {RouteWithId} from "./route/model/routeWithId";
 
 @Component({
   selector: 'app-root',
@@ -50,7 +52,13 @@ export class AppComponent implements OnInit {
   });
   private routeInfo: Overlay;
 
-  constructor(private pointService: PointService, private routeService: RouteService){}
+  public addRouteSuccess: string | null = null;
+  public routeName: string = '';
+
+  public routes: RouteWithId[] = [];
+
+  constructor(private pointService: PointService, private routeService: RouteService) {
+  }
 
   ngOnInit() {
     this.route = [];
@@ -91,28 +99,28 @@ export class AppComponent implements OnInit {
         }
       });
     });
-
+    this.listRoutes();
   }
 
   /* calculating route distance */
-  calculateDistance(route: google.maps.LatLngLiteral[] ){
+  calculateDistance(route: google.maps.LatLngLiteral[]) {
     this.distance = 0;
-    for (let i = 1; i <route.length; i++) {
+    for (let i = 1; i < route.length; i++) {
       this.distance = this.distance +
         Math.sqrt(
-          Math.pow((route[i-1].lat - route[i].lat), 2) +
-          (Math.pow((route[i-1].lng - route[i].lng), 2)))
-          * 73;
+          Math.pow((route[i - 1].lat - route[i].lat), 2) +
+          (Math.pow((route[i - 1].lng - route[i].lng), 2)))
+        * 73;
     }
   }
 
   /* calculating travel time */
-  calculateTime(){
-    this.time = this.distance/5*60;  //[minutes], simple conversion: average human speed is 5km/h
+  calculateTime() {
+    this.time = this.distance / 5 * 60;  //[minutes], simple conversion: average human speed is 5km/h
   }
 
   /* calculating center of the map camera */
-  calculateCenterMarker(){
+  calculateCenterMarker() {
     if (this.route!.length > 0) {
       this.markerCenter = this.route![Math.floor(this.route!.length / 2)];
     }
@@ -138,10 +146,10 @@ export class AppComponent implements OnInit {
   }
 
   /* adding marker on the map in the place clicked by the user - to create custome route */
-  addMarkerToMap(event: MapBrowserEvent<any>){
+  addMarkerToMap(event: MapBrowserEvent<any>) {
     const coordinate = event.coordinate;
     const lonLat = toLonLat(coordinate);
-    this.route.push({ lat: lonLat[1], lng: lonLat[0] });
+    this.route.push({lat: lonLat[1], lng: lonLat[0]});
 
     const marker = new Feature({
       geometry: new Point(coordinate)
@@ -157,7 +165,7 @@ export class AppComponent implements OnInit {
     this.pointsSource.addFeature(marker);
   }
 
-  drawButtonClicked(){
+  drawButtonClicked() {
     if (this.route.length > 1) {
       //route
       const lineCoordinates = this.route.map(point => fromLonLat([point.lng, point.lat]));
@@ -207,7 +215,7 @@ export class AppComponent implements OnInit {
   }
 
   /* clearing the created route */
-  clearButtonClicked(){
+  clearButtonClicked() {
     this.route.splice(0, this.route.length);
     this.pointsSource.clear();
     this.routeSource.clear();
@@ -218,34 +226,52 @@ export class AppComponent implements OnInit {
     popupContent.innerHTML = ``;
   }
 
-  getCoordinates(){
+  getCoordinates() {
     return this.coordinates;
   }
 
   /* adding points and route to database */
-  addButtonClicked(){
-    if (this.route.length > 0) {
+  addButtonClicked() {
+    if (this.route.length > 0 && this.routeName != '') {
       const idList: Route = {
-        name: 'Example Route',
+        name: this.routeName,
         routePoints: []
       };
-      for(let r of this.route){
-          const point: Point = {latitude: r.lat, longitude: r.lng};
-          idList.routePoints.push(point);
-          if(idList.routePoints.length == this.route.length){
-            this.routeService.addRoute(idList).subscribe();
-          }
-          // this.pointService.addPoint(point).subscribe(() => {
-          //   this.pointService.getPoint(point).subscribe(response => {
-          //     const pointId: PointId = response;
-          //     console.log(pointId.id)
-          //     idList.routePoints.push(pointId.id)
-          //     if (idList.routePoints.length === this.route.length) {
-          //       this.routeService.addRoute(idList).subscribe();
-          //     }
-          //   })
-          // });
+      for (let r of this.route) {
+        const point: Point = {latitude: r.lat, longitude: r.lng};
+        idList.routePoints.push(point);
+        if (idList.routePoints.length == this.route.length) {
+          this.routeService.addRoute(idList).subscribe({
+            next: () => {
+              this.addRouteSuccess = 'Dodano trase do bazy';
+              setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+              this.routeName = '';
+              this.listRoutes();
+            },
+            error: (err) => {
+              console.error('Nie udało się dodać trasy do bazy', err);
+            }
+          });
+        }
+        // this.pointService.addPoint(point).subscribe(() => {
+        //   this.pointService.getPoint(point).subscribe(response => {
+        //     const pointId: PointId = response;
+        //     console.log(pointId.id)
+        //     idList.routePoints.push(pointId.id)
+        //     if (idList.routePoints.length === this.route.length) {
+        //       this.routeService.addRoute(idList).subscribe();
+        //     }
+        //   })
+        // });
       }
     }
+  }
+
+  listRoutes(){
+    this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
+      this.routes = routes;
+      console.log(this.routes);
+      console.log(this.routes[0]);
+    });
   }
 }

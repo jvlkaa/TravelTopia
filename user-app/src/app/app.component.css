@@ -9,11 +9,39 @@
   justify-content: center;
 }
 
-.lat, .lng, .trasa_button, .wyczysc_button, .dodaj_button {
+.lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;
   margin: 5px;
+}
+
+.buttons{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.trasa_button, .wyczysc_button {
+  width: 100%;
+}
+
+.route-input {
+  display: flex;
+  align-items: center;
+}
+
+.route-name-input {
+  flex: 1;
+}
+
+.add-route-success {
+  padding: 5px 5px;
+  border: 1px #006600;
+  background-color: #edffbd;
+  color: #006600;
+  border-radius: 20px;
+  text-align: center;
 }
 
 .latLng {
@@ -24,7 +52,6 @@
 
 #div_map{
   display: flex;
-  flex-direction: column;
   padding: 50px;
 }
 
@@ -42,4 +69,30 @@
   background: whitesmoke;
   padding: 1px;
   border-radius: 5px;
+}
+
+
+#map-container {
+  flex: 2;
+  padding: 1em;
+  flex-direction: column;
+}
+
+#list-container {
+  flex: 1;
+  padding: 1em;
+  border-left: 1px solid #ddd;
+  text-align: center;
+}
+
+#li-routes{
+    background-color: lavender;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin: 5px;
+    list-style-type: none;
+}
+
+#li-routes:hover{
+    background-color: #c4b9de;
 }
