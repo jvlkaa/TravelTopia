@@ -22,7 +22,7 @@
   <div id="list-container">
     <h2>Trasy</h2>
     <ul>
-      <li id ="li-routes" *ngFor="let route of routes">{{ route.name }}</li>
+      <li id ="li-routes" *ngFor="let route of routes" (click)="drawRouteFromDataBase(route)">{{ route.name }}</li>
     </ul>
   </div>
 </div>

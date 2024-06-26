@@ -166,6 +166,7 @@ export class AppComponent implements OnInit {
   }
 
   drawButtonClicked() {
+    this.routeSource.clear();
     if (this.route.length > 1) {
       //route
       const lineCoordinates = this.route.map(point => fromLonLat([point.lng, point.lat]));
@@ -267,11 +268,54 @@ export class AppComponent implements OnInit {
     }
   }
 
+  /* routes from database to show as a list */
   listRoutes(){
     this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
       this.routes = routes;
-      console.log(this.routes);
-      console.log(this.routes[0]);
     });
+  }
+
+  /* showing chosen route from list from database */
+  drawRouteFromDataBase(route: RouteWithId) {
+    this.routeSource.clear();
+    const lineCoordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+    const lineFeature = new Feature({
+      geometry: new LineString(lineCoordinates)
+    });
+    lineFeature.setStyle(new Style({
+      stroke: new Stroke({
+        color: 'magenta',
+        width: 4
+      })
+    }));
+    this.routeSource.addFeature(lineFeature);
+    // Start marker
+    const startMarker = new Feature({
+      geometry: new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude]))
+    });
+    startMarker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.routeSource.addFeature(startMarker);
+    // End marker
+    const endMarker = new Feature({
+      geometry: new Point(fromLonLat([route.routePoints[route.routePoints.length - 1].longitude, route.routePoints[route.routePoints.length - 1].latitude]))
+    });
+    endMarker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.routeSource.addFeature(endMarker);
+    // Center map
+    const centerPoint = route.routePoints[Math.floor(route.routePoints.length / 2)];
+    this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
+    this.map.addLayer(this.routeLayer);
   }
 }

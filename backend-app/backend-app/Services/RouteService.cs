@@ -16,6 +16,19 @@ namespace backend_app.Services
 
         public async Task<List<Models.Route>> GetRoutesAsync() => await routes.Find(_ => true).ToListAsync();
 
+        public async Task<Models.Route> GetRouteAsync(string name)
+        {
+            var result = await routes.Find(x => x.name == name).SingleOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                return result;
+            }
+        }
+
         public async Task CreateRouteAsync(Models.Route route) => await routes.InsertOneAsync(route);
 
         public async Task<bool> replaceRouteAsync(string id, Models.Route route)

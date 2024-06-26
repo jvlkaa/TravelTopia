@@ -29,6 +29,20 @@ namespace backend_app.Controllers
             return Ok(routes);
         }
 
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetRoute(string name)
+        {
+            var result = await routeService.GetRouteAsync(name);
+            if(result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoute(string id)
         {
