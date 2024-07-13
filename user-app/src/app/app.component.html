@@ -1,23 +1,11 @@
-<div id="div_map">
+<div id="main">
   <div id="menu_bar">
     <h1 id="title">TravelTopia</h1>
     <div id="menu_buttons">
-      <button class="menu_button">strona główna</button>
-      <button class="menu_button">Przeglądaj trasy</button>
-      <button class="menu_button">Stwórz trasę</button>
+      <button [routerLink]="'main'"  class="menu_button">strona główna</button>
+      <button [routerLink]="'route'" class="menu_button">Przeglądaj trasy</button>
+      <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
     </div>
   </div>
-  <div id="map-container">
-    <div id="information-container">
-      <img src="/assets/main_image.jpg" alt="main image" width="512" height="460" >
-      <div id="info">
-        <h1>TravelTopia</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac risus sapien. Etiam quis posuere velit. Suspendisse mollis tempus enim id vestibulum. Nullam vitae pulvinar massa. Pellentesque et erat lorem. Ut a porttitor ante, ac semper magna. Fusce elit risus, auctor at molestie dapibus, lobortis vel purus. Donec sem velit, laoreet ac risus in, vehicula dapibus magna. Donec at tempor lacus, non aliquet orci. Donec condimentum sed tellus ac tristique.
-
-          Phasellus non cursus eros. Proin vel lacus sem. Nam rutrum eget augue vel rutrum. Ut mattis, augue ac gravida gravida, tellus ante placerat lectus, vitae mollis felis eros vel tellus. Sed viverra velit est, ac auctor odio consectetur in. Nunc in congue lectus. Quisque non orci sit amet nulla aliquet commodo at a lorem.
-
-          Fusce imperdiet dapibus lacus, eget venenatis urna euismod eu. Curabitur eleifend, magna eu vestibulum laoreet, orci ante mollis est, eu tempor nisl est nec mauris. Pellentesque ac vestibulum orci. Aliquam a tincidunt dui. Fusce pretium orci magna, quis maximus risus posuere id. Duis euismod tortor nec tortor dignissim ultricies. Curabitur id venenatis nulla. Cras venenatis, nibh non pretium imperdiet, felis massa vulputate tortor, at porta mauris magna a libero. In dapibus magna a sapien elementum tincidunt. Integer efficitur volutpat porttitor. Vestibulum faucibus mauris at aliquet laoreet. Nulla et leo vitae dolor tristique pharetra.</p>
-      </div>
-    </div>
-  </div>
+  <router-outlet></router-outlet>
 </div>

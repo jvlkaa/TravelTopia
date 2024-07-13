@@ -9,12 +9,14 @@ import {PointService} from "./point/service/point.service";
 import {FormsModule} from "@angular/forms";
 import { RoutesViewComponent } from './views/routes-view/routes-view.component';
 import { CreateRouteViewComponent } from './views/create-route-view/create-route-view.component';
+import { MainViewComponent } from './views/main-view/main-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RoutesViewComponent,
-    CreateRouteViewComponent
+    CreateRouteViewComponent,
+    MainViewComponent
   ],
     imports: [
         BrowserModule,

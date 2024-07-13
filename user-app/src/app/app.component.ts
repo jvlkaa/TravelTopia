@@ -30,6 +30,8 @@ import {PointId} from "./point/model/pointId";
 import {Routes} from "./route/model/routes";
 import {RouteWithId} from "./route/model/routeWithId";
 
+/* functions for future use - do not remove */
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

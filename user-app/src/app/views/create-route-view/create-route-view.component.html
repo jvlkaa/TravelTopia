@@ -1,13 +1,4 @@
-<div id="div_map">
-    <div id="menu_bar">
-        <h1 id="title">TravelTopia</h1>
-        <div id="menu_buttons">
-            <button class="menu_button">strona główna</button>
-            <button class="menu_button">Przeglądaj trasy</button>
-            <button class="menu_button">Stwórz trasę</button>
-        </div>
-    </div>
-    <div id="map-container">
+<div id="map-container">
         <div id="map" class="map"></div>
         <div id="popup" class="ol-popup">
             <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -26,5 +17,4 @@
             <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
             <button class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
         </div>
-    </div>
 </div>
