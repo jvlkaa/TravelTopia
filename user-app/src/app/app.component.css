@@ -4,9 +4,10 @@
 
 :host {
   display: flex;
-  flex-direction: row;
+  /*flex-direction: row;*/
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
@@ -52,9 +53,59 @@
 
 #div_map{
   display: flex;
-  padding: 50px;
+  flex-direction: column;
+  width: 100%;
 }
 
+#menu_bar{
+  background-color: lavender;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#title{
+  font-family: "Calibri Light";
+  height: 100%;
+  padding-left: 30px;
+}
+
+.menu_button{
+  font-family: "Calibri Light";
+  font-size: larger;
+  font-weight: bolder;
+  background-color: lavender;
+  width: 30%;
+  border: none;
+  border-radius: 50px;
+}
+
+#menu_buttons{
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.menu_button:hover{
+  background-color: #c4b9de;
+}
+
+#information-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+#info{
+  font-family: "Arial";
+  font-weight: bolder;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: white;
+  width: 60%;
+}
 
 .map {
   display: flex;

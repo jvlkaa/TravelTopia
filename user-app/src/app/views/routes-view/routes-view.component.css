@@ -1,0 +1,150 @@
+.h1{
+    text-align: center;
+}
+
+:host {
+    display: flex;
+    /*flex-direction: row;*/
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
+    background-color: lavender;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin: 5px;
+}
+
+.buttons{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.trasa_button, .wyczysc_button {
+    width: 100%;
+}
+
+.route-input {
+    display: flex;
+    align-items: center;
+}
+
+.route-name-input {
+    flex: 1;
+}
+
+.add-route-success {
+    padding: 5px 5px;
+    border: 1px #006600;
+    background-color: #edffbd;
+    color: #006600;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.latLng {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#div_map{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#menu_bar{
+    background-color: lavender;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#title{
+    font-family: "Calibri Light";
+    height: 100%;
+    padding-left: 30px;
+}
+
+.menu_button{
+    font-family: "Calibri Light";
+    font-size: larger;
+    font-weight: bolder;
+    background-color: lavender;
+    width: 30%;
+    border: none;
+    border-radius: 50px;
+}
+
+#menu_buttons{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.menu_button:hover{
+    background-color: #c4b9de;
+}
+
+#information-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+#info{
+    font-family: "Arial";
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: white;
+    width: 60%;
+}
+
+.map {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    height: 500px;
+    padding: 20px;
+}
+
+#popup-content{
+    font-size: small;
+    background: whitesmoke;
+    padding: 1px;
+    border-radius: 5px;
+}
+
+
+#map-container {
+    flex: 2;
+    padding: 1em;
+    flex-direction: column;
+}
+
+#list-container {
+    flex: 1;
+    padding: 1em;
+    border-left: 1px solid #ddd;
+    text-align: center;
+}
+
+#li-routes{
+    background-color: lavender;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin: 5px;
+    list-style-type: none;
+}
+
+#li-routes:hover{
+    background-color: #c4b9de;
+}
+

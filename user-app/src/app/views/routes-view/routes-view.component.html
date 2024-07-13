@@ -1,0 +1,16 @@
+<div id="div-map">
+    <div id="menu_bar">
+        <h1 id="title">TravelTopia</h1>
+        <div id="menu_buttons">
+            <button class="menu_button">strona główna</button>
+            <button class="menu_button">Przeglądaj trasy</button>
+            <button class="menu_button">Stwórz trasę</button>
+        </div>
+    </div>
+    <div id="list-container">
+        <h2>Trasy</h2>
+        <ul>
+            <li id ="li-routes" *ngFor="let route of routes" (click)="drawRouteFromDataBase(route)">{{ route.name }}</li>
+        </ul>
+    </div>
+</div>
