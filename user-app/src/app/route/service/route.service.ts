@@ -19,4 +19,12 @@ export class RouteService {
   getRoutes(): Observable<RouteWithId[]>{
       return this.http.get<RouteWithId[]>( 'https://localhost:5269/TravelTopia/Route');
   }
+
+  getRoute(name: string): Observable<RouteWithId>{
+    return this.http.get<RouteWithId>('https://localhost:5269/TravelTopia/Route' + '/' + name)
+  }
+
+  getRoutesByString(text: string): Observable<RouteWithId[]>{
+    return this.http.get<RouteWithId[]>('https://localhost:5269/TravelTopia/Route' + '/' + text + '/list')
+  }
 }

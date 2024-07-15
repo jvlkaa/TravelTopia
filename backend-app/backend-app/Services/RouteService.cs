@@ -1,6 +1,8 @@
 ﻿using backend_app.Models;
+using DnsClient.Protocol;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Net;
 
 namespace backend_app.Services
 {
@@ -29,6 +31,19 @@ namespace backend_app.Services
             }
         }
 
+        public async Task<List<Models.Route>> GetRoutesByStringAsync(string text)
+        {
+            var result = await routes.Find(x => x.name.Contains(text)).ToListAsync();
+            if (result == null)
+            {
+                return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+ 
         public async Task CreateRouteAsync(Models.Route route) => await routes.InsertOneAsync(route);
 
         public async Task<bool> replaceRouteAsync(string id, Models.Route route)

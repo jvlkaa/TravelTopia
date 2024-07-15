@@ -29,6 +29,20 @@ namespace backend_app.Controllers
             return Ok(routes);
         }
 
+        [HttpGet("{text}/list")]
+        public async Task<IActionResult> GetRoutesByString(string text)
+        {
+            var result = await routeService.GetRoutesByStringAsync(text);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpGet("{name}")]
         public async Task<IActionResult> GetRoute(string name)
         {

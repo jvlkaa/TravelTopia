@@ -10,13 +10,15 @@ import {FormsModule} from "@angular/forms";
 import { RoutesViewComponent } from './views/routes-view/routes-view.component';
 import { CreateRouteViewComponent } from './views/create-route-view/create-route-view.component';
 import { MainViewComponent } from './views/main-view/main-view.component';
+import { RouteViewComponent } from './views/route-view/route-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RoutesViewComponent,
     CreateRouteViewComponent,
-    MainViewComponent
+    MainViewComponent,
+    RouteViewComponent
   ],
     imports: [
         BrowserModule,

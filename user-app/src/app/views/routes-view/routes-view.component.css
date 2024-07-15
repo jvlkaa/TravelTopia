@@ -1,150 +1,93 @@
-.h1{
-    text-align: center;
-}
-
-:host {
-    display: flex;
-    /*flex-direction: row;*/
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
-    background-color: lavender;
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 5px;
-}
-
-.buttons{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.trasa_button, .wyczysc_button {
-    width: 100%;
-}
-
-.route-input {
-    display: flex;
-    align-items: center;
-}
-
-.route-name-input {
-    flex: 1;
-}
-
-.add-route-success {
-    padding: 5px 5px;
-    border: 1px #006600;
-    background-color: #edffbd;
-    color: #006600;
-    border-radius: 20px;
-    text-align: center;
-}
-
-.latLng {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-#div_map{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-#menu_bar{
-    background-color: lavender;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-#title{
-    font-family: "Calibri Light";
-    height: 100%;
-    padding-left: 30px;
-}
-
-.menu_button{
-    font-family: "Calibri Light";
-    font-size: larger;
-    font-weight: bolder;
-    background-color: lavender;
-    width: 30%;
-    border: none;
-    border-radius: 50px;
-}
-
-#menu_buttons{
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-}
-
-.menu_button:hover{
-    background-color: #c4b9de;
-}
-
-#information-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    padding: 20px;
-}
-
-#info{
-    font-family: "Arial";
-    font-weight: bolder;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background-color: white;
-    width: 60%;
-}
-
-.map {
-    display: flex;
-    flex-direction: column;
-    width: 600px;
-    height: 500px;
-    padding: 20px;
-}
-
-#popup-content{
-    font-size: small;
-    background: whitesmoke;
-    padding: 1px;
-    border-radius: 5px;
-}
-
-
-#map-container {
-    flex: 2;
-    padding: 1em;
-    flex-direction: column;
-}
-
 #list-container {
-    flex: 1;
-    padding: 1em;
-    border-left: 1px solid #ddd;
-    text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  #background-color: green;
+}
+
+#filter-section{
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 20px;
+  border-radius: 50px;
+  margin-top: 40px;
+  box-shadow: 0px 0px 5px;
+  height: 250px;
+}
+
+#filter-buttons{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  justify-content: space-evenly;
+}
+
+h2{
+  font-family: "Calibri Light";
+}
+
+#find-text-area{
+  border-radius: 20px;
+  border-style: solid;
+  padding: 5px;
+}
+
+.filter-button{
+  background-color: lavender;
+  border-style: solid;
+  border-width: thin;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 20px;
+  font-family: "Calibri Light";
+  font-weight: bolder;
+}
+
+.filter-button:hover{
+  background-color: #c4b9de;
+}
+
+#find-button:hover{
+  background-color: #c4b9de;
+}
+
+#route-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  #background-color: red;
+  margin-top: 20px;
+  width: 20%;
 }
 
 #li-routes{
-    background-color: lavender;
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 5px;
-    list-style-type: none;
+  background-color: lavender;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 20px;
+  #border-style: outset;
+  border-width: thin;
+  list-style-type: none;
+  width: 60%;
+  box-shadow: 0px 0px 5px black;
+  font-family: "Calibri Light";
+  font-size: larger;
+  font-weight: bolder;
+  transition: 0.3s;
+
+}
+
+p{
+  margin-top: 40px;
+  padding: 20px;
+  font-family: "Calibri Light";
+  font-weight: bolder;
 }
 
 #li-routes:hover{
-    background-color: #c4b9de;
+  background-color: #c4b9de;
+  box-shadow: 0px 10px 20px black;
 }
 

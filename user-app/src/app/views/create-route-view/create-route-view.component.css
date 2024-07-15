@@ -1,13 +1,30 @@
-.h1{
-    text-align: center;
+#map-container {
+  display: flex;
+  flex-direction: row;
+  padding: 1em;
+  justify-content: center;
 }
 
-:host {
-    display: flex;
-    /*flex-direction: row;*/
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+.map {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 500px;
+  padding: 20px;
+}
+
+#popup-content{
+  font-size: small;
+  background: whitesmoke;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+#map-create-container{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 40%;
 }
 
 .lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
@@ -107,27 +124,12 @@
     width: 60%;
 }
 
-.map {
-    display: flex;
-    flex-direction: column;
-    width: 600px;
-    height: 500px;
-    padding: 20px;
-}
-
-#popup-content{
-    font-size: small;
-    background: whitesmoke;
-    padding: 1px;
-    border-radius: 5px;
-}
 
 
-#map-container {
-    flex: 2;
-    padding: 1em;
-    flex-direction: column;
-}
+
+
+
+
 
 #list-container {
     flex: 1;

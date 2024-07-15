@@ -17,6 +17,7 @@ import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 export class RoutesViewComponent implements OnInit {
 
 public routes: RouteWithId[] = [];
+public filterText: string | undefined;
 
   constructor(private pointService: PointService, private routeService: RouteService) {
   }
@@ -28,6 +29,12 @@ public routes: RouteWithId[] = [];
   /* routes from database to show as a list */
   listRoutes(){
     this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
+      this.routes = routes;
+    });
+  }
+
+  filterRoutes() {
+    this.routeService.getRoutesByString(this.filterText!).subscribe((routes: RouteWithId[]) => {
       this.routes = routes;
     });
   }
