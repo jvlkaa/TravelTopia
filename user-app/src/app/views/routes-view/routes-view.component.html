@@ -9,7 +9,7 @@
   </div>
   <ul id="route-container" *ngIf="routes.length > 0">
     <li id ="li-routes" *ngFor="let route of routes">
-      <a [routerLink]="['/route/' + route.name]">{{ route.name }}</a>
+      <a id ="a-routes" [routerLink]="['/route/' + route.name]">{{ route.name }}</a>
     </li>
   </ul>
   <p *ngIf="routes.length == 0">Brak elementów do wyświetlenia</p>

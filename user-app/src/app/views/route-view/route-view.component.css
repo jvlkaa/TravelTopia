@@ -1,0 +1,32 @@
+#route-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.map {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  height: 600px;
+  padding: 20px;
+  box-shadow: 0px 0px 4px 0px;
+}
+
+#popup-content{
+  font-size: small;
+  background: whitesmoke;
+  padding: 1px;
+  border-radius: 5px;
+}
+
+h1{
+  font-family: "Calibri Light";
+  padding-left: 30px;
+  box-shadow: 0px 0px 4px 0px;
+  background-color: lavender;
+  width: 100%;
+}

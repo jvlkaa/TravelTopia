@@ -83,24 +83,24 @@ export class AppComponent implements OnInit {
       this.moveMap(event);
       this.addMarkerToMap(event);
     });
-    //informacje o trasie
-    const routePopupContainer = document.getElementById('popup')!;
-    const routePopupCloser = document.getElementById('popup-closer')!;
-    this.routeInfo = new Overlay({
-      element: routePopupContainer,
-    });
-    this.map.addOverlay(this.routeInfo);
-    routePopupCloser.onclick = () => {
-      this.routeInfo.setPosition(undefined);
-    };
-    //event do wyswietlania informacji o trasie
-    this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
-      this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
-        if (layer === this.routeLayer) {
-          this.openInfoWindow(event.coordinate);
-        }
-      });
-    });
+    // //informacje o trasie
+    // const routePopupContainer = document.getElementById('popup')!;
+    // const routePopupCloser = document.getElementById('popup-closer')!;
+    // this.routeInfo = new Overlay({
+    //   element: routePopupContainer,
+    // });
+    // this.map.addOverlay(this.routeInfo);
+    // routePopupCloser.onclick = () => {
+    //   this.routeInfo.setPosition(undefined);
+    // };
+    // //event do wyswietlania informacji o trasie
+    // this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
+    //   this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
+    //     if (layer === this.routeLayer) {
+    //       this.openInfoWindow(event.coordinate);
+    //     }
+    //   });
+    // });
     this.listRoutes();
   }
 

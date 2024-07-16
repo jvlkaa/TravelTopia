@@ -8,8 +8,8 @@
 .map {
   display: flex;
   flex-direction: column;
-  width: 600px;
-  height: 500px;
+  width: 800px;
+  height: 600px;
   padding: 20px;
 }
 

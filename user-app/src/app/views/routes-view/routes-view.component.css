@@ -15,6 +15,7 @@
   margin-top: 40px;
   box-shadow: 0px 0px 5px;
   height: 250px;
+  width: 20%;
 }
 
 #filter-buttons{
@@ -59,7 +60,7 @@ h2{
   align-items: center;
   #background-color: red;
   margin-top: 20px;
-  width: 20%;
+  width: 30%;
 }
 
 #li-routes{
@@ -70,13 +71,27 @@ h2{
   #border-style: outset;
   border-width: thin;
   list-style-type: none;
-  width: 60%;
+  width: 100%;
   box-shadow: 0px 0px 5px black;
   font-family: "Calibri Light";
-  font-size: larger;
+  font-size: 16px;
   font-weight: bolder;
   transition: 0.3s;
+}
 
+#a-routes{
+  text-decoration: none;
+  color: inherit;
+}
+
+#a-routes:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+#li-routes:hover{
+  background-color: #c4b9de;
+  box-shadow: 0px 10px 20px black;
 }
 
 p{
@@ -85,9 +100,3 @@ p{
   font-family: "Calibri Light";
   font-weight: bolder;
 }
-
-#li-routes:hover{
-  background-color: #c4b9de;
-  box-shadow: 0px 10px 20px black;
-}
-
