@@ -3,22 +3,51 @@
   flex-direction: column;
 }
 
-#information-container{
+.information-container{
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   padding: 20px;
 }
 
-#main-img{
-  border-radius: 50px;
+#main-information-container{
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+#main-information{
+  background-color: lavender;
+  padding: 30px;
+  text-align: center;
+  font-size: x-large;
+  border-radius: 30px;
   box-shadow: 0px 2px 10px;
 }
 
-#information{
-  padding: 50px;
+
+
+.main-img{
+  border-radius: 10px;
   box-shadow: 0px 2px 10px;
+}
+
+.information{
+  padding: 50px;
+  #box-shadow: 0px 2px 10px;
   border-radius: 50px;
-  margin-left: 30px;
+}
+
+.text-section{
+  font-weight: bolder;
+}
+
+#main-text-section{
+  font-weight: bolder;
+  color: black;
+  font-size: x-large;
 }
 
 h1{
