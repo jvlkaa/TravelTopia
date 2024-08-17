@@ -5,6 +5,15 @@
       <button [routerLink]="'main'"  class="menu_button">Strona główna</button>
       <button [routerLink]="'route'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
+
+      <div *ngIf="isLoggedin === false" id = "google-login">
+          <asl-google-signin-button type="standard" text="signin_with"></asl-google-signin-button>
+      </div>
+      <div *ngIf="isLoggedin === true" id = "google-logout">
+          <label> Witaj {{socialUser!.firstName + " " + socialUser!.lastName}}</label>
+          <label>{{socialUser!.email}}</label>
+        <button type="button" (click)="logoutGoogle()" class="btn btn-primary">Log Out </button>
+      </div>
     </div>
   </div>
   <router-outlet></router-outlet>
