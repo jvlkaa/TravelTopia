@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
+import {HttpClient} from "@angular/common/http";
+import {UserService} from "./user/service/user.service";
 
 
 @Component({
@@ -16,7 +18,8 @@ export class AppComponent implements OnInit {
   socialUser!: SocialUser | null;
   isLoggedin?: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService ) {}
+  constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService,
+              private userService: UserService ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -25,9 +28,17 @@ export class AppComponent implements OnInit {
     });
 
     this.socialAuthService.authState.subscribe((user) => {
-      this.socialUser = user;
-      this.isLoggedin = user != null;
+      if(user){
+        this.socialUser = user;
+        this.isLoggedin = user != null;
+        this.userService.addAccount(user.idToken).subscribe();
+      }
+      else{
+        this.socialUser = null;
+        this.isLoggedin = false;
+      }
     });
+
   }
 
   logoutGoogle(): void{

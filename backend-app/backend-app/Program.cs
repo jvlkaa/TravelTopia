@@ -1,5 +1,7 @@
-using backend_app.Models;
+﻿using backend_app.Models;
 using backend_app.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<PointService>();
 builder.Services.AddSingleton<RouteService>();
+builder.Services.AddSingleton<UserService>();
 
 //CORS
 builder.Services.AddCors(options =>
@@ -25,6 +28,19 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials());
+});
+
+// Dodanie usług Authentication i Google Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(options =>
+{
+    options.ClientId = "594811329058-f3i591f9al5a22i3sbghck3mv4j0ia2h.apps.googleusercontent.com";
+    options.ClientSecret = "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";
 });
 
 var app = builder.Build();
@@ -40,6 +56,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
