@@ -18,6 +18,7 @@ import {
   GoogleLoginProvider,
   GoogleSigninButtonModule
 } from "@abacritt/angularx-social-login";
+import { RoutesUserViewComponent } from './views/routes-user-view/routes-user-view.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {
     RoutesViewComponent,
     CreateRouteViewComponent,
     MainViewComponent,
-    RouteViewComponent
+    RouteViewComponent,
+    RoutesUserViewComponent
   ],
   imports: [
     GoogleMapsModule,

@@ -27,6 +27,7 @@ import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import { MapBrowserEvent } from 'ol';
 // @ts-ignore
 import Overlay from 'ol/Overlay';
+import {UserService} from "../../user/service/user.service";
 
 @Component({
   selector: 'app-route-view',
@@ -45,10 +46,11 @@ export class RouteViewComponent implements OnInit {
   private markerCenter: Point;
   private distance = 0;
   private time = 0;
+  public addRouteSuccess: string | null = null;
 
-  constructor(private pointService: PointService,
-              private routeService: RouteService,
-              private urlRoute: ActivatedRoute) {
+  constructor(private routeService: RouteService,
+              private urlRoute: ActivatedRoute,
+              private userService: UserService) {
   }
 
   setViewRoute(route: RouteWithId){
@@ -190,4 +192,16 @@ export class RouteViewComponent implements OnInit {
     this.map.addLayer(this.routeLayer);
   }
 
+  addButtonClicked(){
+
+    this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
+      next: () => {
+        this.addRouteSuccess = 'Dodano trase do ulubionych';
+        setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+      },
+      error: (err: any) => {
+        console.error('Nie udało się dodać trasy do ulubionych', err);
+      }
+    });
+  }
 }

@@ -15,8 +15,6 @@ export class AppComponent implements OnInit {
   //----------------------- Google Authentication -----------------------
   //---------------------------------------------------------------------
   loginForm!: FormGroup;
-  socialUser!: SocialUser | null;
-  isLoggedin?: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService,
               private userService: UserService ) {}
@@ -29,13 +27,13 @@ export class AppComponent implements OnInit {
 
     this.socialAuthService.authState.subscribe((user) => {
       if(user){
-        this.socialUser = user;
-        this.isLoggedin = user != null;
+        this.userService.socialUser = user;
+        this.userService.isLoggedin = user != null;
         this.userService.addAccount(user.idToken).subscribe();
       }
       else{
-        this.socialUser = null;
-        this.isLoggedin = false;
+        this.userService.socialUser = null;
+        this.userService.isLoggedin = false;
       }
     });
 

@@ -5,14 +5,17 @@
       <button [routerLink]="'main'"  class="menu_button">Strona główna</button>
       <button [routerLink]="'route'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
+      <div *ngIf="userService.isLoggedin">
+        <button [routerLink]="'route/my-routes'" class="menu_button"> Moje trasy </button>
+      </div>
 
-      <div *ngIf="isLoggedin === false" id = "google-login">
+      <div *ngIf="!userService.isLoggedin" id = "google-login">
           <asl-google-signin-button type="standard" text="signin_with"></asl-google-signin-button>
       </div>
-      <div *ngIf="isLoggedin === true" id = "google-logout">
-          <label> Witaj {{socialUser!.firstName + " " + socialUser!.lastName}}</label>
-          <label>{{socialUser!.email}}</label>
-        <button type="button" (click)="logoutGoogle()" class="btn btn-primary">Log Out </button>
+      <div *ngIf="userService.isLoggedin" id = "google-logout">
+          <label> Witaj {{userService.socialUser!.firstName + " " + userService.socialUser!.lastName}}</label>
+          <label>{{userService.socialUser!.email}}</label>
+        <button type="button" (click)="logoutGoogle()" class="btn btn-primary"> Wyloguj  </button>
       </div>
     </div>
   </div>

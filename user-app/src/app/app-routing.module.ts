@@ -5,6 +5,7 @@ import {CreateRouteViewComponent} from "./views/create-route-view/create-route-v
 import {AppComponent} from "./app.component";
 import {MainViewComponent} from "./views/main-view/main-view.component";
 import {RouteViewComponent} from "./views/route-view/route-view.component";
+import {RoutesUserViewComponent} from "./views/routes-user-view/routes-user-view.component";
 
 const routes: Routes = [
   { path: '',
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     component: RouteViewComponent,
     path: 'route/:name'
+  },
+  {
+    component: RoutesUserViewComponent,
+    path: 'route/my-routes'
   }
 ];
 
