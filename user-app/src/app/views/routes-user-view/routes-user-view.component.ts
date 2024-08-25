@@ -20,7 +20,9 @@ export class RoutesUserViewComponent implements OnInit{
 
   /* routes from database to show as a list */
   listRoutes(){
-    this.routes = this.userService.getRoutesFromUser(this.userService.socialUser!.idToken);
+    this.userService.getRoutesFromUser(this.userService.socialUser!.idToken).subscribe((routes: RouteWithId[]) => {
+      this.routes = routes
+    });
   }
 
   filterRoutes() {

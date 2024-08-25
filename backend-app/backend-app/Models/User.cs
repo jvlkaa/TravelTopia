@@ -20,5 +20,8 @@ namespace backend_app.Models
 
         [BsonElement("email")]
         public string email { get; set; }
+
+        [BsonElement("routes")]
+        public ICollection<string> routesIds { get; set; } = new List<string>();
     }
 }

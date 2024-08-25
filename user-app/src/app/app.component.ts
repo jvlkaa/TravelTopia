@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   loginForm!: FormGroup;
 
   constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService,
-              private userService: UserService ) {}
+              public userService: UserService ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({

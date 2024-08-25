@@ -1,6 +1,7 @@
 ﻿using backend_app.Models;
 using DnsClient.Protocol;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System.Net;
 
@@ -13,7 +14,7 @@ namespace backend_app.Services
         public RouteService(IOptions<TravelTopiaDatabaseConfiguration> options) {
             var mongoClient = new MongoClient(options.Value.ConnectionString);
             var travelTopiaDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-            this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.TravelTopiaCollectionName);
+            this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.RouteCollectionName);
         }
 
         public async Task<List<Models.Route>> GetRoutesAsync() => await routes.Find(_ => true).ToListAsync();
@@ -37,6 +38,19 @@ namespace backend_app.Services
             if (result == null)
             {
                 return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<Models.Route> GetRouteByIdAsync(string id)
+        {
+            var result = await routes.Find(x => x.id == id).SingleOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
             }
             else
             {

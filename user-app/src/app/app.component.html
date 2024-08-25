@@ -6,7 +6,7 @@
       <button [routerLink]="'route'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
       <div *ngIf="userService.isLoggedin">
-        <button [routerLink]="'route/my-routes'" class="menu_button"> Moje trasy </button>
+        <button [routerLink]="'routes/my-routes'" class="menu_button"> Moje trasy </button>
       </div>
 
       <div *ngIf="!userService.isLoggedin" id = "google-login">

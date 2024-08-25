@@ -50,7 +50,7 @@ export class RouteViewComponent implements OnInit {
 
   constructor(private routeService: RouteService,
               private urlRoute: ActivatedRoute,
-              private userService: UserService) {
+              public userService: UserService) {
   }
 
   setViewRoute(route: RouteWithId){

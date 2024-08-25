@@ -14,7 +14,7 @@ namespace backend_app.Services
         {
             var mongoClient = new MongoClient(options.Value.ConnectionString);
             var travelTopiaDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-            this.mongoCollection = travelTopiaDatabase.GetCollection<Point>(options.Value.TravelTopiaCollectionName);
+            this.mongoCollection = travelTopiaDatabase.GetCollection<Point>(options.Value.RouteCollectionName);
         }
 
         public async Task<List<Point>> GetPointsAsync() => await mongoCollection.Find(_ => true).ToListAsync();

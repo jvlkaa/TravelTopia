@@ -1,7 +1,9 @@
-﻿using backend_app.Models;
+﻿using backend_app.Dto;
+using backend_app.Models;
 using backend_app.Services;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace backend_app.Controllers
 {
@@ -51,6 +53,37 @@ namespace backend_app.Controllers
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
             return payload;
+        }
+
+        [HttpGet("{user}/RouteIds")]
+        public async Task<IActionResult> GetRoutesByString(string user)
+        {
+            var payload = await VerifyGoogleToken(user);
+            var result = await userService.getRoutesFromUserAsync(payload.Subject);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpPost("addRoute")]
+        public async Task<IActionResult> AddRoute([FromBody] UserIdRouteId data)
+        {
+            var payload = await VerifyGoogleToken(data.user);
+            await userService.AddRouteAsync(payload.Subject, data.route);
+            return NoContent();
+        }
+
+        [HttpPost("deleteRoute")]
+        public async Task<IActionResult> DeleteRoute([FromBody] UserIdRouteId data)
+        {
+            var payload = await VerifyGoogleToken(data.user);
+            await userService.DeleteRouteAsync(payload.Subject, data.route);
+            return NoContent();
         }
     }
 }

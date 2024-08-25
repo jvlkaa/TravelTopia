@@ -30,7 +30,7 @@ const routes: Routes = [
   },
   {
     component: RoutesUserViewComponent,
-    path: 'route/my-routes'
+    path: 'routes/my-routes'
   }
 ];
 

@@ -9,10 +9,12 @@ namespace backend_app.Controllers
     public class RouteController : Controller
     {
         private readonly RouteService routeService;
+        private readonly UserService userService;
 
-        public RouteController(RouteService routeService)
+        public RouteController(RouteService routeService, UserService userService)
         {
             this.routeService = routeService;
+            this.userService = userService;
         }
 
         [HttpPost]
@@ -43,11 +45,25 @@ namespace backend_app.Controllers
             }
         }
 
+        [HttpGet("id/{id}")]
+        public async Task<IActionResult> GetRouteById(string id)
+        {
+            var result = await routeService.GetRouteByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpGet("{name}")]
         public async Task<IActionResult> GetRoute(string name)
         {
             var result = await routeService.GetRouteAsync(name);
-            if(result == null)
+            if (result == null)
             {
                 return NotFound();
             }
@@ -74,7 +90,7 @@ namespace backend_app.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRoute(string id, [FromBody] Models.Route route)
         {
-            var result =  await routeService.replaceRouteAsync(id, route);
+            var result = await routeService.replaceRouteAsync(id, route);
             if (result)
             {
                 return NoContent();
@@ -83,6 +99,6 @@ namespace backend_app.Controllers
             {
                 return NotFound();
             }
-        } 
+        }
     }
 }

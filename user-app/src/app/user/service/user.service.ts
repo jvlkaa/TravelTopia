@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {forkJoin, mergeMap, Observable} from "rxjs";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
@@ -27,19 +27,14 @@ export class UserService {
     return this.http.get<string[]>( 'https://localhost:5269/TravelTopia/User/' + user + '/RouteIds');
   }
 
-  /* user favourite routes */
-  getRoutesFromUser(user: string): RouteWithId[]{
-    let routesId: string[];
-    let routesUser: RouteWithId[];
-    this.getRouteIdsFromUser(user).subscribe((routes: string[]) => {
-      routesId = routes;
-      routesId.forEach((routeId) =>
-        this.routeSerivce.getRouteByID(routeId).subscribe((route: RouteWithId) => {
-          routesUser.push(route);
-        })
-      );
-    });
-    return routesUser!;
+  getRoutesFromUser(user: string): Observable<RouteWithId[]> {
+    return this.getRouteIdsFromUser(user).pipe(
+      // Use 'mergeMap' to flatten the observable of route IDs
+      mergeMap((routesId: string[]) =>
+        // 'forkJoin' waits for all observables (getRouteByID) to complete
+        forkJoin(routesId.map(routeId => this.routeSerivce.getRouteByID(routeId)))
+      )
+    );
   }
 
   /* filter user favourite routes */
@@ -50,8 +45,8 @@ export class UserService {
   /* add route to user favourites*/
   addRouteToUser(userID: string, routeID: string): Observable<any>{
     const request = {
-      user: "\"" + userID + "\"" ,
-      route: "\"" + routeID + "\""
+      user: userID,
+      route: routeID
     };
     const headers = { 'Content-Type': 'application/json' };
 
