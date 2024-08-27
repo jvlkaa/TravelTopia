@@ -1,0 +1,10 @@
+<div id="route-container">
+  <h1>Trasa: {{getViewRoute()!.name}}</h1>
+  <div id="map" class="map"></div>
+  <<div id="popup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+  <div id="popup-content"></div>
+</div>
+  <button class="usun_button" *ngIf="userService.isLoggedin" (click)="deleteButtonClicked()">Usuń trase z  ulubionych </button>
+  <div *ngIf="deleteRouteSuccess" class="delete-route-success">{{ deleteRouteSuccess }}</div>
+</div>

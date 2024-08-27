@@ -160,6 +160,7 @@ export class CreateRouteViewComponent implements OnInit {
     this.pointsSource.addFeature(marker);
   }
 
+  /* drawing route */
   drawButtonClicked() {
     this.routeSource.clear();
     if (this.route.length > 1) {

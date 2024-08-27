@@ -3,19 +3,20 @@
     <h1 id="title">TravelTopia</h1>
     <div id="menu_buttons">
       <button [routerLink]="'main'"  class="menu_button">Strona główna</button>
-      <button [routerLink]="'route'" class="menu_button">Przeglądaj trasy</button>
+      <button [routerLink]="'routes'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
-      <div *ngIf="userService.isLoggedin">
-        <button [routerLink]="'routes/my-routes'" class="menu_button"> Moje trasy </button>
-      </div>
 
-      <div *ngIf="!userService.isLoggedin" id = "google-login">
+      <div *ngIf="!userService.isLoggedin">
           <asl-google-signin-button type="standard" text="signin_with"></asl-google-signin-button>
       </div>
-      <div *ngIf="userService.isLoggedin" id = "google-logout">
-          <label> Witaj {{userService.socialUser!.firstName + " " + userService.socialUser!.lastName}}</label>
-          <label>{{userService.socialUser!.email}}</label>
-        <button type="button" (click)="logoutGoogle()" class="btn btn-primary"> Wyloguj  </button>
+
+      <div *ngIf="userService.isLoggedin" class = "menu">
+        <button class="menu_button" (click)="accountMenu()">Moje konto</button>
+        <div *ngIf="isMenuOpen" class="dropdown-menu">
+          <button [routerLink]="'/profile'" class="dropdown-item">Mój profil</button>
+          <button [routerLink]="'routes/my-routes'" class="dropdown-item">Moje trasy</button>
+          <button [routerLink]="'main'" type="button" (click)="logoutGoogle()" class="dropdown-item">Wyloguj</button>
+        </div>
       </div>
     </div>
   </div>

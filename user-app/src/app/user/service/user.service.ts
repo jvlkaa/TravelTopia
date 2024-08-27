@@ -27,11 +27,10 @@ export class UserService {
     return this.http.get<string[]>( 'https://localhost:5269/TravelTopia/User/' + user + '/RouteIds');
   }
 
+  /* get routes from specific user */
   getRoutesFromUser(user: string): Observable<RouteWithId[]> {
     return this.getRouteIdsFromUser(user).pipe(
-      // Use 'mergeMap' to flatten the observable of route IDs
       mergeMap((routesId: string[]) =>
-        // 'forkJoin' waits for all observables (getRouteByID) to complete
         forkJoin(routesId.map(routeId => this.routeSerivce.getRouteByID(routeId)))
       )
     );
@@ -44,12 +43,42 @@ export class UserService {
 
   /* add route to user favourites*/
   addRouteToUser(userID: string, routeID: string): Observable<any>{
+    return this.getRouteIdsFromUser(userID).pipe(
+      mergeMap((routeIds: string[]) => {
+        if (!routeIds.includes(routeID)) {
+          const request = {
+            user: userID,
+            route: routeID
+          };
+          const headers = { 'Content-Type': 'application/json' };
+
+          return this.http.post('https://localhost:5269/TravelTopia/User/addRoute', request, { headers })
+            .pipe(mergeMap(() => new Observable(observer => {
+              observer.next('Dodano trasę do ulubionych');
+              observer.complete();
+            })));
+        }
+        else {
+          return new Observable(observer => {
+            observer.next('Trasa została już dodana do ulubionych');
+            observer.complete();
+          });
+        }
+      })
+    );
+  }
+
+  deleteRouteFromUser(userID: string, routeID: string): Observable<any> {
     const request = {
       user: userID,
       route: routeID
     };
     const headers = { 'Content-Type': 'application/json' };
 
-    return this.http.post('https://localhost:5269/TravelTopia/User/addRoute',  request, {headers});
+    return this.http.post('https://localhost:5269/TravelTopia/User/deleteRoute', request, { headers })
+      .pipe(mergeMap(() => new Observable(observer => {
+        observer.next('Pomyślnie usunięto trase z ulubionych');
+        observer.complete();
+      })));
   }
 }

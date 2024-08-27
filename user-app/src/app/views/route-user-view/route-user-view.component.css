@@ -31,14 +31,14 @@ h1{
   width: 100%;
 }
 
-.dodaj_button{
+.usun_button{
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;
   margin: 5px;
 }
 
-.add-route-success {
+.delete-route-success {
   padding: 5px 5px;
   border: 1px black;
   background-color: lavender;

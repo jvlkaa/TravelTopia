@@ -6,6 +6,8 @@ import {AppComponent} from "./app.component";
 import {MainViewComponent} from "./views/main-view/main-view.component";
 import {RouteViewComponent} from "./views/route-view/route-view.component";
 import {RoutesUserViewComponent} from "./views/routes-user-view/routes-user-view.component";
+import {RouteUserViewComponent} from "./views/route-user-view/route-user-view.component";
+import {ProfileViewComponent} from "./views/profile-view/profile-view.component";
 
 const routes: Routes = [
   { path: '',
@@ -18,7 +20,7 @@ const routes: Routes = [
   },
   {
     component: RoutesViewComponent,
-    path: 'route'
+    path: 'routes'
   },
   {
     component: CreateRouteViewComponent,
@@ -31,6 +33,14 @@ const routes: Routes = [
   {
     component: RoutesUserViewComponent,
     path: 'routes/my-routes'
+  },
+  {
+    component: RouteUserViewComponent,
+    path: 'routes/my-routes/:name'
+  },
+  {
+    component: ProfileViewComponent,
+    path: 'profile'
   }
 ];
 

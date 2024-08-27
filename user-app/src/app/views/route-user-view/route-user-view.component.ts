@@ -1,8 +1,7 @@
-import {PointService} from "../../point/service/point.service";
 import {RouteService} from "../../route/service/route.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -30,11 +29,11 @@ import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
 
 @Component({
-  selector: 'app-route-view',
-  templateUrl: './route-view.component.html',
-  styleUrls: ['./route-view.component.css']
+  selector: 'app-route-user-view',
+  templateUrl: './route-user-view.component.html',
+  styleUrls: ['./route-user-view.component.css']
 })
-export class RouteViewComponent implements OnInit {
+export class RouteUserViewComponent implements OnInit {
 
   private view_route : RouteWithId | undefined;   //TO DO: add ngif in html file
   private map!: Map;
@@ -46,10 +45,11 @@ export class RouteViewComponent implements OnInit {
   private markerCenter: Point;
   private distance = 0;
   private time = 0;
-  public addRouteSuccess: string | null = null;
+  public deleteRouteSuccess: string | null = null;
 
   constructor(private routeService: RouteService,
               private urlRoute: ActivatedRoute,
+              private router: Router,
               public userService: UserService) {
   }
 
@@ -59,6 +59,10 @@ export class RouteViewComponent implements OnInit {
 
   getViewRoute(){
     return this.view_route;
+  }
+
+  get routeExist(): boolean {
+    return this.view_route !== undefined;
   }
 
   ngOnInit() {
@@ -100,6 +104,12 @@ export class RouteViewComponent implements OnInit {
         this.drawRouteFromDataBase();
       })
     });
+  }
+
+  createMap(){
+    if (!this.view_route) {
+      return; // Poczekaj, aż dane zostaną załadowane
+    }
   }
 
   /* calculating route distance */
@@ -166,7 +176,7 @@ export class RouteViewComponent implements OnInit {
     const endMarker = new Feature({
       geometry: new Point(fromLonLat(
         [this.view_route!.routePoints[this.view_route!.routePoints.length - 1].longitude,
-        this.view_route!.routePoints[this.view_route!.routePoints.length - 1].latitude]))
+          this.view_route!.routePoints[this.view_route!.routePoints.length - 1].latitude]))
     });
     endMarker.setStyle(new Style({
       image: new Icon({
@@ -182,17 +192,18 @@ export class RouteViewComponent implements OnInit {
     this.map.addLayer(this.routeLayer);
   }
 
-  /* adding route to favourites */
-  addButtonClicked(){
-
-    this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
+  deleteButtonClicked(){
+     this.userService.deleteRouteFromUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
       next: (message: string) => {
-        this.addRouteSuccess = message;
-        setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+        this.deleteRouteSuccess = message;
+        setTimeout(() => {
+          this.deleteRouteSuccess = null;
+          this.router.navigate(['routes/my-routes']);
+          }, 3000);
       },
       error: (err: any) => {
-        console.error('Nie udało się dodać trasy do ulubionych', err);
+        console.error('Nie udało się usunąć trasy z ulubionych', err);
       }
-    });
+     });
   }
 }

@@ -5,6 +5,6 @@
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
   </div>
-  <button *ngIf="userService.isLoggedin" (click)="addButtonClicked()">Dodaj trasę do ulubionych </button>
+  <button class="dodaj_button" *ngIf="userService.isLoggedin" (click)="addButtonClicked()">Dodaj trasę do ulubionych </button>
   <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
 </div>

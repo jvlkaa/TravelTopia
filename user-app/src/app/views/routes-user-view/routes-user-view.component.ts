@@ -25,6 +25,7 @@ export class RoutesUserViewComponent implements OnInit{
     });
   }
 
+  // to do: filter users routes
   filterRoutes() {
     this.userService.getRoutesFromUserByString(this.userService.socialUser!.idToken, this.filterText!).subscribe((routes: RouteWithId[]) => {
       this.routes = routes;

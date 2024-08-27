@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   //----------------------- Google Authentication -----------------------
   //---------------------------------------------------------------------
   loginForm!: FormGroup;
+  isMenuOpen = false;
 
   constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService,
               public userService: UserService ) {}
@@ -41,5 +42,9 @@ export class AppComponent implements OnInit {
 
   logoutGoogle(): void{
       this.socialAuthService.signOut();
+  }
+
+  accountMenu(){
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

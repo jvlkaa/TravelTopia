@@ -1,0 +1,6 @@
+<div id="profile-section" *ngIf="userService.socialUser">
+  <h2>Mój profil</h2>
+  <label class="dane"> Imię:      {{userService.socialUser!.firstName}}</label><br/>
+  <label class="dane"> Nazwisko:  {{userService.socialUser!.lastName }}</label><br/>
+  <label class="dane"> e-mail:    {{userService.socialUser!.email }}</label><br/>
+</div>
