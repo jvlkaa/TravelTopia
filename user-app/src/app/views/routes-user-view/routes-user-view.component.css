@@ -58,7 +58,6 @@ h2{
   display: flex;
   flex-direction: column;
   align-items: center;
-  #background-color: red;
   margin-top: 20px;
   width: 30%;
 }
@@ -99,4 +98,14 @@ p{
   padding: 20px;
   font-family: "Calibri Light";
   font-weight: bolder;
+}
+
+.user_routes_header{
+  font-family: "Calibri Light";
+  font-weight: bolder;
+  border-bottom-style: solid;
+  width: 100%;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  padding: 5px;
 }

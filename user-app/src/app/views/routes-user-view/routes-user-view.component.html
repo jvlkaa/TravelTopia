@@ -7,8 +7,8 @@
       <button class="filter-button" (click)="listRoutes()">resetuj</button>
     </div>
   </div>
-  <h1> Moje trasy </h1>
   <ul id="route-container" *ngIf="routes!.length > 0; else noRoutes">
+    <h1 class="user_routes_header"> Moje trasy </h1>
     <li id ="li-routes" *ngFor="let route of routes">
       <a id ="a-routes" [routerLink]="['/routes/my-routes/' + route.name]">{{ route.name }}</a>
     </li>

@@ -3,13 +3,27 @@
   align-items: center;
   flex-direction: column;
   background-color: white;
-  padding: 20px;
   border-radius: 50px;
-  margin: 40px;
   box-shadow: 0px 0px 5px;
   width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
 }
 
-#dane{
+h1{
+  display: flex;
   font-family: "Calibri Light";
+  background: lavender;
+  justify-content: center;
+  font-size: xx-large;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.dane{
+  font-family: "Calibri Light";
+  font-weight: bolder;
+  font-size: large;
 }

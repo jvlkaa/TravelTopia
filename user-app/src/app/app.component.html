@@ -6,12 +6,12 @@
       <button [routerLink]="'routes'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
 
-      <div *ngIf="!userService.isLoggedin">
+      <div id="login_button" *ngIf="!userService.isLoggedin">
           <asl-google-signin-button type="standard" text="signin_with"></asl-google-signin-button>
       </div>
 
-      <div *ngIf="userService.isLoggedin" class = "menu">
-        <button class="menu_button" (click)="accountMenu()">Moje konto</button>
+      <div *ngIf="userService.isLoggedin" id="user_section">
+        <button (click)="accountMenu()" id="user_button">Moje konto</button>
         <div *ngIf="isMenuOpen" class="dropdown-menu">
           <button [routerLink]="'/profile'" class="dropdown-item">Mój profil</button>
           <button [routerLink]="'routes/my-routes'" class="dropdown-item">Moje trasy</button>

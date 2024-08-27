@@ -22,7 +22,13 @@
 #menu_buttons{
   display: flex;
   justify-content: space-evenly;
+  align-items: stretch;
   width: 80%;
+}
+
+#login_button{
+  display: flex;
+  align-items: center;
 }
 
 #google-login{
@@ -50,10 +56,37 @@
   background-color: #c4b9de;
 }
 
+#user_section{
+  background-color: lavender;
+  width: 25%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
 
+#user_section:hover{
+  background-color: #c4b9de;
+}
 
+#user_button{
+  font-family: "Calibri Light";
+  font-size: larger;
+  font-weight: bolder;
+  background-color: lavender;
+  width: 100%;
+  border: none;
+}
 
+#user_button:hover{
+  background-color: #c4b9de;
+}
 
+#account_button{
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
 .account-menu {
   position: relative;
@@ -61,26 +94,33 @@
 }
 
 .dropdown-menu {
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: absolute;
+  top: 100%;
   background-color: lavender;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
-
   font-family: "Calibri Light";
   font-size: larger;
   font-weight: bolder;
-  width: 25%;
   border: none;
+  width: 100%;
 }
 
 .dropdown-item {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
+  font-weight: bold;
+  border-bottom-style: none;
+  border-left-style: none;
+  border-right-style: none;
   display: block;
+  width: 100%;
+  background-color: lavender;
 }
 
 .dropdown-item:hover {
-  background-color: white;
+  background-color: #c4b9de;
 }
