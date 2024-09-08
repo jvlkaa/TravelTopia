@@ -55,9 +55,9 @@
 
 .add-route-success {
     padding: 5px 5px;
-    border: 1px #006600;
-    background-color: #edffbd;
-    color: #006600;
+    border: 1px  black;
+    background-color: lightsteelblue;
+    color: black;
     border-radius: 20px;
     text-align: center;
 }

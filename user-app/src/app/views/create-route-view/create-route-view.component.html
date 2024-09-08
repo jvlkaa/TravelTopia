@@ -5,6 +5,21 @@
     <div id="popup-content"></div>
   </div>
   <div id="map-create-container">
+    <div class="route-properties">
+      <label> Wybierz typ trasy </label>
+      <select id="type" [(ngModel)]="selectedType">
+        <option value="morze"> morze </option>
+        <option value="jezioro"> jezioro </option>
+        <option value="góry"> góry </option>
+        <option value="las"> las </option>
+        <option value="miejska"> miejska </option>
+        <option value="polna"> polna </option>
+        <option value="dolina"> dolina </option>
+        <option value="wzgórza"> wzgórza </option>
+        <option value="plaża"> plaża </option>
+        <option value="rzeka"> rzeka </option>
+      </select>
+    </div>
     <div class="buttons">
       <button class="trasa_button" (click)="drawButtonClicked()">Stwórz trase</button>
       <button class = "wyczysc_button" (click)="clearButtonClicked()">Wyczyść trase</button>
@@ -12,7 +27,7 @@
     </div>
     <div class="route-input">
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
-      <button class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
+      <button *ngIf="userService.isLoggedin" class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
     </div>
     <div class="latLng">
       <div class="lat">Latitude: {{getCoordinates()?.lat}}</div>

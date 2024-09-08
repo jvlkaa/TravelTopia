@@ -108,7 +108,7 @@ export class RouteUserViewComponent implements OnInit {
 
   createMap(){
     if (!this.view_route) {
-      return; // Poczekaj, aż dane zostaną załadowane
+      return;
     }
   }
 
