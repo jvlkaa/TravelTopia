@@ -9,8 +9,15 @@ namespace backend_app.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? id { get; set; }
 
+        [BsonElement("userCreated")]
+        public bool userCreated { get; set; }
+
         [BsonElement("name")]
         public string name { get; set; }
+
+
+        [BsonElement("type")]
+        public string type { get; set; }
 
         [BsonElement("points")]
         public ICollection<Point> routePoints { get; set; } = new List<Point>();
