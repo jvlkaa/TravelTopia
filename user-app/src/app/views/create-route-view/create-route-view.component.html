@@ -6,18 +6,18 @@
   </div>
   <div id="map-create-container">
     <div class="route-properties">
-      <label> Wybierz typ trasy </label>
-      <select id="type" [(ngModel)]="selectedType">
-        <option value="morze"> morze </option>
-        <option value="jezioro"> jezioro </option>
-        <option value="góry"> góry </option>
-        <option value="las"> las </option>
-        <option value="miejska"> miejska </option>
-        <option value="polna"> polna </option>
-        <option value="dolina"> dolina </option>
-        <option value="wzgórza"> wzgórza </option>
-        <option value="plaża"> plaża </option>
-        <option value="rzeka"> rzeka </option>
+      <label id="type-label"> Wybierz typ trasy </label>
+      <select id="select-type" [(ngModel)]="selectedType">
+        <option value="morze" class="type-option"> morze </option>
+        <option value="jezioro" class="type-option"> jezioro </option>
+        <option value="góry" class="type-option"> góry </option>
+        <option value="las" class="type-option"> las </option>
+        <option value="miejska" class="type-option"> miejska </option>
+        <option value="polna" class="type-option"> polna </option>
+        <option value="dolina" class="type-option"> dolina </option>
+        <option value="wzgórza" class="type-option"> wzgórza </option>
+        <option value="plaża" class="type-option"> plaża </option>
+        <option value="rzeka" class="type-option"> rzeka </option>
       </select>
     </div>
     <div class="buttons">

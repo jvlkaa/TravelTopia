@@ -12,6 +12,9 @@ namespace backend_app.Models
         [BsonElement("googleId")]
         public string googleId { get; set; }
 
+        [BsonElement("role")]
+        public string role {  get; set; }
+
         [BsonElement("firstName")]
         public string firstName { get; set; }
         

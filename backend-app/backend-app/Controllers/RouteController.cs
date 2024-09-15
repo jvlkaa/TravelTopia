@@ -1,4 +1,5 @@
-﻿using backend_app.Services;
+﻿using backend_app.Dto;
+using backend_app.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.Serialization.Serializers;
 
@@ -28,7 +29,14 @@ namespace backend_app.Controllers
         public async Task<IActionResult> GetRoutes()
         {
             var routes = await routeService.GetRoutesAsync();
-            return Ok(routes);
+            if (routes == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(routes);
+            }
         }
 
         [HttpGet("{text}/list")]

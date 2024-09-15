@@ -142,3 +142,42 @@
 #li-routes:hover{
     background-color: #c4b9de;
 }
+
+.route-properties{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-bottom: 10px;
+}
+
+#type-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+}
+
+#select-type{
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  margin-left: -30px;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+}
+
+.type-option{
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  font-size: larger;
+}
+

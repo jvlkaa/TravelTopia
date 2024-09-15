@@ -1,4 +1,5 @@
-﻿using backend_app.Models;
+﻿using backend_app.Dto;
+using backend_app.Models;
 using DnsClient.Protocol;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization.Conventions;
@@ -17,7 +18,18 @@ namespace backend_app.Services
             this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.RouteCollectionName);
         }
 
-        public async Task<List<Models.Route>> GetRoutesAsync() => await routes.Find(_ => true).ToListAsync();
+        public async Task<List<Models.Route>> GetRoutesAsync()
+        {
+            var result = await routes.Find(x => x.userCreated == false).ToListAsync();
+            if (result.Count == 0)
+            {
+                return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+        } 
 
         public async Task<Models.Route> GetRouteAsync(string name)
         {
@@ -70,6 +82,28 @@ namespace backend_app.Services
         {
             var result = await routes.DeleteOneAsync(x => x.id == id);
             return result.DeletedCount > 0;
+        }
+
+        public async Task<bool> addUserRoute(AddUserRoute route)
+        {
+            Models.Route newRoute = new Models.Route
+            {
+                id = route.id,
+                name = route.name,
+                routePoints = route.routePoints,
+                userCreated = route.userCreated,
+                type = route.type
+            };
+
+            if(GetRouteAsync(newRoute.name) == null)
+            {
+                return false;
+            }
+            else
+            {
+                await CreateRouteAsync(newRoute);
+                return true;
+            }
         }
     }
 }
