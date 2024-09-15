@@ -56,5 +56,24 @@ namespace backend_app.Services
             var update = Builders<User>.Update.Pull(x => x.routesIds, routeId);
             await users.UpdateOneAsync(x => x.googleId == googleId, update);
         }
+
+        public async Task UpdateRoleAsync(string googleId)
+        {
+            var update = Builders<User>.Update.Set(x => x.role, "developer");
+            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+        }
+
+        public async Task<string> GetRoleAsync(string googleId)
+        {
+            var result = await GetUserByGoogleIdAsync(googleId);
+            if(result == null)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return result.role;
+            }
+        }
     }
 }

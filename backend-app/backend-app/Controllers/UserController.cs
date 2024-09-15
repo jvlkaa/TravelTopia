@@ -4,6 +4,7 @@ using backend_app.Services;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace backend_app.Controllers
 {
@@ -100,6 +101,29 @@ namespace backend_app.Controllers
         {
             var payload = await VerifyGoogleToken(data.user);
             await userService.DeleteRouteAsync(payload.Subject, data.route);
+            return NoContent();
+        }
+
+        [HttpGet("userRole")]
+        public async Task<IActionResult> GetRole(string googleId)
+        {
+            var payload = await VerifyGoogleToken(googleId);
+            var result = await userService.GetRoleAsync(payload.Subject);
+            if(result == string.Empty)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpPost("updateRole")]
+        public async Task<IActionResult> UpdateRole(string googleId)
+        {
+            var payload = await VerifyGoogleToken(googleId);
+            await userService.UpdateRoleAsync(payload.Subject);
             return NoContent();
         }
     }
