@@ -34,6 +34,7 @@ namespace backend_app.Controllers
                 user = new User
                 {
                     googleId = payload.Subject,
+                    role = "user",
                     firstName = payload.GivenName,
                     lastName = payload.FamilyName,
                     email = payload.Email,
@@ -41,7 +42,6 @@ namespace backend_app.Controllers
                 await userService.CreateUserAsync(user);
             }
 
-            // Tutaj możesz wygenerować własny token JWT dla aplikacji
             return Ok();
         }
 

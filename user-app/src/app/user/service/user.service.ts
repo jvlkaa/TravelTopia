@@ -4,6 +4,7 @@ import {forkJoin, mergeMap, Observable} from "rxjs";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
+import {UserRoute} from "../../route/model/userRoute";
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +67,11 @@ export class UserService {
         }
       })
     );
+  }
+
+  /* add route created by user to database and to users favourites */
+  addRoute(request: UserRoute): Observable<any>{
+    return this.http.post('https://localhost:5269/TravelTopia/User/addNewRoute', request);
   }
 
   deleteRouteFromUser(userID: string, routeID: string): Observable<any> {

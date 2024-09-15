@@ -27,6 +27,7 @@ import { MapBrowserEvent } from 'ol';
 // @ts-ignore
 import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
+import {UserRoute} from "../../route/model/userRoute";
 
 @Component({
   selector: 'app-create-route-view',
@@ -228,27 +229,13 @@ export class CreateRouteViewComponent implements OnInit {
     return this.coordinates;
   }
 
-  /* adding route to favourites */
-  addToFavourites(){
-//zmienic view_route na ta dodana trase
-//     this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
-//       next: (message: string) => {
-//         this.addRouteSuccess = message;
-//         setTimeout(() => {this.addRouteSuccess = null;}, 3000);
-//       },
-//       error: (err: any) => {
-//         console.error('Nie udało się dodać trasy do ulubionych', err);
-//       }
-//     });
-  }
-
-  /* adding route to database - to user favourites */
+  /* adding route to database - developers mode */
   addButtonClicked() {
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: Route = {
         name: this.routeName,
         routePoints: [],
-        userCreated: true,
+        userCreated: false,
         type: this.selectedType
       };
       for (let r of this.route) {
@@ -268,7 +255,39 @@ export class CreateRouteViewComponent implements OnInit {
           });
         }
       }
-      //addToFavourites();
+    }
+    else
+      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie pola są uzupełnione.';
+    setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+  }
+
+  /* adding route to database - to user favourites */
+  addUserButtonClicked() {
+    if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
+      const idList: UserRoute = {
+        name: this.routeName,
+        routePoints: [],
+        userCreated: true,
+        type: this.selectedType,
+        userIdToken: this.userService.socialUser!.idToken
+      };
+      for (let r of this.route) {
+        const point: Point = {latitude: r.lat, longitude: r.lng};
+        idList.routePoints.push(point);
+        if (idList.routePoints.length == this.route.length) {
+          this.userService.addRoute(idList).subscribe({
+            next: () => {
+              this.addRouteSuccess = 'Dodano trase do bazy';
+              setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+              this.routeName = '';
+            },
+            error: (err) => {
+              this.addRouteSuccess = 'Wystąpił błąd';
+              setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+            }
+          });
+        }
+      }
     }
     else
       this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie pola są uzupełnione.';

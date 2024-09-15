@@ -27,7 +27,11 @@
     </div>
     <div class="route-input">
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
-      <button *ngIf="userService.isLoggedin" class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
+      <div *ngIf="userService.isLoggedin" >
+        <!-- TO DO: sprawdzac role usera aby wyswietlac odpowiedni przycisk
+        <button *ngIf="userService" class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
+        <button *ngIf="userService" class="dodaj" (click)="addUserButtonClicked()">Dodaj trasę</button> -->
+      </div>
     </div>
     <div class="latLng">
       <div class="lat">Latitude: {{getCoordinates()?.lat}}</div>
