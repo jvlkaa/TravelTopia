@@ -88,7 +88,6 @@ namespace backend_app.Services
         {
             Models.Route newRoute = new Models.Route
             {
-                id = route.id,
                 name = route.name,
                 routePoints = route.routePoints,
                 userCreated = route.userCreated,

@@ -15,9 +15,10 @@ namespace backend_app.Controllers
         private readonly UserService userService;
         private readonly RouteService routeService;
 
-        public UserController(UserService userService) 
+        public UserController(UserService userService, RouteService routeService)
         { 
             this.userService = userService;
+            this.routeService = routeService;
         }
 
 
@@ -84,9 +85,11 @@ namespace backend_app.Controllers
         public async Task<IActionResult> AddNewRoute([FromBody] AddUserRoute route)
         {
             var payload = await VerifyGoogleToken(route.userIdToken);
-            if(await routeService.addUserRoute(route))
+
+            if (await routeService.addUserRoute(route))
             {
-                await userService.AddRouteAsync(payload.Subject, route.id);
+                var newRoute = await routeService.GetRouteAsync(route.name);
+                await userService.AddRouteAsync(payload.Subject, newRoute.id);
                 return NoContent();
             }
             else
