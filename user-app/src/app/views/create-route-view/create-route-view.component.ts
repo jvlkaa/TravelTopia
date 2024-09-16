@@ -35,6 +35,7 @@ import {UserRoute} from "../../route/model/userRoute";
 })
 export class CreateRouteViewComponent implements OnInit {
   private map!: Map;
+  // map elements
   private coordinates: { lat: number; lng: number } | undefined;
   private route: { lat: number; lng: number }[] = [];
   private markerCenter: { lat: number; lng: number } | undefined;
@@ -51,9 +52,12 @@ export class CreateRouteViewComponent implements OnInit {
   private routeInfo: Overlay;
 
   public addRouteSuccess: string | null = null;
-  public routeName: string = '';
+  // route properties - from route creator
+  routeName: string = '';
   selectedType: string = '';
-  userDeveloper: boolean | false = false;
+  selectedDifficulty: string = '';
+  equipment: string = '';
+  description: string = '';
 
   constructor(public userService: UserService, private routeService: RouteService) {
   }
@@ -74,12 +78,12 @@ export class CreateRouteViewComponent implements OnInit {
       }),
     });
     this.map.addLayer(this.pointsLayer);
-    //event dodawania markerow
+    //event - adding markers
     this.map.on('click', (event: MapBrowserEvent<any>) => {
       this.moveMap(event);
       this.addMarkerToMap(event);
     });
-    //informacje o trasie
+    //information about the route
     const routePopupContainer = document.getElementById('popup')!;
     const routePopupCloser = document.getElementById('popup-closer')!;
     this.routeInfo = new Overlay({
@@ -89,7 +93,7 @@ export class CreateRouteViewComponent implements OnInit {
     routePopupCloser.onclick = () => {
       this.routeInfo.setPosition(undefined);
     };
-    //event do wyswietlania informacji o trasie
+    //event - displaying information about the route
     this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
       this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
         if (layer === this.routeLayer) {
@@ -225,6 +229,7 @@ export class CreateRouteViewComponent implements OnInit {
     popupContent.innerHTML = ``;
   }
 
+  /* cordinates getter */
   getCoordinates() {
     return this.coordinates;
   }
@@ -236,7 +241,10 @@ export class CreateRouteViewComponent implements OnInit {
         name: this.routeName,
         routePoints: [],
         userCreated: false,
-        type: this.selectedType
+        type: this.selectedType,
+        equipment: this.equipment,
+        difficulty: this.selectedDifficulty,
+        description: this.description
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
@@ -247,6 +255,8 @@ export class CreateRouteViewComponent implements OnInit {
               this.addRouteSuccess = 'Dodano trase do bazy';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
+              this.description = '';
+              this.equipment = '';
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';
@@ -257,7 +267,7 @@ export class CreateRouteViewComponent implements OnInit {
       }
     }
     else
-      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie pola są uzupełnione.';
+      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
     setTimeout(() => {this.addRouteSuccess = null;}, 3000);
   }
 
@@ -269,6 +279,9 @@ export class CreateRouteViewComponent implements OnInit {
         routePoints: [],
         userCreated: true,
         type: this.selectedType,
+        equipment: this.equipment,
+        difficulty: this.selectedDifficulty,
+        description: this.description,
         userIdToken: this.userService.socialUser!.idToken
       };
       for (let r of this.route) {
@@ -277,9 +290,11 @@ export class CreateRouteViewComponent implements OnInit {
         if (idList.routePoints.length == this.route.length) {
           this.userService.addRoute(idList).subscribe({
             next: () => {
-              this.addRouteSuccess = 'Dodano trase do bazy';
+              this.addRouteSuccess = 'Dodano trase do "Moje trasy"';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
+              this.description = '';
+              this.equipment = '';
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';
@@ -290,7 +305,7 @@ export class CreateRouteViewComponent implements OnInit {
       }
     }
     else
-      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie pola są uzupełnione.';
+      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
      setTimeout(() => {this.addRouteSuccess = null;}, 3000);
   }
 }

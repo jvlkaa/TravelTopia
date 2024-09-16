@@ -3,4 +3,7 @@ export interface Route {
     routePoints: string[];
     userCreated: boolean;
     type: string;
+    equipment: string;
+    difficulty: string;
+    description: string;
 }

@@ -58,7 +58,12 @@ export class RouteUserViewComponent implements OnInit {
   }
 
   getViewRoute(){
-    return this.view_route;
+    const route = this.view_route;
+    if (this.view_route?.equipment === '')
+      route!.equipment = 'brak';
+    if (this.view_route?.description === '')
+      route!.description = '-';
+    return route;
   }
 
   get routeExist(): boolean {

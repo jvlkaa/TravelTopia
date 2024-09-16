@@ -3,5 +3,8 @@ export interface UserRoute {
   routePoints: string[];
   userCreated: boolean;
   type: string;
+  equipment: string;
+  difficulty: string;
+  description: string;
   userIdToken: string;
 }

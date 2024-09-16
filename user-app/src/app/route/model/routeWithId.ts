@@ -6,4 +6,7 @@ export interface RouteWithId {
     routePoints: Point[];
     userCreated: boolean;
     type: string;
+    equipment: string;
+    difficulty: string;
+    description: string;
 }

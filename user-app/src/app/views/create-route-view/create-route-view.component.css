@@ -145,12 +145,22 @@
 
 .route-properties{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-evenly;
   padding-bottom: 10px;
 }
 
-#type-label{
+.route-properties-selected-el{
+  display: flex;
+  flex-direction: row;
+}
+
+.route-properties-el{
+  display: flex;
+  flex-direction: column;
+}
+
+.properties-label{
   width: 100%;
   background: lavender;
   padding: 10px;

@@ -6,19 +6,38 @@
   </div>
   <div id="map-create-container">
     <div class="route-properties">
-      <label id="type-label"> Wybierz typ trasy </label>
-      <select id="select-type" [(ngModel)]="selectedType">
-        <option value="morze" class="type-option"> morze </option>
-        <option value="jezioro" class="type-option"> jezioro </option>
-        <option value="góry" class="type-option"> góry </option>
-        <option value="las" class="type-option"> las </option>
-        <option value="miejska" class="type-option"> miejska </option>
-        <option value="polna" class="type-option"> polna </option>
-        <option value="dolina" class="type-option"> dolina </option>
-        <option value="wzgórza" class="type-option"> wzgórza </option>
-        <option value="plaża" class="type-option"> plaża </option>
-        <option value="rzeka" class="type-option"> rzeka </option>
-      </select>
+      <div class="route-properties-selected-el">
+        <label class="properties-label"> Wybierz typ trasy </label>
+        <select id="select-type" [(ngModel)]="selectedType">
+          <option value="morze" class="type-option"> morze </option>
+          <option value="jezioro" class="type-option"> jezioro </option>
+          <option value="góry" class="type-option"> góry </option>
+          <option value="las" class="type-option"> las </option>
+          <option value="miejska" class="type-option"> miejska </option>
+          <option value="polna" class="type-option"> polna </option>
+          <option value="dolina" class="type-option"> dolina </option>
+          <option value="wzgórza" class="type-option"> wzgórza </option>
+          <option value="plaża" class="type-option"> plaża </option>
+          <option value="rzeka" class="type-option"> rzeka </option>
+        </select>
+      </div>
+      <div class="route-properties-selected-el">
+        <label class="properties-label"> Wybierz trudność trasy </label>
+        <select id="select-difficulty" [(ngModel)]="selectedDifficulty">
+          <option value="łatwa" class="difficulty-option"> łatwa </option>
+          <option value="normalna" class="difficulty-option"> normalna </option>
+          <option value="trudna" class="difficulty-option"> trudna </option>
+        </select>
+      </div>
+      <div class="route-properties-el">
+        <label class="properties-label"> Wymień potrzebny sprzęt (opcjonalnie) </label>
+        <textarea id="select-equipment" [(ngModel)]="equipment" rows="3"></textarea>
+      </div>
+      <div class="route-properties-el">
+        <label class="properties-label"> Opisz trase, daj wskazówki (opcjonalnie) </label>
+        <textarea id="select-description" [(ngModel)]="description" rows="6"></textarea>
+      </div>
+      <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
     </div>
     <div class="buttons">
       <button class="trasa_button" (click)="drawButtonClicked()">Stwórz trase</button>
@@ -26,7 +45,6 @@
       <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
     </div>
     <div class="route-input">
-      <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
       <div *ngIf="userService.isLoggedin" >
         <button *ngIf="userService.isDeveloper" class="dodaj" (click)="addButtonClicked()">Dodaj trasę developera</button>
         <button *ngIf="!userService.isDeveloper"  class="dodaj" (click)="addUserButtonClicked()">Dodaj trasę</button>
