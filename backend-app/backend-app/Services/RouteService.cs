@@ -91,7 +91,10 @@ namespace backend_app.Services
                 name = route.name,
                 routePoints = route.routePoints,
                 userCreated = route.userCreated,
-                type = route.type
+                type = route.type,
+                equipment = route.equipment,
+                difficulty = route.difficulty,
+                description = route.description
             };
 
             if(GetRouteAsync(newRoute.name) == null)

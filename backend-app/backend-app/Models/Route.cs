@@ -15,9 +15,17 @@ namespace backend_app.Models
         [BsonElement("name")]
         public string name { get; set; }
 
-
         [BsonElement("type")]
         public string type { get; set; }
+
+        [BsonElement("equipment")]
+        public string equipment { get; set; }
+
+        [BsonElement("difficulty")]
+        public string difficulty {  get; set; }
+
+        [BsonElement("description")]
+        public string description { get; set; }
 
         [BsonElement("points")]
         public ICollection<Point> routePoints { get; set; } = new List<Point>();

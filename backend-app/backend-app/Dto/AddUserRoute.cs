@@ -8,6 +8,9 @@ namespace backend_app.Dto
         public ICollection<Point> routePoints {  get; set; }        
         public bool userCreated {  get; set; }
         public string type { get; set; }
+        public string equipment { get; set; }
+        public string difficulty { get; set; }
+        public string description { get; set; }
         public string userIdToken {  get; set; }
 
     }
