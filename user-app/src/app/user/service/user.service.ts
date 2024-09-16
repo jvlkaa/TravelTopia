@@ -12,7 +12,8 @@ import {UserRoute} from "../../route/model/userRoute";
 export class UserService {
 
   socialUser!: SocialUser | null;
-  isLoggedin?: boolean = false;
+  isLoggedin: boolean = false;
+  isDeveloper: boolean = false;
 
   constructor(private http: HttpClient, private routeSerivce: RouteService) { }
 
@@ -87,4 +88,9 @@ export class UserService {
         observer.complete();
       })));
   }
+
+  getRole(): Observable<string> {
+    return this.http.get<string>('https://localhost:5269/TravelTopia/User/userRole/'+ this.socialUser?.idToken, { responseType: 'text' as 'json' });
+  }
+
 }

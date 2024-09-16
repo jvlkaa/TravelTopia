@@ -104,7 +104,7 @@ namespace backend_app.Controllers
             return NoContent();
         }
 
-        [HttpGet("userRole")]
+        [HttpGet("userRole/{googleId}")]
         public async Task<IActionResult> GetRole(string googleId)
         {
             var payload = await VerifyGoogleToken(googleId);
@@ -115,11 +115,11 @@ namespace backend_app.Controllers
             }
             else
             {
-                return Ok(result);
+                return Content(result, "text/plain"); //return Ok(result);
             }
         }
 
-        [HttpPost("updateRole")]
+        [HttpPost("updateRole/{googleId}")]
         public async Task<IActionResult> UpdateRole(string googleId)
         {
             var payload = await VerifyGoogleToken(googleId);

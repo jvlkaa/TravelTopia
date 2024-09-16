@@ -28,9 +28,8 @@
     <div class="route-input">
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
       <div *ngIf="userService.isLoggedin" >
-        <!-- TO DO: sprawdzac role usera aby wyswietlac odpowiedni przycisk
-        <button *ngIf="userService" class="dodaj" (click)="addButtonClicked()">Dodaj trasę</button>
-        <button *ngIf="userService" class="dodaj" (click)="addUserButtonClicked()">Dodaj trasę</button> -->
+        <button *ngIf="userService.isDeveloper" class="dodaj" (click)="addButtonClicked()">Dodaj trasę developera</button>
+        <button *ngIf="!userService.isDeveloper"  class="dodaj" (click)="addUserButtonClicked()">Dodaj trasę</button>
       </div>
     </div>
     <div class="latLng">

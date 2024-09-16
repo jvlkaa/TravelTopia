@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {PointService} from "../../point/service/point.service";
+import {Component, OnInit, SimpleChanges} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {Route} from "../../route/model/route";
 // @ts-ignore
@@ -54,6 +53,7 @@ export class CreateRouteViewComponent implements OnInit {
   public addRouteSuccess: string | null = null;
   public routeName: string = '';
   selectedType: string = '';
+  userDeveloper: boolean | false = false;
 
   constructor(public userService: UserService, private routeService: RouteService) {
   }
