@@ -94,7 +94,8 @@ namespace backend_app.Services
                 type = route.type,
                 equipment = route.equipment,
                 difficulty = route.difficulty,
-                description = route.description
+                description = route.description,
+                time = route.time
             };
 
             if(GetRouteAsync(newRoute.name) == null)

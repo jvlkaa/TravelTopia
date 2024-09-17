@@ -27,6 +27,9 @@ namespace backend_app.Models
         [BsonElement("description")]
         public string description { get; set; }
 
+        [BsonElement("time")]
+        public int time { get; set; }
+
         [BsonElement("points")]
         public ICollection<Point> routePoints { get; set; } = new List<Point>();
     }

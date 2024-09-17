@@ -11,6 +11,7 @@ namespace backend_app.Dto
         public string equipment { get; set; }
         public string difficulty { get; set; }
         public string description { get; set; }
+        public int time { get; set; }
         public string userIdToken {  get; set; }
 
     }
