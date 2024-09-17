@@ -27,7 +27,7 @@
   width: 40%;
 }
 
-.lat, .lng, .trasa_button, .wyczysc_button,.dodaj, .route-name-input  {
+.lat, .lng, .trasa_button, .wyczysc_button, .route-name-input  {
     background-color: lavender;
     padding: 10px 20px;
     border-radius: 20px;
@@ -44,11 +44,23 @@
     width: 100%;
 }
 
+.dodaj{
+  background-color: lavender;
+  padding: 10px 20px;
+  border-radius: 20px;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 .route-input {
     display: flex;
     align-items: center;
 }
 
+#add-route-section{
+  width: 100%;
+}
 .route-name-input {
     flex: 1;
 }
@@ -153,6 +165,7 @@
 .route-properties-selected-el{
   display: flex;
   flex-direction: row;
+  margin-bottom: 10px;
 }
 
 .route-properties-el{
@@ -174,7 +187,7 @@
   border-width: 2px;
 }
 
-#select-type{
+.select-type{
   width: 100%;
   padding: 10px;
   border-radius: 20px;
@@ -182,12 +195,38 @@
   border-style: outset;
   border-color: black;
   border-width: 2px;
+  font-weight: bold;
+  font-family: "Calibri Light";
+  font-size: medium;
 }
 
-.type-option{
+.option{
   text-align: center;
   font-family: "Calibri Light";
   font-weight: bold;
   font-size: larger;
 }
 
+.text-label{
+  width: 96%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+}
+
+.text-area{
+  font-family: "Calibri Light";
+  font-size: medium;
+  font-weight: bold;
+  margin-bottom: 10px;
+  resize: none;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
