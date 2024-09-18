@@ -37,6 +37,17 @@
         <label class="text-label"> Opisz trase, daj wskazówki (opcjonalnie) </label>
         <textarea class="text-area" [(ngModel)]="description" rows="6"></textarea>
       </div>
+      <div class="route-properties-el">
+        <label class="text-label"> Wpisz szacowany czas pokonania trasy: </label>
+        <label for="hours"> Godziny: </label>
+          <select id="hours" [(ngModel)]="selectedHour">
+            <option *ngFor="let hour of hours" [value]="hour"> {{ hour }} </option>
+          </select>
+        <label for="minutes"> Minuty: </label>
+          <select id="minutes" [(ngModel)]="selectedMinute">
+            <option *ngFor="let minute of minutes" [value]="minute"> {{ minute }} </option>
+          </select>
+      </div>
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
     </div>
     <div class="buttons">

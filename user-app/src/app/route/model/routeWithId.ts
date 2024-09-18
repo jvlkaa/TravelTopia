@@ -9,4 +9,5 @@ export interface RouteWithId {
     equipment: string;
     difficulty: string;
     description: string;
+    time: number;
 }

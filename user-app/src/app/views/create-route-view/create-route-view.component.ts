@@ -58,6 +58,12 @@ export class CreateRouteViewComponent implements OnInit {
   selectedDifficulty: string = '';
   equipment: string = '';
   description: string = '';
+  selectedHour: number = 0;
+  selectedMinute: number  = 0;
+  // set hours options to 0-20 and minutes to 0-59
+  hours: number[] = Array.from({ length: 21 }, (_, i) => i);
+  minutes: number[] = Array.from({ length: 60 }, (_, i) => i);
+
 
   constructor(public userService: UserService, private routeService: RouteService) {
   }
@@ -244,7 +250,8 @@ export class CreateRouteViewComponent implements OnInit {
         type: this.selectedType,
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
-        description: this.description
+        description: this.description,
+        time: (60 * this.selectedHour) + this.selectedMinute
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
@@ -282,6 +289,7 @@ export class CreateRouteViewComponent implements OnInit {
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
         description: this.description,
+        time: (60 * this.selectedHour) + this.selectedMinute,
         userIdToken: this.userService.socialUser!.idToken
       };
       for (let r of this.route) {

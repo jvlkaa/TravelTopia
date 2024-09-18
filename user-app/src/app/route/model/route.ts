@@ -6,4 +6,5 @@ export interface Route {
     equipment: string;
     difficulty: string;
     description: string;
+    time: number;
 }

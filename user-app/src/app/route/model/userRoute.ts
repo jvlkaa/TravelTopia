@@ -6,5 +6,6 @@ export interface UserRoute {
   equipment: string;
   difficulty: string;
   description: string;
+  time: number;
   userIdToken: string;
 }

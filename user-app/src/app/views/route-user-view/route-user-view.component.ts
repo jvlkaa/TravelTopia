@@ -44,7 +44,6 @@ export class RouteUserViewComponent implements OnInit {
   private routeInfo: Overlay;
   private markerCenter: Point;
   private distance = 0;
-  private time = 0;
   public deleteRouteSuccess: string | null = null;
 
   constructor(private routeService: RouteService,
@@ -66,8 +65,12 @@ export class RouteUserViewComponent implements OnInit {
     return route;
   }
 
-  get routeExist(): boolean {
-    return this.view_route !== undefined;
+  getViewRouteTimeHours() :number {
+    return Math.floor(this.view_route?.time! / 60);
+  }
+
+  getViewRouteTimeMinutes() :number {
+    return this.view_route?.time! % 60;
   }
 
   ngOnInit() {
@@ -88,7 +91,7 @@ export class RouteUserViewComponent implements OnInit {
             maxZoom: 50,
           }),
         });
-        //informacje o trasie
+        //information about the route
         const routePopupContainer = document.getElementById('popup')!;
         const routePopupCloser = document.getElementById('popup-closer')!;
         this.routeInfo = new Overlay({
@@ -98,7 +101,7 @@ export class RouteUserViewComponent implements OnInit {
         routePopupCloser.onclick = () => {
           this.routeInfo.setPosition(undefined);
         };
-        //event do wyswietlania informacji o trasie
+        //event - displaying information about the route
         this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
           this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
             if (layer === this.routeLayer) {
@@ -109,12 +112,6 @@ export class RouteUserViewComponent implements OnInit {
         this.drawRouteFromDataBase();
       })
     });
-  }
-
-  createMap(){
-    if (!this.view_route) {
-      return;
-    }
   }
 
   /* calculating route distance */
@@ -129,10 +126,6 @@ export class RouteUserViewComponent implements OnInit {
     }
   }
 
-  /* calculating travel time */
-  calculateTime() {
-    this.time = this.distance / 5 * 60;  //[minutes], simple conversion: average human speed is 5km/h
-  }
 
   /* calculating center of the map camera */
   calculateCenterMarker() {
@@ -145,9 +138,8 @@ export class RouteUserViewComponent implements OnInit {
   openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
     this.calculateDistance(this.view_route!.routePoints);
-    this.calculateTime();
     const popupContent = document.getElementById('popup-content')!;
-    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km <br/>Time: ${this.time.toFixed(2)} min</p>`;
+    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km  </p>`;
     this.routeInfo.setPosition(coordinate);
   }
 
@@ -165,7 +157,7 @@ export class RouteUserViewComponent implements OnInit {
       })
     }));
     this.routeSource.addFeature(lineFeature);
-    // Start marker
+    // marker - starting point
     const startMarker = new Feature({
       geometry: new Point(fromLonLat([this.view_route!.routePoints[0].longitude, this.view_route!.routePoints[0].latitude]))
     });
@@ -177,7 +169,7 @@ export class RouteUserViewComponent implements OnInit {
       })
     }));
     this.routeSource.addFeature(startMarker);
-    // End marker
+    // marker - end point
     const endMarker = new Feature({
       geometry: new Point(fromLonLat(
         [this.view_route!.routePoints[this.view_route!.routePoints.length - 1].longitude,
@@ -191,12 +183,13 @@ export class RouteUserViewComponent implements OnInit {
       })
     }));
     this.routeSource.addFeature(endMarker);
-    // Center map
+    // point setting center of the route
     const centerPoint = this.view_route!.routePoints[Math.floor(this.view_route!.routePoints.length / 2)];
     this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
     this.map.addLayer(this.routeLayer);
   }
 
+  /* deleting route from users favourites */
   deleteButtonClicked(){
      this.userService.deleteRouteFromUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
       next: (message: string) => {
