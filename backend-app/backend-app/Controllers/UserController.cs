@@ -90,6 +90,7 @@ namespace backend_app.Controllers
             {
                 var newRoute = await routeService.GetRouteAsync(route.name);
                 await userService.AddRouteAsync(payload.Subject, newRoute.id);
+
                 return NoContent();
             }
             else
@@ -104,6 +105,18 @@ namespace backend_app.Controllers
         {
             var payload = await VerifyGoogleToken(data.user);
             await userService.DeleteRouteAsync(payload.Subject, data.route);
+
+            var route = await routeService.GetRouteByIdAsync(data.route);
+
+            if (route.userCreated == true)
+            {
+                var result = await routeService.deleteRouteAsync(route.id);
+                if(result == false)
+                {
+                    return NotFound();
+                }
+            }
+
             return NoContent();
         }
 
