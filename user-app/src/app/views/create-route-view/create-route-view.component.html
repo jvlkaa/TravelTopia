@@ -39,14 +39,18 @@
       </div>
       <div class="route-properties-el">
         <label class="text-label"> Wpisz szacowany czas pokonania trasy: </label>
-        <label for="hours"> Godziny: </label>
-          <select id="hours" [(ngModel)]="selectedHour">
-            <option *ngFor="let hour of hours" [value]="hour"> {{ hour }} </option>
+        <div class="time-container">
+          <label for="hours" class="hour-label"> Godziny: </label>
+          <select id="hours"  class="select-hour" [(ngModel)]="selectedHour">
+            <option *ngFor="let hour of hours" [value]="hour" class="option"> {{ hour }} </option>
           </select>
-        <label for="minutes"> Minuty: </label>
-          <select id="minutes" [(ngModel)]="selectedMinute">
-            <option *ngFor="let minute of minutes" [value]="minute"> {{ minute }} </option>
+        </div>
+        <div class="time-container">
+          <label for="minutes" class="minutes-label"> Minuty: </label>
+          <select id="minutes" class="select-minutes" [(ngModel)]="selectedMinute">
+            <option *ngFor="let minute of minutes" [value]="minute" class="option"> {{ minute }} </option>
           </select>
+        </div>
       </div>
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
     </div>

@@ -230,3 +230,68 @@
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
 }
+
+.time-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.hour-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+  border-top: none;
+}
+
+.minutes-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+  margin-bottom: 5px;
+  border-bottom-left-radius: 20px;
+  border-top: none;
+}
+
+.select-hour{
+  width: 100%;
+  padding: 10px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  margin-left: -30px;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+  font-weight: bold;
+  font-family: "Calibri Light";
+  font-size: medium;
+  border-top: none;
+}
+
+.select-minutes{
+  width: 100%;
+  padding: 10px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  margin-left: -30px;
+  margin-bottom: 5px;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+  font-weight: bold;
+  font-family: "Calibri Light";
+  font-size: medium;
+  border-top: none;
+}
