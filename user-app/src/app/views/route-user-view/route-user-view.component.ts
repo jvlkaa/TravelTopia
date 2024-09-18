@@ -26,6 +26,8 @@ import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import { MapBrowserEvent } from 'ol';
 // @ts-ignore
 import Overlay from 'ol/Overlay';
+// @ts-ignore
+import XYZ from 'ol/source/XYZ';
 import {UserService} from "../../user/service/user.service";
 
 @Component({
@@ -39,12 +41,16 @@ export class RouteUserViewComponent implements OnInit {
   private map!: Map;
   private routeSource: VectorSource = new VectorSource();
   private routeLayer: VectorLayer = new VectorLayer({
-    source: this.routeSource
+    source: this.routeSource,
+    zIndex: 1
   });
   private routeInfo: Overlay;
   private markerCenter: Point;
   private distance = 0;
   public deleteRouteSuccess: string | null = null;
+  // layer allows to see route "live"
+  private satelliteLayer: TileLayer | null = null;
+  private isSatelliteLayerVisible: boolean = false;
 
   constructor(private routeService: RouteService,
               private urlRoute: ActivatedRoute,
@@ -126,7 +132,6 @@ export class RouteUserViewComponent implements OnInit {
     }
   }
 
-
   /* calculating center of the map camera */
   calculateCenterMarker() {
     if (this.view_route!.routePoints.length > 0) {
@@ -138,9 +143,63 @@ export class RouteUserViewComponent implements OnInit {
   openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
     this.calculateDistance(this.view_route!.routePoints);
+    // information about the distance and satellite vision
     const popupContent = document.getElementById('popup-content')!;
-    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km  </p>`;
+    popupContent.innerHTML =
+      `<p>Distance: ${this.distance.toFixed(2)} km </p>
+       <button id="picture-map"> Podgląd trasy </button>`;
+    // closing popup
+    const closeButton = document.getElementById('popup-closer')!;
+    closeButton.onclick = () => { this.routeInfo.setPosition(undefined); };
+
     this.routeInfo.setPosition(coordinate);
+    const pictureButton = document.getElementById('picture-map')!;
+    pictureButton.onclick = () => { this.displaySatelliteLayer(); };
+  }
+
+  /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
+  displaySatelliteLayer(){
+    this.satelliteLayer = new TileLayer({
+      source: new XYZ({
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      }),
+      zIndex: 0
+    });
+    this.map.addLayer(this.satelliteLayer);
+
+    // update button text - to remove layer
+    const popupContent = document.getElementById('popup-content')!;
+    popupContent.innerHTML =
+      `<p>Distance: ${this.distance.toFixed(2)} km </p>
+       <button id="picture-map"> Zamknij podgląd </button>`;
+    this.isSatelliteLayerVisible = true;
+
+    // update button onlick
+    const pictureButton = document.getElementById('picture-map')!;
+    pictureButton.onclick = () => { this.removeSatelliteLayer(); };
+    const closeButton = document.getElementById('popup-closer')!;
+    closeButton.style.display = 'none';
+  }
+
+  /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
+  removeSatelliteLayer() {
+    if (this.satelliteLayer) {
+      this.map.removeLayer(this.satelliteLayer);
+      this.satelliteLayer = null;
+
+      // update button text - to show satellite layer
+      const popupContent = document.getElementById('popup-content')!;
+      popupContent.innerHTML =
+        `<p>Distance: ${this.distance.toFixed(2)} km </p>
+         <button id="picture-map"> Podgląd trasy </button>`;
+      this.isSatelliteLayerVisible = false;
+
+      // update button onlick
+      const pictureButton = document.getElementById('picture-map')!;
+      pictureButton.onclick = () => {this.displaySatelliteLayer();};
+      const closeButton = document.getElementById('popup-closer')!;
+      closeButton.style.display = 'inline';
+    }
   }
 
   /* showing chosen route from list from database */
