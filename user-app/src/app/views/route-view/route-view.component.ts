@@ -148,8 +148,15 @@ export class RouteViewComponent implements OnInit {
     // information about the distance and satellite vision
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
-      `<p>Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map"> Podgląd trasy </button>`;
+      `<p id="popup-distance"> Distance: ${this.distance.toFixed(2)} km </p>
+       <button id="picture-map" style="
+           font-family: 'Calibri Light';
+           font-weight: bold;
+           width: 100%;
+           border-bottom-right-radius: 20px;
+           border-bottom-left-radius: 20px;
+           background: lavender;
+       "> Podgląd trasy </button>`;
     // closing popup
     const closeButton = document.getElementById('popup-closer')!;
     closeButton.onclick = () => { this.routeInfo.setPosition(undefined); };
@@ -172,8 +179,15 @@ export class RouteViewComponent implements OnInit {
     // update button text - to remove layer
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
-      `<p>Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map"> Zamknij podgląd </button>`;
+      `<p id="popup-distance">Distance: ${this.distance.toFixed(2)} km </p>
+       <button id="picture-map" style="
+          font-family: 'Calibri Light';
+          font-weight: bold;
+          width: 100%;
+          border-bottom-right-radius: 20px;
+          border-bottom-left-radius: 20px;
+          background: lavender;
+       "> Zamknij podgląd </button>`;
     this.isSatelliteLayerVisible = true;
 
     // update button onlick
@@ -192,8 +206,15 @@ export class RouteViewComponent implements OnInit {
       // update button text - to show satellite layer
       const popupContent = document.getElementById('popup-content')!;
       popupContent.innerHTML =
-        `<p>Distance: ${this.distance.toFixed(2)} km </p>
-         <button id="picture-map"> Podgląd trasy </button>`;
+        `<p id="popup-distance">Distance: ${this.distance.toFixed(2)} km </p>
+         <button id="picture-map" style="
+           font-family: 'Calibri Light';
+           font-weight: bold;
+           width: 100%;
+           border-bottom-right-radius: 20px;
+           border-bottom-left-radius: 20px;
+           background: lavender;
+         "> Podgląd trasy </button>`;
       this.isSatelliteLayerVisible = false;
 
       // update button onlick

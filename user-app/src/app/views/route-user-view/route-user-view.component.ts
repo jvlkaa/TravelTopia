@@ -147,7 +147,14 @@ export class RouteUserViewComponent implements OnInit {
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
       `<p>Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map"> Podgląd trasy </button>`;
+       <button id="picture-map" style="
+        font-family: 'Calibri Light';
+        font-weight: bold;
+        width: 100%;
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        background: lavender;
+       "> Podgląd trasy </button>`;
     // closing popup
     const closeButton = document.getElementById('popup-closer')!;
     closeButton.onclick = () => { this.routeInfo.setPosition(undefined); };
@@ -171,7 +178,14 @@ export class RouteUserViewComponent implements OnInit {
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
       `<p>Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map"> Zamknij podgląd </button>`;
+       <button id="picture-map" style="
+        font-family: 'Calibri Light';
+        font-weight: bold;
+        width: 100%;
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        background: lavender;
+       "> Zamknij podgląd </button>`;
     this.isSatelliteLayerVisible = true;
 
     // update button onlick
@@ -191,7 +205,14 @@ export class RouteUserViewComponent implements OnInit {
       const popupContent = document.getElementById('popup-content')!;
       popupContent.innerHTML =
         `<p>Distance: ${this.distance.toFixed(2)} km </p>
-         <button id="picture-map"> Podgląd trasy </button>`;
+         <button id="picture-map" style="
+           font-family: 'Calibri Light';
+           font-weight: bold;
+           width: 100%;
+           border-bottom-right-radius: 20px;
+           border-bottom-left-radius: 20px;
+           background: lavender;
+         "> Podgląd trasy </button>`;
       this.isSatelliteLayerVisible = false;
 
       // update button onlick
