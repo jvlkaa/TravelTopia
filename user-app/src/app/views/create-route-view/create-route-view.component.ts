@@ -40,7 +40,6 @@ export class CreateRouteViewComponent implements OnInit {
   private route: { lat: number; lng: number }[] = [];
   private markerCenter: { lat: number; lng: number } | undefined;
   private distance = 0;
-  private time = 0;
   private pointsSource: VectorSource = new VectorSource();
   private pointsLayer: VectorLayer = new VectorLayer({
     source: this.pointsSource
@@ -121,11 +120,6 @@ export class CreateRouteViewComponent implements OnInit {
     }
   }
 
-  /* calculating travel time */
-  calculateTime() {
-    this.time = this.distance / 5 * 60;  //[minutes], simple conversion: average human speed is 5km/h
-  }
-
   /* calculating center of the map camera */
   calculateCenterMarker() {
     if (this.route!.length > 0) {
@@ -137,9 +131,8 @@ export class CreateRouteViewComponent implements OnInit {
   openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
     this.calculateDistance(this.route!);
-    this.calculateTime();
     const popupContent = document.getElementById('popup-content')!;
-    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km <br/>Time: ${this.time.toFixed(2)} min</p>`;
+    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km </p>`;
     this.routeInfo.setPosition(coordinate);
   }
 
@@ -200,7 +193,7 @@ export class CreateRouteViewComponent implements OnInit {
         })
       }));
       this.routeSource.addFeature(markerA);
-      //finish
+      // finish
       const markerB = new Feature({
         geometry: new Point(fromLonLat([this.route[this.route.length - 1].lng,
           this.route[this.route.length - 1].lat]))
@@ -242,6 +235,10 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding route to database - developers mode */
   addButtonClicked() {
+    console.log(this.selectedHour);
+    let time: number = Number(60 * this.selectedHour);
+    time +=  Number(this.selectedMinute);
+    console.log(time);
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: Route = {
         name: this.routeName,
@@ -251,7 +248,7 @@ export class CreateRouteViewComponent implements OnInit {
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
         description: this.description,
-        time: (60 * this.selectedHour) + this.selectedMinute
+        time: time
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
@@ -280,6 +277,8 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding route to database - to user favourites */
   addUserButtonClicked() {
+    let time: number = Number(60 * this.selectedHour);
+    time +=  Number(this.selectedMinute);
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: UserRoute = {
         name: this.routeName,
@@ -289,7 +288,7 @@ export class CreateRouteViewComponent implements OnInit {
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
         description: this.description,
-        time: (60 * this.selectedHour) + this.selectedMinute,
+        time: time,
         userIdToken: this.userService.socialUser!.idToken
       };
       for (let r of this.route) {

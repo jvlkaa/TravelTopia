@@ -13,11 +13,19 @@
   padding: 20px;
 }
 
+#popup{
+  background: whitesmoke;
+  box-shadow: 0px 2px 5px 0px;
+  border-radius: 20px;
+}
+
 #popup-content{
+  font-family: "Calibri Light";
+  font-weight: bold;
   font-size: small;
   background: whitesmoke;
   padding: 1px;
-  border-radius: 5px;
+  border-radius: 20px;
 }
 
 #map-create-container{
@@ -44,7 +52,7 @@
     width: 100%;
 }
 
-.dodaj{
+.add_route{
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;
@@ -294,4 +302,10 @@
   font-family: "Calibri Light";
   font-size: medium;
   border-top: none;
+}
+
+#popup-closer{
+  background: lavender;
+  border-style: solid;
+  border-width: 1px;
 }
