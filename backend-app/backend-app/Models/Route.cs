@@ -7,7 +7,7 @@ namespace backend_app.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? id { get; set; }
+        public string id { get; set; }
 
         [BsonElement("userCreated")]
         public bool userCreated { get; set; }
