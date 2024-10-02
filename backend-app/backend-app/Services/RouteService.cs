@@ -1,6 +1,7 @@
 ﻿using backend_app.Dto;
 using backend_app.Models;
 using DnsClient.Protocol;
+using GeoCoordinatePortable;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -55,6 +56,55 @@ namespace backend_app.Services
             {
                 return result;
             }
+        }
+
+        public double GetDistance(Point start, Point end)
+        {
+            var startPoint = new GeoCoordinate(start.latitude, start.longitude);
+            var endPoint = new GeoCoordinate(end.latitude, end.longitude);
+
+            var distance = startPoint.GetDistanceTo(endPoint);
+
+            return distance / 1000.0;
+        }
+
+        public async Task<List<Models.Route>> GetRoutesByPointAsync(double latitude, double longitude)
+        {
+            Point point = new Point
+            {
+                latitude = latitude,
+                longitude = longitude
+            };
+
+            var allRoutes = await GetRoutesAsync();
+
+            var result = allRoutes.Where(x =>
+            {
+                var distance = GetDistance(point, x.routePoints.First());
+                return distance < 1.0;
+            }).ToList();
+
+            return result;
+        }
+
+        public async Task<List<Models.Route>> GetUserRoutesByPointAsync(List<string> userRouteIds, double latitude, double longitude)
+        {
+            Point point = new Point
+            {
+                latitude = latitude,
+                longitude = longitude
+            };
+
+            var filter = Builders<Models.Route>.Filter.In(x => x.id, userRouteIds);
+            var userRoutes = await routes.Find(filter).ToListAsync();
+
+            var result = userRoutes.Where(x =>
+            {
+                var distance = GetDistance(point, x.routePoints.First());
+                return distance < 1.0;
+            }).ToList();
+
+            return result;
         }
 
         public async Task<Models.Route> GetRouteByIdAsync(string id)

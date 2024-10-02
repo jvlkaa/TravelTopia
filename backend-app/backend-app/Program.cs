@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<PointService>();
 builder.Services.AddSingleton<RouteService>();
 builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<TripService>();
 
 //CORS
 builder.Services.AddCors(options =>

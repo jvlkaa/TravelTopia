@@ -2,6 +2,7 @@
 using backend_app.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver.Core.Authentication;
 
 namespace backend_app.Controllers
 {
@@ -43,6 +44,20 @@ namespace backend_app.Controllers
         public async Task<IActionResult> GetRoutesByString(string text)
         {
             var result = await routeService.GetRoutesByStringAsync(text);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpGet("{latitude}/{longitude}")]
+        public async Task<IActionResult> GetRoutesByPoint(double latitude, double longitude)
+        {
+            var result = await routeService.GetRoutesByPointAsync(latitude, longitude);
             if (result == null)
             {
                 return NotFound();

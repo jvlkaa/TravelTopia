@@ -73,6 +73,23 @@ namespace backend_app.Controllers
             }
         }
 
+        [HttpGet("{id}/{latitude}/{longitude}")]
+        public async Task<IActionResult> GetRoutesByPoint(string id, double latitude, double longitude)
+        {
+            var payload = await VerifyGoogleToken(id);
+            var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
+
+            var result = await routeService.GetUserRoutesByPointAsync(userRoutes, latitude, longitude);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpPost("addRoute")]
         public async Task<IActionResult> AddRoute([FromBody] UserIdRouteId data)
         {
@@ -98,7 +115,6 @@ namespace backend_app.Controllers
                 return NotFound();
             }
         }
-
 
         [HttpPost("deleteRoute")]
         public async Task<IActionResult> DeleteRoute([FromBody] UserIdRouteId data)
