@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {Route} from "../model/route";
 import {Routes} from "../model/routes";
 import {RouteWithId} from "../model/routeWithId";
+import {Point} from "../../point/model/point";
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,11 @@ export class RouteService {
 
   getRouteByID(id: string): Observable<RouteWithId>{
     return this.http.get<RouteWithId>('https://localhost:5269/TravelTopia/Route' + '/id/' + id)
+  }
+
+  getRoutesNearPoint(point: Point): Observable<RouteWithId[]>{
+    const lat = point.latitude;
+    const lon = point.longitude;
+    return this.http.get<RouteWithId[]>('https://localhost:5269/TravelTopia/Route' + '/NearPoint/' + lat + '/' + lon)
   }
 }

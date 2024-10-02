@@ -54,7 +54,7 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpGet("{latitude}/{longitude}")]
+        [HttpGet("NearPoint/{latitude}/{longitude}")]
         public async Task<IActionResult> GetRoutesByPoint(double latitude, double longitude)
         {
             var result = await routeService.GetRoutesByPointAsync(latitude, longitude);

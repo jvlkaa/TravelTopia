@@ -8,6 +8,7 @@ import {RouteViewComponent} from "./views/route-view/route-view.component";
 import {RoutesUserViewComponent} from "./views/routes-user-view/routes-user-view.component";
 import {RouteUserViewComponent} from "./views/route-user-view/route-user-view.component";
 import {ProfileViewComponent} from "./views/profile-view/profile-view.component";
+import {CreateTripViewComponent} from "./views/create-trip-view/create-trip-view.component";
 
 const routes: Routes = [
   { path: '',
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     component: ProfileViewComponent,
     path: 'profile'
+  },
+  {
+    component: CreateTripViewComponent,
+    path: 'trip/create'
   }
 ];
 

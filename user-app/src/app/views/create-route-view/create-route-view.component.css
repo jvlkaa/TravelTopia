@@ -11,6 +11,8 @@
   width: 800px;
   height: 600px;
   padding: 20px;
+  box-shadow: 0px 0px 4px 0px;
+  margin: 4px;
 }
 
 #popup{
@@ -28,6 +30,12 @@
   border-radius: 20px;
 }
 
+#popup-closer{
+  background: lavender;
+  border-style: solid;
+  border-width: 1px;
+}
+
 #map-create-container{
   display: flex;
   flex-direction: column;
@@ -35,7 +43,7 @@
   width: 40%;
 }
 
-.lat, .lng, .trasa_button, .wyczysc_button, .route-name-input  {
+.lat, .lng, .trasa-button, .clear-button, .route-name-input  {
     background-color: lavender;
     padding: 10px 20px;
     border-radius: 20px;
@@ -48,11 +56,11 @@
     flex-direction: column;
 }
 
-.trasa_button, .wyczysc_button {
+.trasa-button, .clear-button {
     width: 100%;
 }
 
-.add_route{
+.add-route{
   background-color: lavender;
   padding: 10px 20px;
   border-radius: 20px;
@@ -302,10 +310,4 @@
   font-family: "Calibri Light";
   font-size: medium;
   border-top: none;
-}
-
-#popup-closer{
-  background: lavender;
-  border-style: solid;
-  border-width: 1px;
 }

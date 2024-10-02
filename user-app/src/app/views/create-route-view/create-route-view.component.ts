@@ -85,7 +85,7 @@ export class CreateRouteViewComponent implements OnInit {
     this.map.addLayer(this.pointsLayer);
     //event - adding markers
     this.map.on('click', (event: MapBrowserEvent<any>) => {
-      this.moveMap(event);
+      this.showPointCoordinates(event);
       this.addMarkerToMap(event);
     });
     //information about the route
@@ -137,7 +137,7 @@ export class CreateRouteViewComponent implements OnInit {
   }
 
   /* showing the location of clicked place on the map */
-  moveMap(event: MapBrowserEvent<any>) {
+  showPointCoordinates(event: MapBrowserEvent<any>) {
     const lonLat = toLonLat(event.coordinate);
     this.coordinates = {
       lat: lonLat[1],
@@ -235,10 +235,8 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding route to database - developers mode */
   addButtonClicked() {
-    console.log(this.selectedHour);
     let time: number = Number(60 * this.selectedHour);
     time +=  Number(this.selectedMinute);
-    console.log(time);
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: Route = {
         name: this.routeName,

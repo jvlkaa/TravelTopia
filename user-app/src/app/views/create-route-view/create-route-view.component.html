@@ -55,14 +55,14 @@
       <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
     </div>
     <div class="buttons">
-      <button class="trasa_button" (click)="drawButtonClicked()">Stwórz trasę</button>
-      <button class = "wyczysc_button" (click)="clearButtonClicked()">Wyczyść trasę</button>
+      <button class="trasa-button" (click)="drawButtonClicked()">Stwórz trasę</button>
+      <button class = "clear-button" (click)="clearButtonClicked()">Wyczyść trasę</button>
       <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
     </div>
     <div class="route-input">
       <div *ngIf="userService.isLoggedin" id="add-route-section">
-        <button *ngIf="userService.isDeveloper" class="add_route" (click)="addButtonClicked()">Dodaj trasę </button>
-        <button *ngIf="!userService.isDeveloper"  class="add_route" (click)="addUserButtonClicked()">Dodaj trasę</button>
+        <button *ngIf="userService.isDeveloper" class="add-route" (click)="addButtonClicked()">Dodaj trasę </button>
+        <button *ngIf="!userService.isDeveloper"  class="add-route" (click)="addUserButtonClicked()">Dodaj trasę</button>
       </div>
     </div>
     <div class="latLng">

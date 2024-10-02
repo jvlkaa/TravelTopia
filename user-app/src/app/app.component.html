@@ -5,6 +5,7 @@
       <button [routerLink]="'main'"  class="menu_button">Strona główna</button>
       <button [routerLink]="'routes'" class="menu_button">Przeglądaj trasy</button>
       <button [routerLink]="'route/create'" class="menu_button">Stwórz trasę</button>
+      <button [routerLink]="'trip/create'" class="menu_button">Stwórz wycieczkę </button>
 
       <div id="login_button" *ngIf="!userService.isLoggedin">
           <asl-google-signin-button type="standard" text="signin_with"></asl-google-signin-button>
@@ -15,6 +16,7 @@
         <div *ngIf="isMenuOpen" class="dropdown-menu">
           <button [routerLink]="'/profile'" class="dropdown-item">Mój profil</button>
           <button [routerLink]="'routes/my-routes'" class="dropdown-item">Moje trasy</button>
+          <!--<button [routerLink]="'trips/my-trips'" class="dropdown-item">Moje wycieczki</button> -->
           <button [routerLink]="'main'" type="button" (click)="logoutGoogle()" class="dropdown-item">Wyloguj</button>
         </div>
       </div>
