@@ -14,11 +14,13 @@ namespace backend_app.Controllers
     {
         private readonly UserService userService;
         private readonly RouteService routeService;
+        private readonly TripService tripService;
 
-        public UserController(UserService userService, RouteService routeService)
+        public UserController(UserService userService, RouteService routeService, TripService tripService)
         { 
             this.userService = userService;
             this.routeService = routeService;
+            this.tripService = tripService;
         }
 
 
@@ -107,6 +109,32 @@ namespace backend_app.Controllers
             {
                 var newRoute = await routeService.GetRouteAsync(route.name);
                 await userService.AddRouteAsync(payload.Subject, newRoute.id);
+
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("addTrip")]
+        public async Task<IActionResult> addTrip([FromBody] UserIdTripId data)
+        {
+            var payload = await VerifyGoogleToken(data.user);
+            await userService.AddTripAsync(payload.Subject, data.trip);
+            return NoContent();
+        }
+
+        [HttpPost("addNewTrip")]
+        public async Task<IActionResult> AddNewTrip([FromBody] AddUserTrip trip)
+        {
+            var payload = await VerifyGoogleToken(trip.UserIdToken);
+
+            if (await tripService.AddUserTrip(trip))
+            {
+                var newTrip = await tripService.GetTripAsync(trip.name);
+                await userService.AddTripAsync(payload.Subject, newTrip.id);
 
                 return NoContent();
             }

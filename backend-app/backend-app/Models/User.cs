@@ -26,5 +26,8 @@ namespace backend_app.Models
 
         [BsonElement("routes")]
         public ICollection<string> routesIds { get; set; } = new List<string>();
+
+        [BsonElement("trips")]
+        public ICollection<string> tripsIds { get; set; } = new List<string>();
     }
 }

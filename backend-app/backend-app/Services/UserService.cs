@@ -51,6 +51,12 @@ namespace backend_app.Services
             await users.UpdateOneAsync(x => x.googleId == googleId, update);
         }
 
+        public async Task AddTripAsync(string googleId, string tripId)
+        {
+            var update = Builders<User>.Update.AddToSet(x => x.tripsIds, tripId);
+            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+        }
+
         public async Task DeleteRouteAsync(string googleId, string routeId)
         {
             var update = Builders<User>.Update.Pull(x => x.routesIds, routeId);
