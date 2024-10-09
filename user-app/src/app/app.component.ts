@@ -31,10 +31,9 @@ export class AppComponent implements OnInit {
         this.userService.socialUser = user;
         this.userService.isLoggedin = user != null;
         this.userService.addAccount(user.idToken).subscribe();
-        // @ts-ignore
         this.userService.getRole().subscribe({
           next: (role: string | null) => {
-            //console.log(this.userService.socialUser?.idToken); if you need update developer role
+            console.log(this.userService.socialUser?.idToken);// if you need update developer role
             if(role == 'developer'){
               this.userService.isDeveloper = true;
             }

@@ -129,7 +129,7 @@ namespace backend_app.Controllers
         [HttpPost("addNewTrip")]
         public async Task<IActionResult> AddNewTrip([FromBody] AddUserTrip trip)
         {
-            var payload = await VerifyGoogleToken(trip.UserIdToken);
+            var payload = await VerifyGoogleToken(trip.userIdToken);
 
             if (await tripService.AddUserTrip(trip))
             {

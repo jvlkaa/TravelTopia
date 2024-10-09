@@ -30,6 +30,7 @@ import Feature from 'ol/Feature';
 import {Route} from "../../route/model/route";
 import {Trip} from "../../trip/model/trip";
 import {TripService} from "../../trip/service/trip.service";
+import {UserTrip} from "../../trip/model/userTrip";
 @Component({
   selector: 'app-create-trip-view',
   templateUrl: './create-trip-view.component.html',
@@ -166,10 +167,22 @@ export class CreateTripViewComponent implements OnInit{
     this.routePreviewID = null;
     this.routesTrip.push(route);
     this.drawRoute(route, true);
+    // TO DO: odkomentowac jak bedzie gotowa funkcja na liczenie tras w poblizu tras usera
     // get routes near last point of the last route in the trip
-    this.routeService.getRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint : RouteWithId[]) => {
-      this.routes = routesNearPoint;
-    })
+    //if(this.userService.isLoggedin) {
+      // if(!this.userService.isDeveloper)
+      // {
+      //   this.routeService.getUserRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
+      //     this.routes = routesNearPoint;
+      //   })
+      // }
+    //}
+    //else{
+      this.routeService.getRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
+        this.routes = routesNearPoint;
+      })
+   // }
+
   }
 
   /* removing last route from trip */
@@ -213,8 +226,6 @@ export class CreateTripViewComponent implements OnInit{
     this.routeSource.clear();
     this.routePreviewID = null;
 
-    this.routeSource.clear();
-    this.routePreviewID = null;
     if(this.routesTrip.length != 0 && this.tripName != ''){
       const trip: Trip = {
         name: this.tripName,
@@ -229,7 +240,7 @@ export class CreateTripViewComponent implements OnInit{
         if (trip.routes.length == this.routesTrip.length) {
           this.tripService.addTrip(trip).subscribe({
             next: () => {
-              this.addTripSuccess = 'Dodano trase do bazy';
+              this.addTripSuccess = 'Dodano wycieczke do bazy';
               setTimeout(() => {this.addTripSuccess = null;}, 3000);
               this.tripName = '';
               this.description = '';
@@ -252,8 +263,46 @@ export class CreateTripViewComponent implements OnInit{
     setTimeout(() => {this.addTripSuccess = null;}, 3000);
   }
 
- // TO DO
   /* adding trip to database and user favourites */
   addUserButtonClicked() {
+    this.routeSource.clear();
+    this.routePreviewID = null;
+
+    if(this.routesTrip.length != 0 && this.tripName != ''){
+      const trip: UserTrip = {
+        name: this.tripName,
+        routes: [],
+        difficulty: 'latwa', // TO DO: calculating difficulty
+        description: this.description,
+        userCreated: false,
+        userIdToken: this.userService.socialUser!.idToken
+      };
+      for (let r of this.routesTrip) {
+        const id: string = r.id;
+        trip.routes.push(id);
+        if (trip.routes.length == this.routesTrip.length) {
+          this.userService.addUserTrip(trip).subscribe({
+            next: () => {
+              this.addTripSuccess = 'Dodano wycieczke do "Moje wycieczki"';
+              setTimeout(() => {this.addTripSuccess = null;}, 3000);
+              this.tripName = '';
+              this.description = '';
+              this.tripSource.clear();
+              this.routesTrip = [];
+              this.listRoutes();
+            },
+            error: (err) => {
+              this.addTripSuccess = 'Wystąpił błąd';
+              setTimeout(() => {
+                this.addTripSuccess = null;
+              }, 3000);
+            }
+          });
+        }
+      }
+    }
+    else
+      this.addTripSuccess = 'Nie można dodać wycieczki do ulubionych. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
+    setTimeout(() => {this.addTripSuccess = null;}, 3000);
   }
 }

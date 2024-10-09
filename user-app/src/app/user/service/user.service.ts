@@ -5,6 +5,7 @@ import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
 import {UserRoute} from "../../route/model/userRoute";
+import {Trip} from "../../trip/model/trip";
 
 @Injectable({
   providedIn: 'root'
@@ -91,6 +92,11 @@ export class UserService {
 
   getRole(): Observable<string> {
     return this.http.get<string>('https://localhost:5269/TravelTopia/User/userRole/'+ this.socialUser?.idToken, { responseType: 'text' as 'json' });
+  }
+
+
+  addUserTrip(request: Trip): Observable<any>{
+    return this.http.post('https://localhost:5269/TravelTopia/User/addNewTrip', request);
   }
 
 }

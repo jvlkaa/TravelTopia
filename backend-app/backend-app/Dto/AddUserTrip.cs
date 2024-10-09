@@ -7,6 +7,6 @@
         public string description { get; set; }
         public string difficulty { get; set; }
         public ICollection<string> routes { get; set; }
-        public string UserIdToken { get; set; }
+        public string userIdToken { get; set; }
     }
 }
