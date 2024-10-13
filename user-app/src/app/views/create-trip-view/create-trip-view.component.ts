@@ -22,15 +22,13 @@ import TileLayer from 'ol/layer/Tile';
 // @ts-ignore
 import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 // @ts-ignore
-import { MapBrowserEvent } from 'ol';
-// @ts-ignore
-import Overlay from 'ol/Overlay';
-// @ts-ignore
 import Feature from 'ol/Feature';
 import {Route} from "../../route/model/route";
 import {Trip} from "../../trip/model/trip";
 import {TripService} from "../../trip/service/trip.service";
 import {UserTrip} from "../../trip/model/userTrip";
+import {forkJoin, Observable} from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-create-trip-view',
   templateUrl: './create-trip-view.component.html',
@@ -230,7 +228,7 @@ export class CreateTripViewComponent implements OnInit{
       const trip: Trip = {
         name: this.tripName,
         routes: [],
-        difficulty: 'latwa',
+        difficulty: '',
         description: this.description,
         userCreated: false
       };
@@ -238,22 +236,31 @@ export class CreateTripViewComponent implements OnInit{
         const id: string = r.id;
         trip.routes.push(id);
         if (trip.routes.length == this.routesTrip.length) {
-          this.tripService.addTrip(trip).subscribe({
-            next: () => {
-              this.addTripSuccess = 'Dodano wycieczke do bazy';
-              setTimeout(() => {this.addTripSuccess = null;}, 3000);
-              this.tripName = '';
-              this.description = '';
-              this.tripSource.clear();
-              this.routesTrip = [];
-              this.listRoutes();
-            },
-            error: (err) => {
-              this.addTripSuccess = 'Wystąpił błąd';
-              setTimeout(() => {
-                this.addTripSuccess = null;
-              }, 3000);
-            }
+          // calculating general difficulty of the trip
+          this.calculateTripDifficulty(trip.routes).subscribe(dominantDifficulty => {
+             trip.difficulty = dominantDifficulty;
+             if(trip.difficulty !== '') {
+                 // adding trip to database
+                 this.tripService.addTrip(trip).subscribe({
+                     next: () => {
+                         this.addTripSuccess = 'Dodano wycieczke do bazy';
+                         setTimeout(() => {
+                             this.addTripSuccess = null;
+                         }, 3000);
+                         this.tripName = '';
+                         this.description = '';
+                         this.tripSource.clear();
+                         this.routesTrip = [];
+                         this.listRoutes();
+                     },
+                     error: (err) => {
+                         this.addTripSuccess = 'Wystąpił błąd';
+                         setTimeout(() => {
+                             this.addTripSuccess = null;
+                         }, 3000);
+                     }
+                 });
+             }
           });
         }
       }
@@ -272,7 +279,7 @@ export class CreateTripViewComponent implements OnInit{
       const trip: UserTrip = {
         name: this.tripName,
         routes: [],
-        difficulty: 'latwa', // TO DO: calculating difficulty
+        difficulty: '',
         description: this.description,
         userCreated: false,
         userIdToken: this.userService.socialUser!.idToken
@@ -281,28 +288,76 @@ export class CreateTripViewComponent implements OnInit{
         const id: string = r.id;
         trip.routes.push(id);
         if (trip.routes.length == this.routesTrip.length) {
-          this.userService.addUserTrip(trip).subscribe({
-            next: () => {
-              this.addTripSuccess = 'Dodano wycieczke do "Moje wycieczki"';
-              setTimeout(() => {this.addTripSuccess = null;}, 3000);
-              this.tripName = '';
-              this.description = '';
-              this.tripSource.clear();
-              this.routesTrip = [];
-              this.listRoutes();
-            },
-            error: (err) => {
-              this.addTripSuccess = 'Wystąpił błąd';
-              setTimeout(() => {
-                this.addTripSuccess = null;
-              }, 3000);
-            }
+          // calculating general difficulty of the trip
+          this.calculateTripDifficulty(trip.routes).subscribe(dominantDifficulty => {
+              trip.difficulty = dominantDifficulty;
+              if( trip.difficulty !== '') {
+                  // adding trip to database and user favourites
+                  this.userService.addUserTrip(trip).subscribe({
+                      next: () => {
+                          this.addTripSuccess = 'Dodano wycieczke do "Moje wycieczki"';
+                          setTimeout(() => {
+                              this.addTripSuccess = null;
+                          }, 3000);
+                          this.tripName = '';
+                          this.description = '';
+                          this.tripSource.clear();
+                          this.routesTrip = [];
+                          this.listRoutes();
+                      },
+                      error: (err) => {
+                          this.addTripSuccess = 'Wystąpił błąd';
+                          setTimeout(() => {
+                              this.addTripSuccess = null;
+                          }, 3000);
+                      }
+                  });
+              }
           });
+
         }
       }
     }
     else
       this.addTripSuccess = 'Nie można dodać wycieczki do ulubionych. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
     setTimeout(() => {this.addTripSuccess = null;}, 3000);
+  }
+
+  calculateTripDifficulty(routesId: string[]): Observable<"łatwa" | "normalna" | "trudna">{
+    const routeObservables = routesId.map(id => this.routeService.getRouteByID(id));
+
+    return forkJoin(routeObservables).pipe(
+      map((routes: RouteWithId[]) => {
+        const routesDifficulty = routes.map(route => route.difficulty);
+
+        // number of routes of specific level of difficulty
+        const difficultyCount: Record<'łatwa' | 'normalna' | 'trudna', number> = {
+          'łatwa': 0,
+            'normalna': 0,
+            'trudna': 0
+        };
+        // weight
+        const difficultyRank: Record<'latwy' | 'normalny' | 'trudny', number> = {
+          'latwy': 1,
+          'normalny': 2,
+          'trudny': 3
+        };
+        routesDifficulty.forEach(difficulty => {
+          // @ts-ignore
+          difficultyCount[difficulty]++;
+        });
+
+        // calculating max level of difficulty to set general difficulty of the trip
+        const dominantDifficulty = (Object.keys(difficultyCount) as Array<keyof typeof difficultyCount>).reduce((a, b) => {
+          if (difficultyCount[a] === difficultyCount[b]) {
+            // @ts-ignore
+            return difficultyRank[a] > difficultyRank[b] ? a : b;
+          }
+            return difficultyCount[a] > difficultyCount[b] ? a : b;
+        });
+
+        return dominantDifficulty;
+      })
+    );
   }
 }
