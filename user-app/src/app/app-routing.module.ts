@@ -9,6 +9,8 @@ import {RoutesUserViewComponent} from "./views/routes-user-view/routes-user-view
 import {RouteUserViewComponent} from "./views/route-user-view/route-user-view.component";
 import {ProfileViewComponent} from "./views/profile-view/profile-view.component";
 import {CreateTripViewComponent} from "./views/create-trip-view/create-trip-view.component";
+import {TripsViewComponent} from "./views/trips-view/trips-view.component";
+import {TripsUserViewComponent} from "./views/trips-user-view/trips-user-view.component";
 
 const routes: Routes = [
   { path: '',
@@ -46,6 +48,14 @@ const routes: Routes = [
   {
     component: CreateTripViewComponent,
     path: 'trip/create'
+  },
+  {
+    component: TripsViewComponent,
+    path: 'trips'
+  },
+  {
+    component: TripsUserViewComponent,
+    path: 'trips/my-trips'
   }
 ];
 

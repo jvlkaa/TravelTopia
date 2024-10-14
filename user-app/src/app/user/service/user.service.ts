@@ -6,6 +6,8 @@ import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
 import {UserRoute} from "../../route/model/userRoute";
 import {Trip} from "../../trip/model/trip";
+import {TripWithId} from "../../trip/model/tripWithId";
+import {TripService} from "../../trip/service/trip.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class UserService {
   isLoggedin: boolean = false;
   isDeveloper: boolean = false;
 
-  constructor(private http: HttpClient, private routeSerivce: RouteService) { }
+  constructor(private http: HttpClient, private routeSerivce: RouteService, private tripService: TripService) { }
 
   /* add user to database */
   addAccount(request: string): Observable<any>{
@@ -35,6 +37,20 @@ export class UserService {
     return this.getRouteIdsFromUser(user).pipe(
       mergeMap((routesId: string[]) =>
         forkJoin(routesId.map(routeId => this.routeSerivce.getRouteByID(routeId)))
+      )
+    );
+  }
+
+  /* get trip ids from specific user */
+  getTripIdsFromUser(user: string): Observable<string[]>{
+    return this.http.get<string[]>( 'https://localhost:5269/TravelTopia/User/' + user + '/TripIds');
+  }
+
+  /* get trips from specific user */
+  getTripsFromUser(user: string): Observable<TripWithId[]> {
+    return this.getTripIdsFromUser(user).pipe(
+      mergeMap((tripsId: string[]) =>
+        forkJoin(tripsId.map(tripId => this.tripService.getTripByID(tripId)))
       )
     );
   }

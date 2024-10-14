@@ -12,13 +12,13 @@ export class RoutesUserViewComponent implements OnInit{
   public routes: RouteWithId[] = [];
   public filterText: string | undefined;
 
-  constructor(private routeService: RouteService, private userService: UserService) {
+  constructor(private userService: UserService) {
   }
   ngOnInit() {
     this.listRoutes();
   }
 
-  /* routes from database to show as a list */
+  /* routes from database  (user favourites ) to show as a list */
   listRoutes(){
     this.userService.getRoutesFromUser(this.userService.socialUser!.idToken).subscribe((routes: RouteWithId[]) => {
       this.routes = routes

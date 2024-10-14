@@ -18,4 +18,8 @@ export class TripService {
   getTrips(): Observable<TripWithId[]>{
     return this.http.get<TripWithId[]>( 'https://localhost:5269/TravelTopia/Trip');
   }
+
+  getTripByID(id: string): Observable<TripWithId>{
+    return this.http.get<TripWithId>('https://localhost:5269/TravelTopia/Trip' + '/id/' + id)
+  }
 }
