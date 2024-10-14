@@ -19,7 +19,7 @@ export class RoutesViewComponent implements OnInit {
 public routes: RouteWithId[] = [];
 public filterText: string | undefined;
 
-  constructor(private pointService: PointService, private routeService: RouteService) {
+  constructor(private routeService: RouteService) {
   }
 
   ngOnInit() {

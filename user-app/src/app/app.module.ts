@@ -22,6 +22,7 @@ import { RoutesUserViewComponent } from './views/routes-user-view/routes-user-vi
 import { RouteUserViewComponent } from './views/route-user-view/route-user-view.component';
 import { ProfileViewComponent } from './views/profile-view/profile-view.component';
 import { CreateTripViewComponent } from './views/create-trip-view/create-trip-view.component';
+import { TripsViewComponent } from './views/trips-view/trips-view.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CreateTripViewComponent } from './views/create-trip-view/create-trip-vi
     RoutesUserViewComponent,
     RouteUserViewComponent,
     ProfileViewComponent,
-    CreateTripViewComponent
+    CreateTripViewComponent,
+    TripsViewComponent
   ],
   imports: [
     GoogleMapsModule,
