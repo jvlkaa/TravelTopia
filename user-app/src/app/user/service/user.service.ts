@@ -115,4 +115,31 @@ export class UserService {
     return this.http.post('https://localhost:5269/TravelTopia/User/addNewTrip', request);
   }
 
+  /* add trip to user favourites*/
+  addTripToUser(userID: string, tripID: string): Observable<any>{
+    return this.getRouteIdsFromUser(userID).pipe(
+      mergeMap((tripIds: string[]) => {
+        if (!tripIds.includes(tripID)) {
+          const request = {
+            user: userID,
+            route: tripID
+          };
+          const headers = { 'Content-Type': 'application/json' };
+
+          return this.http.post('https://localhost:5269/TravelTopia/User/addTrip', request, { headers })
+            .pipe(mergeMap(() => new Observable(observer => {
+              observer.next('Dodano wycieczkę do ulubionych');
+              observer.complete();
+            })));
+        }
+        else {
+          return new Observable(observer => {
+            observer.next('Wycieczka została już dodana do ulubionych');
+            observer.complete();
+          });
+        }
+      })
+    );
+  }
+
 }

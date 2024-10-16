@@ -1,0 +1,19 @@
+<div id="trip-container">
+  <h1>Trasa: {{getViewTrip()!.name}}</h1>
+  <div id="trip-info-container">
+    <div id="trip-map">
+      <div id="map" class="map"></div>
+      <div id="popup" class="ol-popup">
+        <button id="popup-closer" class="ol-popup-closer"> x </button>
+        <div id="popup-content"></div>
+      </div>
+      <button class="add_button" *ngIf="userService.isLoggedin" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
+      <div *ngIf="addTripSuccess" class="add-trip-success">{{ addTripSuccess }}</div>
+    </div>
+    <div id="trip-info">
+      <h3> Trudność wycieczki: {{getViewTrip()!.difficulty}}</h3>
+      <h3> Opis wycieczki:</h3>
+      <p> {{getViewTrip()!.description}} </p>
+    </div>
+  </div>
+</div>

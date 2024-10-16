@@ -1,4 +1,3 @@
-import {PointService} from "../../point/service/point.service";
 import {RouteService} from "../../route/service/route.service";
 import {ActivatedRoute} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
@@ -30,7 +29,6 @@ import Overlay from 'ol/Overlay';
 // @ts-ignore
 import XYZ from 'ol/source/XYZ';
 import {UserService} from "../../user/service/user.service";
-import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-route-view',
