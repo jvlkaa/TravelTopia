@@ -45,6 +45,19 @@ namespace backend_app.Services
             }
         }
 
+        public async Task<List<string>> getTripsFromUserAsync(string googleId)
+        {
+            var result = await GetUserByGoogleIdAsync(googleId);
+            if (result == null)
+            {
+                return new List<string>(0);
+            }
+            else
+            {
+                return result.tripsIds.ToList();
+            }
+        }
+
         public async Task AddRouteAsync(string googleId, string routeId)
         {
             var update = Builders<User>.Update.AddToSet(x => x.routesIds, routeId);
@@ -60,6 +73,12 @@ namespace backend_app.Services
         public async Task DeleteRouteAsync(string googleId, string routeId)
         {
             var update = Builders<User>.Update.Pull(x => x.routesIds, routeId);
+            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+        }
+
+        public async Task DeleteTripAsync(string googleId, string tripId)
+        {
+            var update = Builders<User>.Update.Pull(x => x.tripsIds, tripId);
             await users.UpdateOneAsync(x => x.googleId == googleId, update);
         }
 

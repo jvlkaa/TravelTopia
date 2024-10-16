@@ -2,6 +2,7 @@
 using backend_app.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Net;
 
 namespace backend_app.Services
 {
@@ -53,5 +54,36 @@ namespace backend_app.Services
             }
         }
 
+        public async Task<List<Trip>> GetTripsAsync()
+        {
+            var result = await trips.Find(x => x.userCreated == false).ToListAsync();
+            if(result.Count == 0)
+            {
+                return new List<Trip>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<Trip> GetTripByIdAsync(string id)
+        {
+            var result = await trips.Find(x => x.id == id).SingleOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<bool> deleteTripAsync(string id)
+        {
+            var result = await trips.DeleteOneAsync(x => x.id == id);
+            return result.DeletedCount > 0;
+        }
     }
 }

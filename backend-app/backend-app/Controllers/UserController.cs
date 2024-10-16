@@ -4,6 +4,7 @@ using backend_app.Services;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Runtime.CompilerServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace backend_app.Controllers
@@ -65,6 +66,21 @@ namespace backend_app.Controllers
         {
             var payload = await VerifyGoogleToken(user);
             var result = await userService.getRoutesFromUserAsync(payload.Subject);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpGet("{user}/TripIds")]
+        public async Task<IActionResult> GetTripsByString(string user)
+        {
+            var payload = await VerifyGoogleToken(user);
+            var result = await userService.getTripsFromUserAsync(payload.Subject);
             if (result == null)
             {
                 return NotFound();
@@ -161,6 +177,25 @@ namespace backend_app.Controllers
                 }
             }
 
+            return NoContent();
+        }
+
+        [HttpPost("deleteTrip")]
+        public async Task<IActionResult> DeleteTrip([FromBody] UserIdTripId data)
+        {
+            var payload = await VerifyGoogleToken(data.user);
+            await userService.DeleteTripAsync(payload.Subject, data.trip);
+
+            var trip = await tripService.GetTripByIdAsync(data.trip);
+
+            if (trip.userCreated == true) 
+            {
+                var result = await tripService.deleteTripAsync(trip.id);
+                if (result == false)
+                {
+                    return NotFound();
+                }
+            }
             return NoContent();
         }
 
