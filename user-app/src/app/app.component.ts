@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
 import {HttpClient} from "@angular/common/http";
 import {UserService} from "./user/service/user.service";
+import {NavigationEnd, Router} from "@angular/router";
 
 
 @Component({
@@ -18,7 +19,7 @@ export class AppComponent implements OnInit {
   isMenuOpen = false;
 
   constructor(private formBuilder: FormBuilder, private socialAuthService: SocialAuthService,
-              public userService: UserService ) {}
+              public userService: UserService,  private router: Router ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -44,6 +45,13 @@ export class AppComponent implements OnInit {
       else{
         this.userService.socialUser = null;
         this.userService.isLoggedin = false;
+      }
+    });
+
+    // closing dropdown menu if page change
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isMenuOpen = false;
       }
     });
 

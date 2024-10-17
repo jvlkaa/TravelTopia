@@ -8,6 +8,7 @@ import {UserRoute} from "../../route/model/userRoute";
 import {Trip} from "../../trip/model/trip";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,15 @@ export class UserService {
             observer.complete();
           });
         }
+      })
+    );
+  }
+
+  /* check if the route is in user favourites */
+  isRouteInUserRoutes(userID: string, routeID: string): Observable<boolean> {
+    return this.getRouteIdsFromUser(userID).pipe(
+      map((routeIds: string[]) => {
+        return routeIds.includes(routeID);
       })
     );
   }
