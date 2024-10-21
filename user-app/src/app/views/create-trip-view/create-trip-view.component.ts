@@ -178,7 +178,12 @@ export class CreateTripViewComponent implements OnInit{
     //else{
       this.routeService.getRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
         this.routes = routesNearPoint;
+        //delete routes which are added to the trip from the list
+        // this.routes = this.routes.filter(routeExist =>
+        //   !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+        // );
       })
+
    // }
 
   }
