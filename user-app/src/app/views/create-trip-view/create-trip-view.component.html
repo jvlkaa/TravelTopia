@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="trip-routes">
-    <ul class="route-container" *ngIf="routes.length > 0">
+    <ul class="route-container" *ngIf="routesTrip.length > 0">
       <li class ="li-routes" *ngFor="let route of routesTrip; let last = last">
         <a class ="a-routes" >{{ route.name }}</a>
         <button *ngIf="last" (click)="removeRouteFromTrip()" id="route-remove"> x </button>
