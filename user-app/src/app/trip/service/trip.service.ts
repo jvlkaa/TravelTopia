@@ -13,18 +13,18 @@ export class TripService {
   constructor(private http: HttpClient) { }
 
   addTrip(request: Trip): Observable<any>{
-    return this.http.post('https://localhost:5269/TravelTopia/Trip', request);
+    return this.http.post('TravelTopia/Trip', request);
   }
 
   getTrips(): Observable<TripWithId[]>{
-    return this.http.get<TripWithId[]>( 'https://localhost:5269/TravelTopia/Trip');
+    return this.http.get<TripWithId[]>( 'TravelTopia/Trip');
   }
 
   getTripByID(id: string): Observable<TripWithId>{
-    return this.http.get<TripWithId>('https://localhost:5269/TravelTopia/Trip' + '/id/' + id)
+    return this.http.get<TripWithId>('TravelTopia/Trip' + '/id/' + id)
   }
 
   getTrip(name: string): Observable<TripWithId>{
-    return this.http.get<TripWithId>('https://localhost:5269/TravelTopia/Trip' + '/' + name)
+    return this.http.get<TripWithId>('TravelTopia/Trip' + '/' + name)
   }
 }

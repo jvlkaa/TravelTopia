@@ -25,12 +25,12 @@ export class UserService {
   addAccount(request: string): Observable<any>{
     const token: string = "\"" + request + "\"" ;
     const headers = { 'Content-Type': 'application/json' };
-    return this.http.post('https://localhost:5269/TravelTopia/User/login',  token, {headers});
+    return this.http.post('TravelTopia/User/login',  token, {headers});
   }
 
   /* get route ids from specific user */
   getRouteIdsFromUser(user: string): Observable<string[]>{
-    return this.http.get<string[]>( 'https://localhost:5269/TravelTopia/User/' + user + '/RouteIds');
+    return this.http.get<string[]>( 'TravelTopia/User/' + user + '/RouteIds');
   }
 
   /* get routes from specific user */
@@ -44,7 +44,7 @@ export class UserService {
 
   /* get trip ids from specific user */
   getTripIdsFromUser(user: string): Observable<string[]>{
-    return this.http.get<string[]>( 'https://localhost:5269/TravelTopia/User/' + user + '/TripIds');
+    return this.http.get<string[]>( 'TravelTopia/User/' + user + '/TripIds');
   }
 
   /* get trips from specific user */
@@ -58,7 +58,7 @@ export class UserService {
 
   /* filter user favourite routes */
   getRoutesFromUserByString(user: string, text: string): Observable<RouteWithId[]>{
-    return this.http.get<RouteWithId[]>('https://localhost:5269/TravelTopia/Route' + '/' + user +'/' + text + '/list')
+    return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/' + user +'/' + text + '/list')
   }
 
   /* add route to user favourites*/
@@ -72,7 +72,7 @@ export class UserService {
           };
           const headers = { 'Content-Type': 'application/json' };
 
-          return this.http.post('https://localhost:5269/TravelTopia/User/addRoute', request, { headers })
+          return this.http.post('TravelTopia/User/addRoute', request, { headers })
             .pipe(mergeMap(() => new Observable(observer => {
               observer.next('Dodano trasę do ulubionych');
               observer.complete();
@@ -99,7 +99,7 @@ export class UserService {
 
   /* add route created by user to database and to users favourites */
   addRoute(request: UserRoute): Observable<any>{
-    return this.http.post('https://localhost:5269/TravelTopia/User/addNewRoute', request);
+    return this.http.post('TravelTopia/User/addNewRoute', request);
   }
 
   deleteRouteFromUser(userID: string, routeID: string): Observable<any> {
@@ -109,7 +109,7 @@ export class UserService {
     };
     const headers = { 'Content-Type': 'application/json' };
 
-    return this.http.post('https://localhost:5269/TravelTopia/User/deleteRoute', request, { headers })
+    return this.http.post('TravelTopia/User/deleteRoute', request, { headers })
       .pipe(mergeMap(() => new Observable(observer => {
         observer.next('Pomyślnie usunięto trase z ulubionych');
         observer.complete();
@@ -117,12 +117,12 @@ export class UserService {
   }
 
   getRole(): Observable<string> {
-    return this.http.get<string>('https://localhost:5269/TravelTopia/User/userRole/'+ this.socialUser?.idToken, { responseType: 'text' as 'json' });
+    return this.http.get<string>('TravelTopia/User/userRole/'+ this.socialUser?.idToken, { responseType: 'text' as 'json' });
   }
 
 
   addUserTrip(request: Trip): Observable<any>{
-    return this.http.post('https://localhost:5269/TravelTopia/User/addNewTrip', request);
+    return this.http.post('TravelTopia/User/addNewTrip', request);
   }
 
   /* add trip to user favourites*/
@@ -136,7 +136,7 @@ export class UserService {
           };
           const headers = { 'Content-Type': 'application/json' };
 
-          return this.http.post('https://localhost:5269/TravelTopia/User/addTrip', request, { headers })
+          return this.http.post('TravelTopia/User/addTrip', request, { headers })
             .pipe(mergeMap(() => new Observable(observer => {
               observer.next('Dodano wycieczkę do ulubionych');
               observer.complete();

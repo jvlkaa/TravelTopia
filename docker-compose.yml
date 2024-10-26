@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+  frontend:
+    build:
+      context: ./user-app
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    environment:
+      API_URL: "http://backend:8080"
+    depends_on:
+      - backend
+    networks:
+      - travel-topia-network
+
+  backend:
+    build:
+      context: ./backend-app
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - mongodb_container
+    networks:
+      - travel-topia-network
+
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    networks:
+      - travel-topia-network
+    volumes:
+      - mongodb_data_container:/data/db
+
+networks:
+  travel-topia-network:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:

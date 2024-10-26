@@ -12,12 +12,12 @@ export class PointService {
   constructor(private http: HttpClient) { }
 
   addPoint(request: Point): Observable<any>{
-  //apiUrl: 'http://localhost:5000/TravelTopia' // pozniej do pliku src/environments/environment.ts
-    return this.http.post('https://localhost:5269/TravelTopia/Point', request);
+  //apiUrl: 'TravelTopia' // pozniej do pliku src/environments/environment.ts
+    return this.http.post('TravelTopia/Point', request);
   }
 
   getPoint(request: Point): Observable<PointId>{
-    return this.http.get<PointId>('https://localhost:5269/TravelTopia/Point/'+request.latitude+'/'+request.longitude);
+    return this.http.get<PointId>('TravelTopia/Point/'+request.latitude+'/'+request.longitude);
   }
 
 }

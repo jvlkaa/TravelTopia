@@ -1,0 +1,8 @@
+{
+  "/TravelTopia": {
+    "target": "http://localhost:5268",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
