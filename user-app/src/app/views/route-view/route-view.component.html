@@ -1,5 +1,5 @@
 <div id="route-container">
-  <h1>Trasa: {{getViewRoute()!.name}}</h1>
+  <div id="name"></div>
   <div id="route-info-container">
     <div id="route-map">
       <div id="map" class="map"></div>
@@ -7,17 +7,12 @@
         <button id="popup-closer" class="ol-popup-closer"> x </button>
         <div id="popup-content"></div>
       </div>
-      <button class="add_button" *ngIf="userService.isLoggedin" (click)="addButtonClicked()">Dodaj trasę do ulubionych </button>
-      <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
+      <div id="user-container" *ngIf="userService.isLoggedin">
+        <button class="delete_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
+        <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
+      </div>
+      <div *ngIf="operationSuccess" class="add-route-success">{{ operationSuccess }}</div>
     </div>
-    <div id="route-info">
-      <h3> Typ trasy: {{getViewRoute()!.type}}</h3>
-      <h3> Trudność trasy: {{getViewRoute()!.difficulty}}</h3>
-      <h3> Szacowany czas pokonania trasy: {{getViewRouteTimeHours()}} h  {{getViewRouteTimeMinutes()}} min </h3>
-      <h3> Wymagany sprzęt:</h3>
-      <p> {{getViewRoute()!.difficulty}} </p>
-      <h3> Opis trasy:</h3>
-      <p> {{getViewRoute()!.description}} </p>
-    </div>
+    <div id="route-info"></div>
   </div>
 </div>

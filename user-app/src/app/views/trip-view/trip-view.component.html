@@ -7,13 +7,18 @@
         <button id="popup-closer" class="ol-popup-closer"> x </button>
         <div id="popup-content"></div>
       </div>
-      <button class="add_button" *ngIf="userService.isLoggedin" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
-      <div *ngIf="addTripSuccess" class="add-trip-success">{{ addTripSuccess }}</div>
+      <div *ngIf="userService.isLoggedin">
+        <button class="add_button" *ngIf="isFavourite$ | async" (click)="addButtonClicked()">Usuń wycieczke z ulubionych </button>
+        <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
+      </div>
+      <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
     </div>
     <div id="trip-info">
       <h3> Trudność wycieczki: {{getViewTrip()!.difficulty}}</h3>
       <h3> Opis wycieczki:</h3>
       <p> {{getViewTrip()!.description}} </p>
+      <h3> Trasy:</h3>
+      <div id="routes"></div>
     </div>
   </div>
 </div>

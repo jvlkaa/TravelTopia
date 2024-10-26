@@ -19,11 +19,9 @@ import {
   GoogleSigninButtonModule
 } from "@abacritt/angularx-social-login";
 import { RoutesUserViewComponent } from './views/routes-user-view/routes-user-view.component';
-import { RouteUserViewComponent } from './views/route-user-view/route-user-view.component';
 import { ProfileViewComponent } from './views/profile-view/profile-view.component';
 import { CreateTripViewComponent } from './views/create-trip-view/create-trip-view.component';
 import { TripsViewComponent } from './views/trips-view/trips-view.component';
-import { TripsUserViewComponent } from './views/trips-user-view/trips-user-view.component';
 import { TripViewComponent } from './views/trip-view/trip-view.component';
 
 @NgModule({
@@ -34,11 +32,9 @@ import { TripViewComponent } from './views/trip-view/trip-view.component';
     MainViewComponent,
     RouteViewComponent,
     RoutesUserViewComponent,
-    RouteUserViewComponent,
     ProfileViewComponent,
     CreateTripViewComponent,
     TripsViewComponent,
-    TripsUserViewComponent,
     TripViewComponent
   ],
   imports: [

@@ -152,4 +152,18 @@ export class UserService {
     );
   }
 
+  deleteTripFromUser(userID: string, tripID: string): Observable<any> {
+    const request = {
+      user: userID,
+      route: tripID
+    };
+    const headers = { 'Content-Type': 'application/json' };
+
+    return this.http.post('TravelTopia/User/deleteTrip', request, { headers })
+      .pipe(mergeMap(() => new Observable(observer => {
+        observer.next('Pomyślnie usunięto wycieczkę z ulubionych');
+        observer.complete();
+      })));
+  }
+
 }

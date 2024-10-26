@@ -1,5 +1,5 @@
 import {RouteService} from "../../route/service/route.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {Component, OnInit} from '@angular/core';
 // @ts-ignore
@@ -29,6 +29,8 @@ import Overlay from 'ol/Overlay';
 // @ts-ignore
 import XYZ from 'ol/source/XYZ';
 import {UserService} from "../../user/service/user.service";
+import {Observable, of} from "rxjs";
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-route-view',
@@ -44,17 +46,19 @@ export class RouteViewComponent implements OnInit {
     source: this.routeSource,
     zIndex: 1
   });
-  private routeInfo: Overlay;
+  private popupSatellite: Overlay;
   private markerCenter: Point;
-  private distance = 0;
-  public addRouteSuccess: string | null = null;
+  public operationSuccess: string | null = null;
   // layer allows to see route "live"
   private satelliteLayer: TileLayer | null = null;
   private isSatelliteLayerVisible: boolean = false;
+  // add/delete button for the user
+  public isFavourite$: Observable<boolean> | null = null;
 
   constructor(private routeService: RouteService,
               private urlRoute: ActivatedRoute,
-              public userService: UserService) {
+              public userService: UserService,
+              private router: Router) {
   }
 
   setViewRoute(route: RouteWithId){
@@ -96,17 +100,17 @@ export class RouteViewComponent implements OnInit {
             maxZoom: 50,
           }),
         });
-        //information about the route
+        //satellite
         const routePopupContainer = document.getElementById('popup')!;
         const routePopupCloser = document.getElementById('popup-closer')!;
-        this.routeInfo = new Overlay({
+        this.popupSatellite = new Overlay({
           element: routePopupContainer,
         });
-        this.map.addOverlay(this.routeInfo);
+        this.map.addOverlay(this.popupSatellite);
         routePopupCloser.onclick = () => {
-          this.routeInfo.setPosition(undefined);
+          this.popupSatellite.setPosition(undefined);
         };
-        //event - displaying information about the route
+        //event - displaying popup
         this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
           this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
             if (layer === this.routeLayer) {
@@ -115,20 +119,69 @@ export class RouteViewComponent implements OnInit {
           });
         });
         this.drawRouteFromDataBase();
+        this.generateRouteInfo();
+        if(this.userService.isLoggedin)
+          this.isFavourite$ = this.checkUserFavourites();
       })
     });
   }
 
+  /* showing information about the route - dynamically */
+  generateRouteInfo(){
+    // get divs
+    const nameContainer = document.getElementById('name');
+    if (!nameContainer) return;
+    nameContainer.innerHTML = '';
+    const infoContainer = document.getElementById('route-info');
+    if (!infoContainer) return;
+
+    // add information about the route
+    const name = document.createElement('h1');
+    name.textContent = `Trasa: ${this.getViewRoute()!.name}`;
+
+    const typeElement = document.createElement('h3');
+    typeElement.textContent = `Typ trasy: ${this.getViewRoute()!.type}`;
+
+    const difficultyElement = document.createElement('h3');
+    difficultyElement.textContent = `Trudność trasy: ${this.getViewRoute()!.difficulty}`;
+
+    const distanceElement = document.createElement('h3');
+    distanceElement.textContent = `Szacowany dystans: ${this.calculateDistance(this.view_route!.routePoints)} km`;
+
+    const timeElement = document.createElement('h3');
+    timeElement.textContent = `Szacowany czas pokonania trasy: ${this.getViewRouteTimeHours()} h ${this.getViewRouteTimeMinutes()} min`;
+
+    const equipmentElement = document.createElement('h3');
+    equipmentElement.textContent = `Wymagany sprzęt:`;
+    const equipmentDescription = document.createElement('p');
+    equipmentDescription.textContent = this.getViewRoute()!.equipment || 'brak';
+
+    const descriptionElement = document.createElement('h3');
+    descriptionElement.textContent = 'Opis trasy:';
+    const descriptionContent = document.createElement('p');
+    descriptionContent.textContent = this.getViewRoute()!.description || '-';
+
+    nameContainer.appendChild(name);
+    infoContainer.appendChild(typeElement);
+    infoContainer.appendChild(difficultyElement);
+    infoContainer.appendChild(timeElement);
+    infoContainer.appendChild(distanceElement);
+    infoContainer.appendChild(descriptionElement);
+    infoContainer.appendChild(equipmentElement);
+    infoContainer.appendChild(equipmentDescription);
+  }
+
   /* calculating route distance */
   calculateDistance(route: Point[]) {
-    this.distance = 0;
+    let distance = 0;
     for (let i = 1; i < route.length; i++) {
-      this.distance = this.distance +
+      distance = distance +
         Math.sqrt(
           Math.pow((route[i - 1].latitude - route[i].latitude), 2) +
           (Math.pow((route[i - 1].longitude - route[i].longitude), 2)))
         * 73;
     }
+    return parseFloat(distance.toFixed(2));
   }
 
 
@@ -139,15 +192,12 @@ export class RouteViewComponent implements OnInit {
     }
   }
 
-  /* showing information about the route */
+  /* satellite vision */
   openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
-    this.calculateDistance(this.view_route!.routePoints);
-    // information about the distance and satellite vision
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
-      `<p id="popup-distance"> Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map" style="
+      `<button id="picture-map" style="
            font-family: 'Calibri Light';
            font-weight: bold;
            width: 100%;
@@ -157,9 +207,9 @@ export class RouteViewComponent implements OnInit {
        "> Podgląd trasy </button>`;
     // closing popup
     const closeButton = document.getElementById('popup-closer')!;
-    closeButton.onclick = () => { this.routeInfo.setPosition(undefined); };
+    closeButton.onclick = () => { this.popupSatellite.setPosition(undefined); };
 
-    this.routeInfo.setPosition(coordinate);
+    this.popupSatellite.setPosition(coordinate);
     const pictureButton = document.getElementById('picture-map')!;
     pictureButton.onclick = () => { this.displaySatelliteLayer(); };
   }
@@ -177,8 +227,7 @@ export class RouteViewComponent implements OnInit {
     // update button text - to remove layer
     const popupContent = document.getElementById('popup-content')!;
     popupContent.innerHTML =
-      `<p id="popup-distance">Distance: ${this.distance.toFixed(2)} km </p>
-       <button id="picture-map" style="
+      `<button id="picture-map" style="
           font-family: 'Calibri Light';
           font-weight: bold;
           width: 100%;
@@ -204,8 +253,7 @@ export class RouteViewComponent implements OnInit {
       // update button text - to show satellite layer
       const popupContent = document.getElementById('popup-content')!;
       popupContent.innerHTML =
-        `<p id="popup-distance">Distance: ${this.distance.toFixed(2)} km </p>
-         <button id="picture-map" style="
+        `<button id="picture-map" style="
            font-family: 'Calibri Light';
            font-weight: bold;
            width: 100%;
@@ -274,12 +322,35 @@ export class RouteViewComponent implements OnInit {
 
     this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
       next: (message: string) => {
-        this.addRouteSuccess = message;
-        setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+        this.operationSuccess = message;
+        setTimeout(() => {this.operationSuccess = null;}, 3000);
       },
       error: (err: any) => {
         console.error('Nie udało się dodać trasy do ulubionych', err);
       }
     });
+  }
+
+  /* deleting route from users favourites */
+  deleteButtonClicked(){
+    this.userService.deleteRouteFromUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
+      next: (message: string) => {
+        this.operationSuccess = message;
+        setTimeout(() => {
+          this.operationSuccess = null;
+          this.router.navigate(['routes/my-routes']);
+        }, 3000);
+      },
+      error: (err: any) => {
+        console.error('Nie udało się usunąć trasy z ulubionych', err);
+      }
+    });
+  }
+
+  /* checking if the route is in user favourites */
+  checkUserFavourites(): Observable<boolean> {
+    return this.userService.getRouteIdsFromUser(this.userService.socialUser!.idToken!).pipe(
+      map(routes => routes.includes(this.view_route?.id!))
+    );
   }
 }

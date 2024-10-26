@@ -6,11 +6,10 @@ import {AppComponent} from "./app.component";
 import {MainViewComponent} from "./views/main-view/main-view.component";
 import {RouteViewComponent} from "./views/route-view/route-view.component";
 import {RoutesUserViewComponent} from "./views/routes-user-view/routes-user-view.component";
-import {RouteUserViewComponent} from "./views/route-user-view/route-user-view.component";
 import {ProfileViewComponent} from "./views/profile-view/profile-view.component";
 import {CreateTripViewComponent} from "./views/create-trip-view/create-trip-view.component";
 import {TripsViewComponent} from "./views/trips-view/trips-view.component";
-import {TripsUserViewComponent} from "./views/trips-user-view/trips-user-view.component";
+import {TripViewComponent} from "./views/trip-view/trip-view.component";
 
 const routes: Routes = [
   { path: '',
@@ -38,10 +37,6 @@ const routes: Routes = [
     path: 'routes/my-routes'
   },
   {
-    component: RouteUserViewComponent,
-    path: 'routes/my-routes/:name'
-  },
-  {
     component: ProfileViewComponent,
     path: 'profile'
   },
@@ -54,9 +49,9 @@ const routes: Routes = [
     path: 'trips'
   },
   {
-    component: TripsUserViewComponent,
-    path: 'trips/my-trips'
-  }
+    component: TripViewComponent,
+    path: 'trip/:name'
+  },
 ];
 
 @NgModule({

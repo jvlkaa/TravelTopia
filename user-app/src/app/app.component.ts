@@ -65,4 +65,8 @@ export class AppComponent implements OnInit {
   accountMenu(){
     this.isMenuOpen = !this.isMenuOpen;
   }
+
+  onLogin(){
+
+  }
 }

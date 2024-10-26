@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -31,6 +31,8 @@ import {UserService} from "../../user/service/user.service";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
 import {RouteWithId} from "../../route/model/routeWithId";
+import {forkJoin, Observable} from "rxjs";
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-trip-view',
@@ -39,7 +41,9 @@ import {RouteWithId} from "../../route/model/routeWithId";
 })
 export class TripViewComponent implements OnInit{
   private view_trip : TripWithId | undefined;   //TO DO: add ngif in html file
+  public  routes: RouteWithId[] = [];   // TO DO: change to model only with id, name (and points?)
   private map!: Map;
+  private popupSatellite: Overlay;
   private tripSource: VectorSource = new VectorSource();
   private tripLayer: VectorLayer = new VectorLayer({
     source: this.tripSource,
@@ -47,11 +51,17 @@ export class TripViewComponent implements OnInit{
   });
   private markerCenterPopup: Point;
   private distance = 0;
-  public addTripSuccess: string | null = null;
+  public operationSuccess: string | null = null;
+  // add/delete button for the user
+  public isFavourite$: Observable<boolean> | null = null;
+  // layer allows to see route "live"
+  private satelliteLayer: TileLayer | null = null;
+  private isSatelliteLayerVisible: boolean = false;
 
   constructor(private routeService: RouteService, private tripService: TripService,
               private urlRoute: ActivatedRoute,
-              public userService: UserService) {
+              public userService: UserService,
+              private router: Router) {
   }
 
   setViewTrip(trip: TripWithId){
@@ -84,57 +94,272 @@ export class TripViewComponent implements OnInit{
             maxZoom: 50,
           }),
         });
-        this.drawTripFromDataBase();
+        //satellite
+        const tripPopupContainer = document.getElementById('popup')!;
+        const tripPopupCloser = document.getElementById('popup-closer')!;
+        this.popupSatellite = new Overlay({
+          element: tripPopupContainer,
+        });
+        this.map.addOverlay(this.popupSatellite);
+        tripPopupCloser.onclick = () => {
+          this.popupSatellite.setPosition(undefined);
+        };
+        //event - displaying popup
+        this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
+          this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
+            if (layer === this.popupSatellite) {
+              this.openInfoWindow(event.coordinate);
+            }
+          });
+        });
+        this.generateTrip();
       })
     });
   }
 
-  // TO DO:
-  /* calculating center of the popup camera map */
-  calculateCenterMarkerPopup() {
-
-  }
 
   // TO DO:
   /* calculating center of the trip camera map */
   calculateCenterMarker() {
+    let routesPoints: Point[] = [];
+    this.routes.forEach(async (r) => {
+      r.routePoints.forEach(async (point) =>{
+        routesPoints.push(point);
+      })
+    });
+    const centerPoint = routesPoints[Math.floor(routesPoints.length / 2)];
+    this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
+    this.map.addLayer(this.tripLayer);
+  }
+
+
+  /* sattelite vision */
+  openInfoWindow(coordinate: number[]) {
+    const popupContent = document.getElementById('popup-content')!;
+    popupContent.innerHTML =
+      `<button id="picture-map" style="
+           font-family: 'Calibri Light';
+           font-weight: bold;
+           width: 100%;
+           border-bottom-right-radius: 20px;
+           border-bottom-left-radius: 20px;
+           background: lavender;
+       "> Podgląd trasy </button>`;
+    // closing popup
+    const closeButton = document.getElementById('popup-closer')!;
+    closeButton.onclick = () => { this.popupSatellite.setPosition(undefined); };
+
+    this.popupSatellite.setPosition(coordinate);
+    const pictureButton = document.getElementById('picture-map')!;
+    pictureButton.onclick = () => { this.displaySatelliteLayer(); };
+  }
+
+  /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
+  displaySatelliteLayer(){
+    this.satelliteLayer = new TileLayer({
+      source: new XYZ({
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      }),
+      zIndex: 0
+    });
+    this.map.addLayer(this.satelliteLayer);
+
+    // update button text - to remove layer
+    const popupContent = document.getElementById('popup-content')!;
+    popupContent.innerHTML =
+      `<button id="picture-map" style="
+          font-family: 'Calibri Light';
+          font-weight: bold;
+          width: 100%;
+          border-bottom-right-radius: 20px;
+          border-bottom-left-radius: 20px;
+          background: lavender;
+       "> Zamknij podgląd </button>`;
+    this.isSatelliteLayerVisible = true;
+
+    // update button onlick
+    const pictureButton = document.getElementById('picture-map')!;
+    pictureButton.onclick = () => { this.removeSatelliteLayer(); };
+    const closeButton = document.getElementById('popup-closer')!;
+    closeButton.style.display = 'none';
+  }
+
+  /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
+  removeSatelliteLayer() {
+    if (this.satelliteLayer) {
+      this.map.removeLayer(this.satelliteLayer);
+      this.satelliteLayer = null;
+
+      // update button text - to show satellite layer
+      const popupContent = document.getElementById('popup-content')!;
+      popupContent.innerHTML =
+        `<button id="picture-map" style="
+           font-family: 'Calibri Light';
+           font-weight: bold;
+           width: 100%;
+           border-bottom-right-radius: 20px;
+           border-bottom-left-radius: 20px;
+           background: lavender;
+         "> Podgląd trasy </button>`;
+      this.isSatelliteLayerVisible = false;
+
+      // update button onlick
+      const pictureButton = document.getElementById('picture-map')!;
+      pictureButton.onclick = () => {this.displaySatelliteLayer();};
+      const closeButton = document.getElementById('popup-closer')!;
+      closeButton.style.display = 'inline';
+    }
+  }
+
+  /* get routes from the trip */
+  generateTrip(){
+
+    // get routes from trip
+    const tripRoutes = this.view_trip!.routes.map(routeId =>
+      this.routeService.getRouteByID(routeId)
+    );
+
+    forkJoin(tripRoutes).subscribe((tripRoutes: RouteWithId[]) => {
+      this.routes = tripRoutes;
+      this.generateTripOnMap();
+      this.listRoutes();
+      this.isFavourite$ = this.checkUserFavourites();
+    }, error => {
+      console.error(error);
+    });
 
   }
 
-  // TO DO: calculating distanse from all routes
-  calculateDistance(){
-
+  /* generate random color for route color */
+  generateRouteColor(): string {
+    const colors : string = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += colors[Math.floor(Math.random() * colors.length)];
+    }
+    return color;
   }
 
-  // TO DO:
-  /* showing information about the trip */
-  // openInfoWindow(coordinate: number[]) {
-  //   this.calculateCenterMarkerPopup()
-  // }
+  drawRoute(route: RouteWithId){
+    let color = this.generateRouteColor();
+    const lineCoordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+    const lineFeature = new Feature({
+      geometry: new LineString(lineCoordinates)
+    });
+    lineFeature.setStyle(new Style({
+      stroke: new Stroke({
+        color: color,
+        width: 4
+      })
+    }));
+    // marker - starting point
+    const startMarker = new Feature({
+      geometry: new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude]))
+    });
+    startMarker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    // marker - end point
+    const endMarker = new Feature({
+      geometry: new Point(fromLonLat(
+        [route.routePoints[route.routePoints.length - 1].longitude,
+          route.routePoints[route.routePoints.length - 1].latitude]))
+    });
+    endMarker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.tripSource.addFeature(lineFeature);
+    this.tripSource.addFeature(startMarker);
+    this.tripSource.addFeature(endMarker);
+  }
+
 
   // TO DO:
   /* showing chosen trip from list from database */
-  drawTripFromDataBase() {
+  generateTripOnMap() {
     this.tripSource.clear();
-
-
     // point setting center of the trip
-    // const centerPoint = this.view_trip!.routePoints[Math.floor(this.view_trip!.routePoints.length / 2)];
-    // this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
-    // this.calculateDistance();
-    this.map.addLayer(this.tripLayer);
+    this.calculateCenterMarker();
+    //draw each route
+    this.routes.forEach(async (r) => {
+        this.drawRoute(r);
+    });
+  }
+
+  /* listing routes with navigation to more information about the route */
+  listRoutes(){
+    const routesContainer = document.getElementById('routes');
+    if (!routesContainer) return;
+    routesContainer.innerHTML = '';
+
+    if (this.routes.length === 0) {
+      const message = document.createElement('p');
+      message.textContent = 'Brak elementów do wyświetlenia';
+      routesContainer.appendChild(message);
+    }
+    else {
+      const ulElement = document.createElement('ul');
+      ulElement.id = 'route-container';
+
+      this.routes.forEach(route => {
+        const liElement = document.createElement('li');
+        liElement.id = 'li-routes';
+
+        const aElement = document.createElement('a');
+        aElement.id = 'a-routes';
+        aElement.href = `/route/${route.name}`;
+        aElement.textContent = route.name;
+
+        liElement.appendChild(aElement);
+        ulElement.appendChild(liElement);
+      });
+
+      routesContainer.appendChild(ulElement);
+    }
   }
 
   /* adding trip to favourites */
   addButtonClicked(){
     this.userService.addTripToUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
       next: (message: string) => {
-        this.addTripSuccess = message;
-        setTimeout(() => {this.addTripSuccess = null;}, 3000);
+        this.operationSuccess = message;
+        setTimeout(() => {this.operationSuccess = null;}, 3000);
       },
       error: (err: any) => {
         console.error('Nie udało się dodać wycieczki do ulubionych', err);
       }
     });
+  }
+
+  // TO DO: delete from favourites
+  /* deleting trip from favourites */
+  deleteButtonClicked(){
+    this.userService.deleteTripFromUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
+      next: (message: string) => {
+        this.operationSuccess = message;
+        setTimeout(() => {
+          this.operationSuccess = null;
+          this.router.navigate(['trips/my-trips']);
+        }, 3000);
+      },
+      error: (err: any) => {
+        console.error('Nie udało się usunąć wycieczki z ulubionych', err);
+      }
+    });
+  }
+
+  /* checking if the trip is in user favourites */
+  checkUserFavourites(): Observable<boolean> {
+    return this.userService.getTripIdsFromUser(this.userService.socialUser!.idToken!).pipe(
+      map(trips => trips.includes(this.view_trip?.id!))
+    );
   }
 }
