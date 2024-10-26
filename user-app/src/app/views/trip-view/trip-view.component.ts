@@ -222,8 +222,9 @@ export class TripViewComponent implements OnInit{
     forkJoin(tripRoutes).subscribe((tripRoutes: RouteWithId[]) => {
       this.routes = tripRoutes;
       this.generateTripOnMap();
-      this.listRoutes();
-      this.isFavourite$ = this.checkUserFavourites();
+      this.generateInfo();
+      if(this.userService.isLoggedin)
+        this.isFavourite$ = this.checkUserFavourites();
     }, error => {
       console.error(error);
     });
@@ -294,6 +295,33 @@ export class TripViewComponent implements OnInit{
     });
   }
 
+  /* showing information about the trip - dynamically */
+  generateInfo(){
+    const nameContainer = document.getElementById('name');
+    if (!nameContainer) return;
+    nameContainer.innerHTML = '';
+    const infoContainer = document.getElementById('information');
+    if (!infoContainer) return;
+
+    // add information about the trip
+    const name = document.createElement('h1');
+    name.textContent = `Trasa: ${this.getViewTrip()!.name}`;
+
+    const difficultyElement = document.createElement('h3');
+    difficultyElement.textContent = `Trudność wycieczki: ${this.getViewTrip()!.difficulty}`;
+
+    const descriptionElement = document.createElement('h3');
+    descriptionElement.textContent = 'Opis wycieczki:';
+    const descriptionContent = document.createElement('p');
+    descriptionContent.textContent = this.getViewTrip()!.description;
+
+    nameContainer.appendChild(name);
+    infoContainer.appendChild(descriptionElement);
+    infoContainer.appendChild(difficultyElement);
+
+    //routes
+    this.listRoutes();
+  }
   /* listing routes with navigation to more information about the route */
   listRoutes(){
     const routesContainer = document.getElementById('routes');

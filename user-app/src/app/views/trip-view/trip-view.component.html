@@ -1,5 +1,5 @@
 <div id="trip-container">
-  <h1>Trasa: {{getViewTrip()!.name}}</h1>
+  <div id="name"></div>
   <div id="trip-info-container">
     <div id="trip-map">
       <div id="map" class="map"></div>
@@ -14,9 +14,7 @@
       <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
     </div>
     <div id="trip-info">
-      <h3> Trudność wycieczki: {{getViewTrip()!.difficulty}}</h3>
-      <h3> Opis wycieczki:</h3>
-      <p> {{getViewTrip()!.description}} </p>
+      <div id="information"> </div>
       <h3> Trasy:</h3>
       <div id="routes"></div>
     </div>

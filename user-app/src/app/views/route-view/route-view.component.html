@@ -8,8 +8,8 @@
         <div id="popup-content"></div>
       </div>
       <div id="user-container" *ngIf="userService.isLoggedin">
-        <button class="delete_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
-        <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
+        <button class="favourite_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
+        <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
       </div>
       <div *ngIf="operationSuccess" class="add-route-success">{{ operationSuccess }}</div>
     </div>
