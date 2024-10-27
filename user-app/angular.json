@@ -32,7 +32,8 @@
                 "inject": false
               }
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["rbush"]
           },
           "configurations": {
             "production": {
@@ -102,7 +103,8 @@
                 "inject": false
               }
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["rbush"]
           }
         }
       }

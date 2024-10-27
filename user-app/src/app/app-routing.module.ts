@@ -52,6 +52,10 @@ const routes: Routes = [
     component: TripViewComponent,
     path: 'trip/:name'
   },
+  {
+    component: TripsViewComponent,
+    path: 'trips/my-trips'
+  }
 ];
 
 @NgModule({

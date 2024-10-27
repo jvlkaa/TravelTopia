@@ -8,7 +8,7 @@
         <div id="popup-content"></div>
       </div>
       <div *ngIf="userService.isLoggedin">
-        <button class="add_button" *ngIf="isFavourite$ | async" (click)="addButtonClicked()">Usuń wycieczke z ulubionych </button>
+        <button class="add_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
         <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
       </div>
       <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>

@@ -31,13 +31,15 @@ export class AppComponent implements OnInit {
       if(user){
         this.userService.socialUser = user;
         this.userService.isLoggedin = user != null;
-        this.userService.addAccount(user.idToken).subscribe();
-        this.userService.getRole().subscribe({
-          next: (role: string | null) => {
-            console.log(this.userService.socialUser?.idToken);// if you need update developer role
-            if(role == 'developer'){
-              this.userService.isDeveloper = true;
-            }
+        this.userService.addAccount(user.idToken).subscribe({
+          next: () => { this.userService.getRole().subscribe({
+              next: (role: string | null) => {
+                console.log(this.userService.socialUser?.idToken); // uncommented if u need update role developer
+                if (role === 'developer') {
+                  this.userService.isDeveloper = true;
+                }
+              }
+            });
           }
         });
 
@@ -66,7 +68,4 @@ export class AppComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  onLogin(){
-
-  }
 }

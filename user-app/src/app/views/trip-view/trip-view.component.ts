@@ -367,7 +367,6 @@ export class TripViewComponent implements OnInit{
     });
   }
 
-  // TO DO: delete from favourites
   /* deleting trip from favourites */
   deleteButtonClicked(){
     this.userService.deleteTripFromUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
