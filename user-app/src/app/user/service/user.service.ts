@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {forkJoin, mergeMap, Observable} from "rxjs";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {forkJoin, mergeMap, Observable, switchMap} from "rxjs";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
@@ -9,6 +9,7 @@ import {Trip} from "../../trip/model/trip";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
 import {map} from "rxjs/operators";
+import {Point} from "../../point/model/point";
 
 @Injectable({
   providedIn: 'root'
@@ -166,4 +167,20 @@ export class UserService {
       })));
   }
 
+  /* get user trips near point*/
+  getUserRoutesNearPoint(userID: string, point: Point): Observable<RouteWithId[]> {
+    const lat = point.latitude;
+    const lon = point.longitude;
+
+    return this.getRouteIdsFromUser(userID).pipe(
+      switchMap((routeIds: string[]) => {
+        let params = new HttpParams();
+        routeIds.forEach(route => {
+          params = params.append('routes', route);
+        });
+
+        return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/NearUserPoint/' + lat + '/' + lon, { params });
+      })
+    );
+  }
 }

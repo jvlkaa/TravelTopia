@@ -38,11 +38,4 @@ export class RouteService {
     const lon = point.longitude;
     return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/NearPoint/' + lat + '/' + lon)
   }
-
-  // TO DO: uzueplnic gdy zostanie na backendzie dopisana funkcja
-  // getUserRoutesNearPoint(point: Point): Observable<RouteWithId[]> {
-  //   const lat = point.latitude;
-  //   const lon = point.longitude;
-  //   return
-  // }
 }

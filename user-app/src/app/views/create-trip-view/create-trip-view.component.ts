@@ -87,9 +87,16 @@ export class CreateTripViewComponent implements OnInit{
 
   /* routes from database to show as a list */
   listRoutes(){
-    this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
-      this.routes = routes;
-    });
+    if(this.userService.isLoggedin && !this.userService.isDeveloper) {
+      this.userService.getRoutesFromUser(this.userService.socialUser!.idToken).subscribe((routes: RouteWithId[]) => {
+        this.routes = routes
+      });
+    }
+    else {
+      this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
+        this.routes = routes;
+      });
+    }
   }
 
 
@@ -165,17 +172,13 @@ export class CreateTripViewComponent implements OnInit{
     this.routePreviewID = null;
     this.routesTrip.push(route);
     this.drawRoute(route, true);
-    // TO DO: odkomentowac jak bedzie gotowa funkcja na liczenie tras w poblizu tras usera
     // get routes near last point of the last route in the trip
-    //if(this.userService.isLoggedin) {
-      // if(!this.userService.isDeveloper)
-      // {
-      //   this.routeService.getUserRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
-      //     this.routes = routesNearPoint;
-      //   })
-      // }
-    //}
-    //else{
+    if(this.userService.isLoggedin && !this.userService.isDeveloper) {
+        this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
+          this.routes = routesNearPoint;
+        })
+    }
+    else{
       this.routeService.getRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
         this.routes = routesNearPoint;
         //delete routes which are added to the trip from the list
@@ -184,7 +187,7 @@ export class CreateTripViewComponent implements OnInit{
         );
       })
 
-   // }
+    }
 
   }
 
