@@ -137,29 +137,65 @@ export class RouteViewComponent implements OnInit {
 
     // add information about the route
     const name = document.createElement('h1');
-    name.textContent = `Trasa: ${this.getViewRoute()!.name}`;
+    name.textContent = `${this.getViewRoute()!.name}`;
 
     const typeElement = document.createElement('h3');
     typeElement.textContent = `Typ trasy: ${this.getViewRoute()!.type}`;
+    typeElement.style.borderBottomStyle = 'solid';
+    typeElement.style.borderBottomWidth = 'thin';
+    typeElement.style.borderBottomColor = 'gray';
+    typeElement.style.paddingBottom = '10px';
+    typeElement.style.paddingLeft = '10px';
+    typeElement.style.width = '100%';
 
     const difficultyElement = document.createElement('h3');
     difficultyElement.textContent = `Trudność trasy: ${this.getViewRoute()!.difficulty}`;
+    difficultyElement.style.borderBottomStyle = 'solid';
+    difficultyElement.style.borderBottomWidth = 'thin';
+    difficultyElement.style.borderBottomColor = 'gray';
+    difficultyElement.style.paddingBottom = '10px';
+    difficultyElement.style.paddingLeft = '10px';
+    difficultyElement.style.width = '100%';
 
     const distanceElement = document.createElement('h3');
     distanceElement.textContent = `Szacowany dystans: ${this.calculateDistance(this.view_route!.routePoints)} km`;
+    distanceElement.style.borderBottomStyle = 'solid';
+    distanceElement.style.borderBottomWidth = 'thin';
+    distanceElement.style.borderBottomColor = 'gray';
+    distanceElement.style.paddingBottom = '10px';
+    distanceElement.style.paddingLeft = '10px';
+    distanceElement.style.width = '100%';
 
     const timeElement = document.createElement('h3');
     timeElement.textContent = `Szacowany czas pokonania trasy: ${this.getViewRouteTimeHours()} h ${this.getViewRouteTimeMinutes()} min`;
+    timeElement.style.borderBottomStyle = 'solid';
+    timeElement.style.borderBottomWidth = 'thin';
+    timeElement.style.borderBottomColor = 'gray';
+    timeElement.style.paddingBottom = '10px';
+    timeElement.style.paddingLeft = '10px';
+    timeElement.style.width = '100%';
 
     const equipmentElement = document.createElement('h3');
     equipmentElement.textContent = `Wymagany sprzęt:`;
     const equipmentDescription = document.createElement('p');
     equipmentDescription.textContent = this.getViewRoute()!.equipment || 'brak';
+    equipmentDescription.style.borderBottomStyle = 'solid';
+    equipmentDescription.style.borderBottomWidth = 'thin';
+    equipmentDescription.style.borderBottomColor = 'gray';
+    equipmentDescription.style.paddingBottom = '10px';
+    equipmentDescription.style.paddingLeft = '10px';
+    equipmentDescription.style.width = '100%';
 
     const descriptionElement = document.createElement('h3');
     descriptionElement.textContent = 'Opis trasy:';
     const descriptionContent = document.createElement('p');
     descriptionContent.textContent = this.getViewRoute()!.description || '-';
+    descriptionContent.style.borderBottomStyle = 'solid';
+    descriptionContent.style.borderBottomWidth = 'thin';
+    descriptionContent.style.borderBottomColor = 'gray';
+    descriptionContent.style.paddingBottom = '10px';
+    descriptionContent.style.paddingLeft = '10px';
+    descriptionContent.style.width = '100%';
 
     nameContainer.appendChild(name);
     infoContainer.appendChild(typeElement);
@@ -170,6 +206,7 @@ export class RouteViewComponent implements OnInit {
     infoContainer.appendChild(equipmentElement);
     infoContainer.appendChild(equipmentDescription);
   }
+
 
   /* calculating route distance */
   calculateDistance(route: Point[]) {

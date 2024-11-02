@@ -132,7 +132,7 @@ export class UserService {
         if (!tripIds.includes(tripID)) {
           const request = {
             user: userID,
-            route: tripID
+            trip: tripID
           };
           const headers = { 'Content-Type': 'application/json' };
 
@@ -155,7 +155,7 @@ export class UserService {
   deleteTripFromUser(userID: string, tripID: string): Observable<any> {
     const request = {
       user: userID,
-      route: tripID
+      trip: tripID
     };
     const headers = { 'Content-Type': 'application/json' };
 

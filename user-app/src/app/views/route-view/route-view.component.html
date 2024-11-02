@@ -1,18 +1,18 @@
 <div id="route-container">
   <div id="name"></div>
-  <div id="route-info-container">
-    <div id="route-map">
-      <div id="map" class="map"></div>
-      <div id="popup" class="ol-popup">
-        <button id="popup-closer" class="ol-popup-closer"> x </button>
-        <div id="popup-content"></div>
-      </div>
-      <div id="user-container" *ngIf="userService.isLoggedin">
-        <button class="favourite_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
-        <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
-      </div>
+  <div id="route-map">
+    <div id="map" class="map"></div>
+    <div id="popup" class="ol-popup">
+      <button id="popup-closer" class="ol-popup-closer"> x </button>
+      <div id="popup-content"></div>
+    </div>
+  </div>
+  <div id="route-info"></div>
+  <div id="user-option-container">
+    <div id="user-container" *ngIf="userService.isLoggedin">
+      <button class="favourite_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
+      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
       <div *ngIf="operationSuccess" class="add-route-success">{{ operationSuccess }}</div>
     </div>
-    <div id="route-info"></div>
   </div>
 </div>
