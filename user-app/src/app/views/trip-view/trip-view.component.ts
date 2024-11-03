@@ -27,6 +27,8 @@ import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
 // @ts-ignore
 import XYZ from 'ol/source/XYZ';
+// @ts-ignore
+import { boundingExtent, getCenter } from 'ol/extent';
 import {UserService} from "../../user/service/user.service";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
@@ -89,25 +91,24 @@ export class TripViewComponent implements OnInit{
           ],
           target: 'map',
           view: new View({
-            center: fromLonLat([18.578207, 54.423506]), // from calculateCenterMarker()
-            zoom: 10,
+            zoom: 18,
             maxZoom: 50,
           }),
         });
         //satellite
-        const tripPopupContainer = document.getElementById('popup')!;
-        const tripPopupCloser = document.getElementById('popup-closer')!;
+        const routePopupContainer = document.getElementById('popup')!;
+        const routePopupCloser = document.getElementById('popup-closer')!;
         this.popupSatellite = new Overlay({
-          element: tripPopupContainer,
+          element: routePopupContainer,
         });
         this.map.addOverlay(this.popupSatellite);
-        tripPopupCloser.onclick = () => {
+        routePopupCloser.onclick = () => {
           this.popupSatellite.setPosition(undefined);
         };
         //event - displaying popup
         this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
           this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
-            if (layer === this.popupSatellite) {
+            if (layer === this.tripLayer) {
               this.openInfoWindow(event.coordinate);
             }
           });
@@ -118,7 +119,6 @@ export class TripViewComponent implements OnInit{
   }
 
 
-  // TO DO:
   /* calculating center of the trip camera map */
   calculateCenterMarker() {
     let routesPoints: Point[] = [];
@@ -283,11 +283,27 @@ export class TripViewComponent implements OnInit{
   }
 
 
-  // TO DO:
+  /* calculating zoom map */
+  calculateZoom() {
+    let coordinates: number[][] = [];
+    this.routes.forEach(route => {
+      const points = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+      coordinates = coordinates.concat(points);
+    });
+
+    const extent = boundingExtent(coordinates);
+    this.map.getView().fit(extent, {
+      size: this.map.getSize(),
+      maxZoom: 16,
+      padding: [200, 200, 200, 200]
+    });
+  }
+
   /* showing chosen trip from list from database */
   generateTripOnMap() {
     this.tripSource.clear();
-    // point setting center of the trip
+    //center and zoom
+    this.calculateZoom();
     this.calculateCenterMarker();
     //draw each route
     this.routes.forEach(async (r) => {
@@ -305,7 +321,7 @@ export class TripViewComponent implements OnInit{
 
     // add information about the trip
     const name = document.createElement('h1');
-    name.textContent = `Trasa: ${this.getViewTrip()!.name}`;
+    name.textContent = `Wycieczka: ${this.getViewTrip()!.name}`;
 
     const difficultyElement = document.createElement('h3');
     difficultyElement.textContent = `Trudność wycieczki: ${this.getViewTrip()!.difficulty}`;
@@ -359,7 +375,11 @@ export class TripViewComponent implements OnInit{
     this.userService.addTripToUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
       next: (message: string) => {
         this.operationSuccess = message;
-        setTimeout(() => {this.operationSuccess = null;}, 3000);
+        setTimeout(() => {
+          this.operationSuccess = null;
+          if(this.userService.isLoggedin)
+            this.isFavourite$ = this.checkUserFavourites();
+        }, 3000);
       },
       error: (err: any) => {
         console.error('Nie udało się dodać wycieczki do ulubionych', err);
@@ -374,7 +394,8 @@ export class TripViewComponent implements OnInit{
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          this.router.navigate(['trips/my-trips']);
+          if(this.userService.isLoggedin)
+            this.isFavourite$ = this.checkUserFavourites();
         }, 3000);
       },
       error: (err: any) => {

@@ -28,6 +28,8 @@ import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
 // @ts-ignore
 import XYZ from 'ol/source/XYZ';
+// @ts-ignore
+import { boundingExtent } from 'ol/extent';
 import {UserService} from "../../user/service/user.service";
 import {Observable, of} from "rxjs";
 import { map } from 'rxjs/operators';
@@ -39,7 +41,7 @@ import { map } from 'rxjs/operators';
 })
 export class RouteViewComponent implements OnInit {
 
-  private view_route : RouteWithId | undefined;   //TO DO: add ngif in html file
+  private view_route : RouteWithId | undefined;
   private map!: Map;
   private routeSource: VectorSource = new VectorSource();
   private routeLayer: VectorLayer = new VectorLayer({
@@ -126,6 +128,20 @@ export class RouteViewComponent implements OnInit {
     });
   }
 
+  /* setting style of div with route information */
+  setStyle(element: HTMLHeadingElement){
+    element.style.borderBottomStyle = 'solid';
+    element.style.borderBottomWidth = 'thin';
+    element.style.borderBottomColor = 'gray';
+    element.style.paddingBottom = '10px';
+    element.style.paddingLeft = '10px';
+    element.style.width = '100%';
+  }
+
+  setStyleContent(element: HTMLParagraphElement){
+    //TO DO
+  }
+
   /* showing information about the route - dynamically */
   generateRouteInfo(){
     // get divs
@@ -140,69 +156,56 @@ export class RouteViewComponent implements OnInit {
     name.textContent = `${this.getViewRoute()!.name}`;
 
     const typeElement = document.createElement('h3');
-    typeElement.textContent = `Typ trasy: ${this.getViewRoute()!.type}`;
-    typeElement.style.borderBottomStyle = 'solid';
-    typeElement.style.borderBottomWidth = 'thin';
-    typeElement.style.borderBottomColor = 'gray';
-    typeElement.style.paddingBottom = '10px';
-    typeElement.style.paddingLeft = '10px';
-    typeElement.style.width = '100%';
+    typeElement.textContent = `Typ trasy: `;
+    this.setStyle(typeElement);
+    const typeElementContent = document.createElement('p');
+    typeElementContent.textContent = `${this.getViewRoute()!.type}`;
+    this.setStyleContent(typeElementContent);
 
     const difficultyElement = document.createElement('h3');
-    difficultyElement.textContent = `Trudność trasy: ${this.getViewRoute()!.difficulty}`;
-    difficultyElement.style.borderBottomStyle = 'solid';
-    difficultyElement.style.borderBottomWidth = 'thin';
-    difficultyElement.style.borderBottomColor = 'gray';
-    difficultyElement.style.paddingBottom = '10px';
-    difficultyElement.style.paddingLeft = '10px';
-    difficultyElement.style.width = '100%';
+    difficultyElement.textContent = `Trudność trasy: `;
+    this.setStyle(difficultyElement);
+    const difficultyElementContent = document.createElement('p');
+    difficultyElementContent.textContent = ` ${this.getViewRoute()!.difficulty}`;
+    this.setStyleContent(difficultyElementContent);
 
     const distanceElement = document.createElement('h3');
-    distanceElement.textContent = `Szacowany dystans: ${this.calculateDistance(this.view_route!.routePoints)} km`;
-    distanceElement.style.borderBottomStyle = 'solid';
-    distanceElement.style.borderBottomWidth = 'thin';
-    distanceElement.style.borderBottomColor = 'gray';
-    distanceElement.style.paddingBottom = '10px';
-    distanceElement.style.paddingLeft = '10px';
-    distanceElement.style.width = '100%';
+    distanceElement.textContent = `Szacowany dystans: `;
+    this.setStyle(distanceElement);
+    const distanceElementContent = document.createElement('p');
+    distanceElementContent.textContent = `${this.calculateDistance(this.view_route!.routePoints)} km`;
+    this.setStyleContent(distanceElementContent);
 
     const timeElement = document.createElement('h3');
-    timeElement.textContent = `Szacowany czas pokonania trasy: ${this.getViewRouteTimeHours()} h ${this.getViewRouteTimeMinutes()} min`;
-    timeElement.style.borderBottomStyle = 'solid';
-    timeElement.style.borderBottomWidth = 'thin';
-    timeElement.style.borderBottomColor = 'gray';
-    timeElement.style.paddingBottom = '10px';
-    timeElement.style.paddingLeft = '10px';
-    timeElement.style.width = '100%';
+    timeElement.textContent = `Szacowany czas pokonania trasy: `;
+    this.setStyle(timeElement);
+    const timeElementContent = document.createElement('p');
+    timeElementContent.textContent = `${this.getViewRouteTimeHours()} h ${this.getViewRouteTimeMinutes()} min`;
+    this.setStyleContent(timeElementContent);
 
     const equipmentElement = document.createElement('h3');
     equipmentElement.textContent = `Wymagany sprzęt:`;
     const equipmentDescription = document.createElement('p');
     equipmentDescription.textContent = this.getViewRoute()!.equipment || 'brak';
-    equipmentDescription.style.borderBottomStyle = 'solid';
-    equipmentDescription.style.borderBottomWidth = 'thin';
-    equipmentDescription.style.borderBottomColor = 'gray';
-    equipmentDescription.style.paddingBottom = '10px';
-    equipmentDescription.style.paddingLeft = '10px';
-    equipmentDescription.style.width = '100%';
+    this.setStyle(equipmentDescription);
 
     const descriptionElement = document.createElement('h3');
     descriptionElement.textContent = 'Opis trasy:';
     const descriptionContent = document.createElement('p');
     descriptionContent.textContent = this.getViewRoute()!.description || '-';
-    descriptionContent.style.borderBottomStyle = 'solid';
-    descriptionContent.style.borderBottomWidth = 'thin';
-    descriptionContent.style.borderBottomColor = 'gray';
-    descriptionContent.style.paddingBottom = '10px';
-    descriptionContent.style.paddingLeft = '10px';
-    descriptionContent.style.width = '100%';
+    this.setStyle(descriptionContent);
 
     nameContainer.appendChild(name);
     infoContainer.appendChild(typeElement);
+    infoContainer.appendChild(typeElementContent);
     infoContainer.appendChild(difficultyElement);
+    infoContainer.appendChild(difficultyElementContent);
     infoContainer.appendChild(timeElement);
+    infoContainer.appendChild(timeElementContent);
     infoContainer.appendChild(distanceElement);
+    infoContainer.appendChild(distanceElementContent);
     infoContainer.appendChild(descriptionElement);
+    infoContainer.appendChild(descriptionContent);
     infoContainer.appendChild(equipmentElement);
     infoContainer.appendChild(equipmentDescription);
   }
@@ -351,6 +354,12 @@ export class RouteViewComponent implements OnInit {
     // point setting center of the route
     const centerPoint = this.view_route!.routePoints[Math.floor(this.view_route!.routePoints.length / 2)];
     this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
+    // calculating zoom
+    const routeEdges = boundingExtent(lineCoordinates);
+    this.map.getView().fit(routeEdges, {
+      padding: [200, 200, 200, 200],
+    });
+
     this.map.addLayer(this.routeLayer);
   }
 
@@ -360,7 +369,11 @@ export class RouteViewComponent implements OnInit {
     this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
       next: (message: string) => {
         this.operationSuccess = message;
-        setTimeout(() => {this.operationSuccess = null;}, 3000);
+        setTimeout(() => {
+          this.operationSuccess = null;
+          if(this.userService.isLoggedin)
+            this.isFavourite$ = this.checkUserFavourites();
+        }, 3000);
       },
       error: (err: any) => {
         console.error('Nie udało się dodać trasy do ulubionych', err);
@@ -375,7 +388,8 @@ export class RouteViewComponent implements OnInit {
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          this.router.navigate(['routes/my-routes']);
+          if(this.userService.isLoggedin)
+            this.isFavourite$ = this.checkUserFavourites();
         }, 3000);
       },
       error: (err: any) => {

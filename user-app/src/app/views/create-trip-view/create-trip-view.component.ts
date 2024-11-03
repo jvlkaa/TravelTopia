@@ -23,7 +23,8 @@ import TileLayer from 'ol/layer/Tile';
 import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 // @ts-ignore
 import Feature from 'ol/Feature';
-import {Route} from "../../route/model/route";
+// @ts-ignore
+import { boundingExtent } from 'ol/extent';
 import {Trip} from "../../trip/model/trip";
 import {TripService} from "../../trip/service/trip.service";
 import {UserTrip} from "../../trip/model/userTrip";
@@ -104,6 +105,14 @@ export class CreateTripViewComponent implements OnInit{
   routePreview(route: RouteWithId){
     this.drawRoute(route, false);
     this.routePreviewID = route.id;
+    //calculate zoom if the preview route is the first one
+    if(this.routesTrip.length === 0) {
+       const coordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+       const routeEdges = boundingExtent(coordinates);
+       this.map.getView().fit(routeEdges, {
+          padding: [200, 200, 200, 200],
+       });
+    }
   }
 
   /* drawing route on the map, source = true -> tripSource, source = false -> routeSource (preview) */
@@ -176,6 +185,10 @@ export class CreateTripViewComponent implements OnInit{
     if(this.userService.isLoggedin && !this.userService.isDeveloper) {
         this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
           this.routes = routesNearPoint;
+          //delete routes which are added to the trip from the list
+          this.routes = this.routes.filter(routeExist =>
+            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+          );
         })
     }
     else{
@@ -186,9 +199,7 @@ export class CreateTripViewComponent implements OnInit{
           !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
         );
       })
-
     }
-
   }
 
   /* removing last route from trip */
@@ -210,13 +221,24 @@ export class CreateTripViewComponent implements OnInit{
     // if there is no routes in the trip then list all routes
     if(this.routesTrip.length !=0) {
       const lastRoutePoint = this.routesTrip[this.routesTrip.length - 1].routePoints[this.routesTrip[this.routesTrip.length - 1].routePoints.length - 1];
-      this.routeService.getRoutesNearPoint(lastRoutePoint).subscribe((routesNearPoint: RouteWithId[]) => {
-        this.routes = routesNearPoint;
-        //delete routes which are added to the trip from the list
-        this.routes = this.routes.filter(routeExist =>
-          !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
-        );
-      })
+      if(this.userService.isLoggedin && !this.userService.isDeveloper) {
+        this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, lastRoutePoint).subscribe((routesNearPoint: RouteWithId[]) => {
+          this.routes = routesNearPoint;
+          //delete routes which are added to the trip from the list
+          this.routes = this.routes.filter(routeExist =>
+            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+          );
+        })
+      }
+      else {
+        this.routeService.getRoutesNearPoint(lastRoutePoint).subscribe((routesNearPoint: RouteWithId[]) => {
+          this.routes = routesNearPoint;
+          //delete routes which are added to the trip from the list
+          this.routes = this.routes.filter(routeExist =>
+            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+          );
+        })
+      }
     }
     else
       this.listRoutes();
@@ -293,7 +315,7 @@ export class CreateTripViewComponent implements OnInit{
         routes: [],
         difficulty: '',
         description: this.description,
-        userCreated: false,
+        userCreated: true,
         userIdToken: this.userService.socialUser!.idToken
       };
       for (let r of this.routesTrip) {
