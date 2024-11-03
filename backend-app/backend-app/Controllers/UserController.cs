@@ -91,13 +91,10 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpGet("{id}/{latitude}/{longitude}")]
-        public async Task<IActionResult> GetRoutesByPoint(string id, double latitude, double longitude)
+        [HttpGet("NearUserPoint/{latitude}/{longitude}")]
+        public async Task<IActionResult> GetRoutesByPoint(double latitude, double longitude, [FromQuery] List<string> routes)
         {
-            var payload = await VerifyGoogleToken(id);
-            var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
-
-            var result = await routeService.GetUserRoutesByPointAsync(userRoutes, latitude, longitude);
+            var result = await routeService.GetUserRoutesByPointAsync(routes, latitude, longitude);
             if (result == null)
             {
                 return NotFound();

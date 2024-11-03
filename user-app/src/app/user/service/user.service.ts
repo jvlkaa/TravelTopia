@@ -179,7 +179,7 @@ export class UserService {
           params = params.append('routes', route);
         });
 
-        return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/NearUserPoint/' + lat + '/' + lon, { params });
+        return this.http.get<RouteWithId[]>('TravelTopia/User' + '/NearUserPoint/' + lat + '/' + lon, { params });
       })
     );
   }
