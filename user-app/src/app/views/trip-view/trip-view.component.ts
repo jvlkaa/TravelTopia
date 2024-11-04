@@ -42,7 +42,7 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./trip-view.component.css']
 })
 export class TripViewComponent implements OnInit{
-  private view_trip : TripWithId | undefined;   //TO DO: add ngif in html file
+  public view_trip : TripWithId | undefined;
   public  routes: RouteWithId[] = [];   // TO DO: change to model only with id, name (and points?)
   private map!: Map;
   private popupSatellite: Overlay;
@@ -68,13 +68,6 @@ export class TripViewComponent implements OnInit{
 
   setViewTrip(trip: TripWithId){
     this.view_trip = trip;
-  }
-
-  getViewTrip(){
-    const trip = this.view_trip;
-    if (this.view_trip?.description === '')
-      trip!.description = '-';
-    return trip;
   }
 
 
@@ -154,6 +147,7 @@ export class TripViewComponent implements OnInit{
     pictureButton.onclick = () => { this.displaySatelliteLayer(); };
   }
 
+
   /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
   displaySatelliteLayer(){
     this.satelliteLayer = new TileLayer({
@@ -184,6 +178,7 @@ export class TripViewComponent implements OnInit{
     closeButton.style.display = 'none';
   }
 
+
   /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
   removeSatelliteLayer() {
     if (this.satelliteLayer) {
@@ -211,6 +206,7 @@ export class TripViewComponent implements OnInit{
     }
   }
 
+
   /* get routes from the trip */
   generateTrip(){
 
@@ -222,7 +218,6 @@ export class TripViewComponent implements OnInit{
     forkJoin(tripRoutes).subscribe((tripRoutes: RouteWithId[]) => {
       this.routes = tripRoutes;
       this.generateTripOnMap();
-      this.generateInfo();
       if(this.userService.isLoggedin)
         this.isFavourite$ = this.checkUserFavourites();
     }, error => {
@@ -230,6 +225,7 @@ export class TripViewComponent implements OnInit{
     });
 
   }
+
 
   /* generate random color for route color */
   generateRouteColor(): string {
@@ -240,6 +236,7 @@ export class TripViewComponent implements OnInit{
     }
     return color;
   }
+
 
   drawRoute(route: RouteWithId){
     let color = this.generateRouteColor();
@@ -299,6 +296,7 @@ export class TripViewComponent implements OnInit{
     });
   }
 
+
   /* showing chosen trip from list from database */
   generateTripOnMap() {
     this.tripSource.clear();
@@ -311,91 +309,6 @@ export class TripViewComponent implements OnInit{
     });
   }
 
-  setStyle(element: HTMLHeadingElement) {
-    element.style.borderBottomStyle = 'solid';
-    element.style.borderBottomWidth = 'thin';
-    element.style.borderBottomColor = 'gray';
-    element.style.paddingBottom = '10px';
-    element.style.paddingLeft = '10px';
-    element.style.width = '100%';
-  }
-
-  /* showing information about the trip - dynamically */
-  generateInfo(){
-    const nameContainer = document.getElementById('name');
-    if (!nameContainer) return;
-    nameContainer.innerHTML = '';
-    const infoContainer = document.getElementById('information');
-    if (!infoContainer) return;
-
-    // add information about the trip
-    const name = document.createElement('h1');
-    name.textContent = `${this.getViewTrip()!.name}`;
-
-    const difficultyElement = document.createElement('h3');
-    difficultyElement.textContent = `Trudność wycieczki: ${this.getViewTrip()!.difficulty}`;
-    this.setStyle(difficultyElement);
-
-    const descriptionElement = document.createElement('h3');
-    descriptionElement.textContent = 'Opis wycieczki:';
-    this.setStyle(descriptionElement);
-    const descriptionContent = document.createElement('p');
-    descriptionContent.textContent = this.getViewTrip()!.description;
-    this.setStyle(descriptionContent)
-
-    nameContainer.appendChild(name);
-    infoContainer.appendChild(descriptionElement);
-    infoContainer.appendChild(difficultyElement);
-
-    //routes
-    this.listRoutes();
-  }
-  /* listing routes with navigation to more information about the route */
-  listRoutes(){
-    const routesContainer = document.getElementById('routes');
-    if (!routesContainer) return;
-    routesContainer.innerHTML = '';
-
-    if (this.routes.length === 0) {
-      const message = document.createElement('p');
-      message.textContent = 'Brak elementów do wyświetlenia';
-      routesContainer.appendChild(message);
-    }
-    else {
-      const ulElement = document.createElement('ul');
-      ulElement.id = 'route-container';
-
-      this.routes.forEach(route => {
-        const liElement = document.createElement('li');
-        liElement.id = 'li-routes';
-        liElement.style.display = 'flex';
-        liElement.style.justifyContent = 'space-evenly';
-        liElement.style.marginTop = '5px';
-
-        const aElement = document.createElement('a');
-        aElement.id = 'a-routes';
-        aElement.href = `/route/${route.name}`;
-        aElement.textContent = route.name;
-        aElement.style.fontFamily = 'Calibri Light';
-        aElement.style.fontSize = 'larger';
-        aElement.style.borderRadius = '20px';
-        aElement.style.padding = '10px';
-        aElement.style.backgroundColor = 'white';
-        aElement.style.marginLeft = '-40px';
-        aElement.style.fontWeight = 'bold';
-        aElement.style.textDecoration = 'none';
-        aElement.style.color = 'black';
-        aElement.style.width = '100%';
-        aElement.style.boxShadow = '0px 4px 4px rgba(0, 0, 0, 0.3)'
-        aElement.style.textAlign = 'center';
-
-        liElement.appendChild(aElement);
-        ulElement.appendChild(liElement);
-      });
-
-      routesContainer.appendChild(ulElement);
-    }
-  }
 
   /* adding trip to favourites */
   addButtonClicked(){
@@ -414,6 +327,7 @@ export class TripViewComponent implements OnInit{
     });
   }
 
+
   /* deleting trip from favourites */
   deleteButtonClicked(){
     this.userService.deleteTripFromUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
@@ -430,6 +344,7 @@ export class TripViewComponent implements OnInit{
       }
     });
   }
+
 
   /* checking if the trip is in user favourites */
   checkUserFavourites(): Observable<boolean> {

@@ -41,7 +41,7 @@ import { map } from 'rxjs/operators';
 })
 export class RouteViewComponent implements OnInit {
 
-  private view_route : RouteWithId | undefined;
+  public view_route : RouteWithId | undefined;
   private map!: Map;
   private routeSource: VectorSource = new VectorSource();
   private routeLayer: VectorLayer = new VectorLayer({
@@ -65,15 +65,6 @@ export class RouteViewComponent implements OnInit {
 
   setViewRoute(route: RouteWithId){
     this.view_route = route;
-  }
-
-  getViewRoute(){
-    const route = this.view_route;
-    if (this.view_route?.equipment === '')
-      route!.equipment = 'brak';
-    if (this.view_route?.description === '')
-      route!.description = '-';
-    return route;
   }
 
   getViewRouteTimeHours() :number {
@@ -121,93 +112,10 @@ export class RouteViewComponent implements OnInit {
           });
         });
         this.drawRouteFromDataBase();
-        this.generateRouteInfo();
         if(this.userService.isLoggedin)
           this.isFavourite$ = this.checkUserFavourites();
       })
     });
-  }
-
-  /* setting style of div with route information */
-  setStyle(element: HTMLHeadingElement){
-    element.style.borderBottomStyle = 'solid';
-    element.style.borderBottomWidth = 'thin';
-    element.style.borderBottomColor = 'gray';
-    element.style.paddingBottom = '10px';
-    element.style.paddingLeft = '10px';
-    element.style.width = '100%';
-  }
-
-  setStyleContent(element: HTMLParagraphElement){
-    //TO DO
-  }
-
-  /* showing information about the route - dynamically */
-  generateRouteInfo(){
-    // get divs
-    const nameContainer = document.getElementById('name');
-    if (!nameContainer) return;
-    nameContainer.innerHTML = '';
-    const infoContainer = document.getElementById('route-info');
-    if (!infoContainer) return;
-
-    // add information about the route
-    const name = document.createElement('h1');
-    name.textContent = `${this.getViewRoute()!.name}`;
-
-    const typeElement = document.createElement('h3');
-    typeElement.textContent = `Typ trasy: `;
-    this.setStyle(typeElement);
-    const typeElementContent = document.createElement('p');
-    typeElementContent.textContent = `${this.getViewRoute()!.type}`;
-    this.setStyleContent(typeElementContent);
-
-    const difficultyElement = document.createElement('h3');
-    difficultyElement.textContent = `Trudność trasy: `;
-    this.setStyle(difficultyElement);
-    const difficultyElementContent = document.createElement('p');
-    difficultyElementContent.textContent = ` ${this.getViewRoute()!.difficulty}`;
-    this.setStyleContent(difficultyElementContent);
-
-    const distanceElement = document.createElement('h3');
-    distanceElement.textContent = `Szacowany dystans: `;
-    this.setStyle(distanceElement);
-    const distanceElementContent = document.createElement('p');
-    distanceElementContent.textContent = `${this.calculateDistance(this.view_route!.routePoints)} km`;
-    this.setStyleContent(distanceElementContent);
-
-    const timeElement = document.createElement('h3');
-    timeElement.textContent = `Szacowany czas pokonania trasy: `;
-    this.setStyle(timeElement);
-    const timeElementContent = document.createElement('p');
-    timeElementContent.textContent = `${this.getViewRouteTimeHours()} h ${this.getViewRouteTimeMinutes()} min`;
-    this.setStyleContent(timeElementContent);
-
-    const equipmentElement = document.createElement('h3');
-    equipmentElement.textContent = `Wymagany sprzęt:`;
-    const equipmentDescription = document.createElement('p');
-    equipmentDescription.textContent = this.getViewRoute()!.equipment || 'brak';
-    this.setStyle(equipmentDescription);
-
-    const descriptionElement = document.createElement('h3');
-    descriptionElement.textContent = 'Opis trasy:';
-    const descriptionContent = document.createElement('p');
-    descriptionContent.textContent = this.getViewRoute()!.description || '-';
-    this.setStyle(descriptionContent);
-
-    nameContainer.appendChild(name);
-    infoContainer.appendChild(typeElement);
-    infoContainer.appendChild(typeElementContent);
-    infoContainer.appendChild(difficultyElement);
-    infoContainer.appendChild(difficultyElementContent);
-    infoContainer.appendChild(timeElement);
-    infoContainer.appendChild(timeElementContent);
-    infoContainer.appendChild(distanceElement);
-    infoContainer.appendChild(distanceElementContent);
-    infoContainer.appendChild(descriptionElement);
-    infoContainer.appendChild(descriptionContent);
-    infoContainer.appendChild(equipmentElement);
-    infoContainer.appendChild(equipmentDescription);
   }
 
 

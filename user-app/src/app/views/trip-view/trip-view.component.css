@@ -151,3 +151,39 @@ p{
   width: 100%;
   height: 100%;
 }
+
+td{
+  borderBottomStyle: solid;
+  borderBottomWidth: thin;
+  /*borderBottomColor: gray;*/
+  paddingBottom: 10px;
+  paddingLeft: 10px;
+  width: 100%;
+}
+
+#route-container {
+  list-style-type: none;
+  padding: 0;
+}
+
+.li-routes {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 5px;
+}
+
+.a-routes {
+  font-family: 'Calibri Light', sans-serif;
+  font-size: larger;
+  border-radius: 20px;
+  padding: 10px;
+  background-color: white;
+  margin-left: -40px;
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  width: 100%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  display: block;
+}

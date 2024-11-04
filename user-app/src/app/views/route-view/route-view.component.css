@@ -134,3 +134,12 @@ p{
   width: 100%;
   height: 100%;
 }
+
+td{
+  borderBottomStyle: solid;
+  borderBottomWidth: thin;
+  /*borderBottomColor: gray;*/
+  paddingBottom: 10px;
+  paddingLeft: 10px;
+  width: 100%;
+}

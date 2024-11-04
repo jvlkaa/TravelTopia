@@ -8,9 +8,28 @@
     </div>
   </div>
   <div id="trip-info">
-    <div id="information"> </div>
+    <div *ngIf="this.view_trip" id="information">
+      <h1> {{ this.view_trip.name}} </h1>
+      <table class="trip-info-table">
+        <tr>
+          <td><strong>Trudność wycieczki:</strong></td>
+          <td>{{ this.view_trip.difficulty }}</td>
+        </tr>
+        <tr>
+          <td><strong>Opis wycieczki:</strong></td>
+          <td>{{ this.view_trip.description || '-' }}</td>
+        </tr>
+      </table>
+    </div>
     <h3> Trasy:</h3>
-    <div id="routes"></div>
+    <div id="routes">
+      <ul *ngIf="this.routes" id="route-container">
+        <li *ngFor="let route of this.routes" class="li-routes">
+          <a [routerLink]="['/route', route.name]" class="a-routes">{{ route.name }}</a>
+        </li>
+      </ul>
+      <p *ngIf="this.routes.length === 0">Brak elementów do wyświetlenia</p>
+    </div>
   </div>
   <div id="user-option-container">
     <div id="user-container" *ngIf="userService.isLoggedin">
