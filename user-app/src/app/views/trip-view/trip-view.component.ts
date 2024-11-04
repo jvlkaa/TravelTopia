@@ -311,6 +311,15 @@ export class TripViewComponent implements OnInit{
     });
   }
 
+  setStyle(element: HTMLHeadingElement) {
+    element.style.borderBottomStyle = 'solid';
+    element.style.borderBottomWidth = 'thin';
+    element.style.borderBottomColor = 'gray';
+    element.style.paddingBottom = '10px';
+    element.style.paddingLeft = '10px';
+    element.style.width = '100%';
+  }
+
   /* showing information about the trip - dynamically */
   generateInfo(){
     const nameContainer = document.getElementById('name');
@@ -321,15 +330,18 @@ export class TripViewComponent implements OnInit{
 
     // add information about the trip
     const name = document.createElement('h1');
-    name.textContent = `Wycieczka: ${this.getViewTrip()!.name}`;
+    name.textContent = `${this.getViewTrip()!.name}`;
 
     const difficultyElement = document.createElement('h3');
     difficultyElement.textContent = `Trudność wycieczki: ${this.getViewTrip()!.difficulty}`;
+    this.setStyle(difficultyElement);
 
     const descriptionElement = document.createElement('h3');
     descriptionElement.textContent = 'Opis wycieczki:';
+    this.setStyle(descriptionElement);
     const descriptionContent = document.createElement('p');
     descriptionContent.textContent = this.getViewTrip()!.description;
+    this.setStyle(descriptionContent)
 
     nameContainer.appendChild(name);
     infoContainer.appendChild(descriptionElement);
@@ -356,11 +368,26 @@ export class TripViewComponent implements OnInit{
       this.routes.forEach(route => {
         const liElement = document.createElement('li');
         liElement.id = 'li-routes';
+        liElement.style.display = 'flex';
+        liElement.style.justifyContent = 'space-evenly';
+        liElement.style.marginTop = '5px';
 
         const aElement = document.createElement('a');
         aElement.id = 'a-routes';
         aElement.href = `/route/${route.name}`;
         aElement.textContent = route.name;
+        aElement.style.fontFamily = 'Calibri Light';
+        aElement.style.fontSize = 'larger';
+        aElement.style.borderRadius = '20px';
+        aElement.style.padding = '10px';
+        aElement.style.backgroundColor = 'white';
+        aElement.style.marginLeft = '-40px';
+        aElement.style.fontWeight = 'bold';
+        aElement.style.textDecoration = 'none';
+        aElement.style.color = 'black';
+        aElement.style.width = '100%';
+        aElement.style.boxShadow = '0px 4px 4px rgba(0, 0, 0, 0.3)'
+        aElement.style.textAlign = 'center';
 
         liElement.appendChild(aElement);
         ulElement.appendChild(liElement);

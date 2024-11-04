@@ -1,22 +1,22 @@
 <div id="trip-container">
   <div id="name"></div>
-  <div id="trip-info-container">
-    <div id="trip-map">
-      <div id="map" class="map"></div>
-      <div id="popup" class="ol-popup">
-        <button id="popup-closer" class="ol-popup-closer"> x </button>
-        <div id="popup-content"></div>
-      </div>
-      <div *ngIf="userService.isLoggedin">
-        <button class="add_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
-        <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
-      </div>
-      <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
+  <div id="trip-map">
+    <div id="map" class="map"></div>
+    <div id="popup" class="ol-popup">
+      <button id="popup-closer" class="ol-popup-closer"> x </button>
+      <div id="popup-content"></div>
     </div>
-    <div id="trip-info">
-      <div id="information"> </div>
-      <h3> Trasy:</h3>
-      <div id="routes"></div>
+  </div>
+  <div id="trip-info">
+    <div id="information"> </div>
+    <h3> Trasy:</h3>
+    <div id="routes"></div>
+  </div>
+  <div id="user-option-container">
+    <div id="user-container" *ngIf="userService.isLoggedin">
+      <button class="add_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
+      <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
+      <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
     </div>
   </div>
 </div>
