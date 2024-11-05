@@ -147,6 +147,9 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding marker on the map in the place clicked by the user - to create custome route */
   addMarkerToMap(event: MapBrowserEvent<any>) {
+    //add marker only if the route does not exist
+    if (this.routeSource.getFeatures().length > 0) return;
+
     const coordinate = event.coordinate;
     const lonLat = toLonLat(coordinate);
     this.route.push({lat: lonLat[1], lng: lonLat[0]});
