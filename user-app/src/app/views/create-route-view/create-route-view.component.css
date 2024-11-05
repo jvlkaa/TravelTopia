@@ -1,18 +1,32 @@
 #map-container {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+#creator-title {
   display: flex;
-  flex-direction: row;
-  padding: 1em;
   justify-content: center;
+  align-items: center;
+  grid-area: 1 / 1 / 2 / 4;
+  font-family: "Calibri Light";
+  background-color: lavender;
+  font-size: xx-large;
+  font-weight: bolder;
+  border-top-style: solid;
+  border-top-width: thin;
 }
 
 .map {
-  display: flex;
-  flex-direction: column;
-  width: 800px;
-  height: 600px;
-  padding: 20px;
-  box-shadow: 0px 0px 4px 0px;
-  margin: 4px;
+  grid-area: 1 / 4 / 11 / 10;
+  width: 100%;
+  height: 120vh;
+  border-top-style: solid;
+  border-top-width: thin;
+  border-left-width: thin;
+  border-left-style: solid;
 }
 
 #popup{
@@ -37,16 +51,21 @@
 }
 
 #map-create-container{
+  grid-area: 2 / 1 / 11 / 4;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-  width: 40%;
+  #padding-top: 40px;
+  align-items: center;
+  width: 100%;
 }
 
-.lat, .lng, .trasa-button, .clear-button, .route-name-input  {
+#map-create-container > * {
+  width: 100%;
+}
+
+.lat, .lng, .trasa-button, .clear-button  {
     background-color: lavender;
     padding: 10px 20px;
-    border-radius: 20px;
     margin: 5px;
 }
 
@@ -57,16 +76,26 @@
 }
 
 .trasa-button, .clear-button {
-    width: 100%;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.trasa-button:hover, .clear-button:hover {
+  background-color: #c4b9de;
+
 }
 
 .add-route{
   background-color: lavender;
   padding: 10px 20px;
-  border-radius: 20px;
   width: 100%;
   margin-top: 5px;
   margin-bottom: 5px;
+  transition: background-color 0.2s;
+}
+
+.add-route:hover {
+  background-color: #c4b9de;
 }
 
 .route-input {
@@ -77,8 +106,13 @@
 #add-route-section{
   width: 100%;
 }
+
 .route-name-input {
-    flex: 1;
+    width: 100%;
+    background-color: white;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-top-style: none;
 }
 
 .add-route-success {
@@ -181,7 +215,6 @@
 .route-properties-selected-el{
   display: flex;
   flex-direction: row;
-  margin-bottom: 10px;
 }
 
 .route-properties-el{
@@ -194,11 +227,9 @@
   background: lavender;
   padding: 10px;
   text-align: center;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
   font-family: "Calibri Light";
   font-weight: bold;
-  border-style: outset;
+  border-top-style: outset;
   border-color: black;
   border-width: 2px;
 }
@@ -206,9 +237,11 @@
 .select-type{
   width: 100%;
   padding: 10px;
-  border-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
   margin-left: -30px;
-  border-style: outset;
+  border-bottom-style: none;
+  border-right-style: none;
   border-color: black;
   border-width: 2px;
   font-weight: bold;
@@ -224,15 +257,16 @@
 }
 
 .text-label{
-  width: 96%;
+  width: 100%;
+  box-sizing: border-box;
   background: lavender;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   text-align: center;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   font-family: "Calibri Light";
   font-weight: bold;
-  border-style: outset;
+  border-top-style: outset;
+  border-bottom-style: outset;
   border-color: black;
   border-width: 2px;
 }
@@ -241,10 +275,8 @@
   font-family: "Calibri Light";
   font-size: medium;
   font-weight: bold;
-  margin-bottom: 10px;
   resize: none;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
+  border-bottom-style: none;
 }
 
 .time-container{
@@ -275,8 +307,6 @@
   border-style: outset;
   border-color: black;
   border-width: 2px;
-  margin-bottom: 5px;
-  border-bottom-left-radius: 20px;
   border-top: none;
 }
 
@@ -287,6 +317,7 @@
   border-bottom-left-radius: 20px;
   margin-left: -30px;
   border-style: outset;
+  border-right-style: none;
   border-color: black;
   border-width: 2px;
   font-weight: bold;
@@ -300,14 +331,32 @@
   padding: 10px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
   margin-left: -30px;
-  margin-bottom: 5px;
-  border-style: outset;
+  border-right-style: none;
   border-color: black;
   border-width: 2px;
   font-weight: bold;
   font-family: "Calibri Light";
   font-size: medium;
   border-top: none;
+}
+
+#input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-right-style: none;
+  border-color: black;
+  border-width: 2px;
+  border-top: none;
+  box-sizing: border-box;
 }

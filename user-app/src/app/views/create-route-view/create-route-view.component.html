@@ -1,4 +1,5 @@
 <div id="map-container">
+  <div id="creator-title">Kreator trasy</div>
   <div id="map" class="map"></div>
   <div id="popup" class="ol-popup">
     <button  id="popup-closer" class="ol-popup-closer"> x </button>
@@ -52,7 +53,10 @@
           </select>
         </div>
       </div>
-      <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
+      <div id="input-container">
+        <label class="input-label">Podaj nazwę trasy:</label>
+        <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
+      </div>
     </div>
     <div class="buttons">
       <button class="trasa-button" (click)="drawButtonClicked()">Stwórz trasę</button>
@@ -70,5 +74,4 @@
       <div class="lng">Longitude: {{getCoordinates()?.lng}}</div>
     </div>
   </div>
-
 </div>
