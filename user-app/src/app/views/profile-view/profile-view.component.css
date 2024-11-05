@@ -22,7 +22,27 @@ h1{
   border-top-right-radius: 20px;
 }
 
-.td{
+#information-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#info-table {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   font-family: "Calibri Light";
-  font-size: large;
+  font-size: larger;
+}
+
+.td{
+}
+
+tr {
+  width: 100% ;
+  display: flex;
+  justify-content: space-between;
 }
