@@ -27,26 +27,37 @@ export class AppComponent implements OnInit {
       password: ['', Validators.required],
     });
 
+    // restore user from storage
+    const userStorage = sessionStorage.getItem('user');
+    if (userStorage) {
+      this.userService.socialUser = { idToken: userStorage } as SocialUser;
+      this.userService.isLoggedin = true;
+      this.userService.getRole().subscribe({
+        next: (role: string | null) => {
+          console.log(this.userService.socialUser?.idToken);
+          if (role === 'developer') {
+            this.userService.isDeveloper = true;
+          }
+        }
+      });
+    }
+
     this.socialAuthService.authState.subscribe((user) => {
       if(user){
         this.userService.socialUser = user;
         this.userService.isLoggedin = user != null;
         this.userService.addAccount(user.idToken).subscribe({
           next: () => { this.userService.getRole().subscribe({
-              next: (role: string | null) => {
-                console.log(this.userService.socialUser?.idToken); // uncommented if u need update role developer
-                if (role === 'developer') {
-                  this.userService.isDeveloper = true;
-                }
+            next: (role: string | null) => {
+              console.log(this.userService.socialUser?.idToken); // uncommented if u need update role developer
+              if (role === 'developer') {
+                this.userService.isDeveloper = true;
               }
-            });
+            }
+          });
           }
         });
-
-      }
-      else{
-        this.userService.socialUser = null;
-        this.userService.isLoggedin = false;
+        sessionStorage.setItem('user', user.idToken);
       }
     });
 
@@ -60,12 +71,22 @@ export class AppComponent implements OnInit {
   }
 
   logoutGoogle(): void{
-      this.socialAuthService.signOut();
-      this.userService.isDeveloper = false;
+    if (this.socialAuthService.authState) {
+      this.socialAuthService.authState.subscribe(user => {
+        if (user) {
+          this.socialAuthService.signOut().then(() => {
+          }).catch((error) => {
+            console.error("Error during logout:", error);
+          });
+        }
+      });
+    }
+    this.userService.isDeveloper = false;
+    this.userService.isLoggedin = false;
+    sessionStorage.removeItem('user');
   }
 
   accountMenu(){
     this.isMenuOpen = !this.isMenuOpen;
   }
-
 }
