@@ -1,6 +1,7 @@
 ﻿using backend_app.Dto;
 using backend_app.Models;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Net;
 
@@ -73,6 +74,32 @@ namespace backend_app.Services
             if (result == null)
             {
                 return null;
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<List<Trip>> GetFilteredTripsAsync(string name, string difficulty)
+        {
+            var filter = FilterDefinition<Trip>.Empty;
+            filter &= Builders<Trip>.Filter.Eq(x => x.userCreated, false);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                filter &= Builders<Trip>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+            }
+            if (!string.IsNullOrEmpty(difficulty))
+            {
+                filter &= Builders<Trip>.Filter.Eq(x => x.difficulty, difficulty);
+            }
+
+            var result = await trips.Find(filter).ToListAsync();
+
+            if (result == null)
+            {
+                return new List<Trip>(0);
             }
             else
             {

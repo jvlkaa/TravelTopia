@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TripService} from "../../trip/service/trip.service";
 import {TripWithId} from "../../trip/model/tripWithId";
+import {TripsFilter} from "../../trip/model/tripsFilter";
 
 @Component({
   selector: 'app-trips-view',
@@ -9,7 +10,8 @@ import {TripWithId} from "../../trip/model/tripWithId";
 })
 export class TripsViewComponent implements OnInit {
   public trips: TripWithId[] = [];
-  //public filterText: string | undefined;
+  public filterTripName: string | undefined;
+  public filterTripDifficulty: string | undefined;
 
   constructor(private tripService: TripService) {
   }
@@ -25,10 +27,20 @@ export class TripsViewComponent implements OnInit {
     });
   }
 
-  // TO DO: implement filtering trips in backend
-  // filterTrips() {
-  //   this.tripService.getTripsByString(this.filterText!).subscribe((trips: TripWithId[]) => {
-  //     this.trips = trips;
-  //   });
-  // }
+  filterTrips() {
+    const filter: TripsFilter = {
+      name: this.filterTripName ?? "",
+      difficulty: this.filterTripDifficulty ?? ""
+    };
+
+    this.tripService.getFilteredTrips(filter).subscribe((trips: TripWithId[]) => {
+      this.trips = trips;
+    });
+  }
+
+  resetTrips() {
+    this.filterTripName = undefined;
+    this.filterTripDifficulty = undefined;
+    this.listTrips();
+  }
 }

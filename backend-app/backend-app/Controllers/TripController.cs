@@ -68,6 +68,20 @@ namespace backend_app.Controllers
             }
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredTrips([FromQuery] string? name = null, [FromQuery] string? difficulty = null)
+        {
+            var result = await tripService.GetFilteredTripsAsync(name, difficulty);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrip(string id)
         {
