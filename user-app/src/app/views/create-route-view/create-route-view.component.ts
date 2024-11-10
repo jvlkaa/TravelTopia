@@ -27,6 +27,7 @@ import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
 import {UserRoute} from "../../route/model/userRoute";
+import * as turf from "@turf/turf";
 
 @Component({
   selector: 'app-create-route-view',
@@ -89,16 +90,15 @@ export class CreateRouteViewComponent implements OnInit {
   }
 
   /* calculating route distance */
-  calculateDistance(): number {
+  calculateDistance() {
     let distance = 0;
     for (let i = 1; i < this.route.length; i++) {
-      distance = distance +
-        Math.sqrt(
-          Math.pow((this.route[i - 1].lat - this.route[i].lat), 2) +
-          (Math.pow((this.route[i - 1].lng - this.route[i].lng), 2)))
-        * 73;
+      const from = turf.point([this.route[i - 1].lng, this.route[i - 1].lat]);
+      const to = turf.point([this.route[i].lng, this.route[i].lat]);
+      const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
+      distance += distanceSegment;
     }
-    return distance
+    return parseFloat(distance.toFixed(2));
   }
 
   /* calculating center of the map camera */

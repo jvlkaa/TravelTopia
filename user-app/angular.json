@@ -33,7 +33,19 @@
               }
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["rbush"]
+            "allowedCommonJsDependencies": [
+              "rbush",
+              "concaveman",
+              "polygon-clipping",
+              "object-assign",
+              "geojson-rbush",
+              "geojson-equality",
+              "deep-equal",
+              "earcut",
+              "skmeans",
+              "density-clustering",
+              "turf-jsts"
+            ]
           },
           "configurations": {
             "production": {

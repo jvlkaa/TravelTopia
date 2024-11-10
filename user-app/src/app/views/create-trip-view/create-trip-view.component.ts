@@ -30,6 +30,7 @@ import {TripService} from "../../trip/service/trip.service";
 import {UserTrip} from "../../trip/model/userTrip";
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as turf from "@turf/turf";
 @Component({
   selector: 'app-create-trip-view',
   templateUrl: './create-trip-view.component.html',
@@ -432,19 +433,17 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     );
   }
 
-
-  /* calculating route distance */
+    /* calculating route distance */
   calculateDistance(): number {
-    let distance = 0;
-    for (let r of this.routesTrip) {
-      for (let i = 1; i < r.routePoints.length; i++) {
-        distance = distance +
-          Math.sqrt(
-            Math.pow((r.routePoints[i - 1].latitude - r.routePoints[i].latitude), 2) +
-            (Math.pow((r.routePoints[i - 1].longitude - r.routePoints[i].longitude), 2)))
-          * 73;
-      }
-    }
-    return distance
+     let distance = 0;
+     for (let r of this.routesTrip) {
+        for (let i = 1; i < r.routePoints.length; i++) {
+             const from = turf.point([r.routePoints[i - 1].longitude, r.routePoints[i - 1].latitude]);
+             const to = turf.point([r.routePoints[i].longitude, r.routePoints[i].latitude]);
+             const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
+             distance += distanceSegment;
+         }
+     }
+     return parseFloat(distance.toFixed(2));
   }
 }

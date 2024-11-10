@@ -2,6 +2,7 @@ import {RouteService} from "../../route/service/route.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {Component, OnInit} from '@angular/core';
+import * as turf from '@turf/turf';
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -123,11 +124,10 @@ export class RouteViewComponent implements OnInit {
   calculateDistance(route: Point[]) {
     let distance = 0;
     for (let i = 1; i < route.length; i++) {
-      distance = distance +
-        Math.sqrt(
-          Math.pow((route[i - 1].latitude - route[i].latitude), 2) +
-          (Math.pow((route[i - 1].longitude - route[i].longitude), 2)))
-        * 73;
+      const from = turf.point([route[i - 1].longitude, route[i - 1].latitude]);
+      const to = turf.point([route[i].longitude, route[i].latitude]);
+      const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
+      distance += distanceSegment;
     }
     return parseFloat(distance.toFixed(2));
   }

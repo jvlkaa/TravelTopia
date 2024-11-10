@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import * as turf from '@turf/turf';
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -358,13 +359,12 @@ export class TripViewComponent implements OnInit{
     let distance = 0;
     for (let r of this.routes) {
       for (let i = 1; i < r.routePoints.length; i++) {
-        distance = distance +
-          Math.sqrt(
-            Math.pow((r.routePoints[i - 1].latitude - r.routePoints[i].latitude), 2) +
-            (Math.pow((r.routePoints[i - 1].longitude - r.routePoints[i].longitude), 2)))
-          * 73;
+        const from = turf.point([r.routePoints[i - 1].longitude, r.routePoints[i - 1].latitude]);
+        const to = turf.point([r.routePoints[i].longitude, r.routePoints[i].latitude]);
+        const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
+        distance += distanceSegment;
       }
     }
-    return distance
+    return parseFloat(distance.toFixed(2));
   }
 }
