@@ -82,6 +82,20 @@ namespace backend_app.Controllers
             }
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredRoutes([FromQuery] string? name = null, [FromQuery] string? type = null, [FromQuery] string? difficulty = null)
+        {
+            var result = await routeService.GetFilteredRoutesAsync(name, type, difficulty);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpGet("{name}")]
         public async Task<IActionResult> GetRoute(string name)
         {

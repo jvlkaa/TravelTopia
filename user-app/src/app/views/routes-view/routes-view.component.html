@@ -2,9 +2,9 @@
   <div id="filter-section">
     <h2>Filtruj</h2>
     <label class="filter-label">nazwa</label>
-    <input id="find-text-area" type="text" placeholder="Wyszukaj" [(ngModel)]="filterText"/>
+    <input id="find-text-area" type="text" placeholder="Wyszukaj" [(ngModel)]="filterRouteName"/>
     <label class="filter-label"> typ trasy </label>
-    <select class="select-type" >
+    <select id="select-type" class="select-type" [(ngModel)]="filterRouteType">
       <option value="morze" class="option"> morze </option>
       <option value="jezioro" class="option"> jezioro </option>
       <option value="góry" class="option"> góry </option>
@@ -17,14 +17,14 @@
       <option value="rzeka" class="option"> rzeka </option>
     </select>
     <label class="filter-label"> trudność trasy </label>
-    <select class="select-type" >
+    <select id="select-difficulty" class="select-type" [(ngModel)]="filterRouteDifficulty">
       <option value="łatwa" class="option"> łatwa </option>
       <option value="normalna" class="option"> normalna </option>
       <option value="trudna" class="option"> trudna </option>
     </select>
     <div id="filter-buttons">
       <button class="filter-button" (click)="filterRoutes()">wyszukaj</button>
-      <button class="filter-button" (click)="listRoutes()">resetuj</button>
+      <button class="filter-button" (click)="resetRoutes()">resetuj</button>
     </div>
   </div>
   <div id="title">

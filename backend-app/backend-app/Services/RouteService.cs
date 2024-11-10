@@ -3,6 +3,7 @@ using backend_app.Models;
 using DnsClient.Protocol;
 using GeoCoordinatePortable;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System.Net;
@@ -118,6 +119,36 @@ namespace backend_app.Services
             {
                 return result;
             }
+        }
+
+        public async Task<List<Models.Route>> GetFilteredRoutesAsync(string name, string type, string difficulty)
+        {
+            var filter = FilterDefinition<Models.Route>.Empty;
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                filter &= Builders<Models.Route>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+            }
+            if (!string.IsNullOrEmpty(type))
+            {
+                filter &= Builders<Models.Route>.Filter.Eq(x => x.type, type);
+            }
+            if (!string.IsNullOrEmpty(difficulty))
+            {
+                filter &= Builders<Models.Route>.Filter.Eq(x => x.difficulty, difficulty);
+            }
+
+            var result = await routes.Find(filter).ToListAsync();
+
+            if (result == null)
+            {
+                return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+
         }
  
         public async Task CreateRouteAsync(Models.Route route) => await routes.InsertOneAsync(route);
