@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {forkJoin, mergeMap, Observable, switchMap} from "rxjs";
+import {BehaviorSubject, forkJoin, mergeMap, Observable, switchMap} from "rxjs";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
@@ -18,6 +18,8 @@ export class UserService {
 
   socialUser!: SocialUser | null;
   isLoggedin: boolean = false;
+  private loginStatusSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isLoggedin);
+  loginStatus$: Observable<boolean> = this.loginStatusSubject.asObservable();
   isDeveloper: boolean = false;
 
   constructor(private http: HttpClient, private routeSerivce: RouteService, private tripService: TripService) { }
@@ -27,6 +29,12 @@ export class UserService {
     const token: string = "\"" + request + "\"" ;
     const headers = { 'Content-Type': 'application/json' };
     return this.http.post('TravelTopia/User/login',  token, {headers});
+  }
+
+  /* setter subscription */
+  setLoginStatus(status: boolean): void {
+    this.isLoggedin = status;
+    this.loginStatusSubject.next(status);
   }
 
   /* get route ids from specific user */
@@ -103,6 +111,7 @@ export class UserService {
     return this.http.post('TravelTopia/User/addNewRoute', request);
   }
 
+  /* delete route from user favourites */
   deleteRouteFromUser(userID: string, routeID: string): Observable<any> {
     const request = {
       user: userID,
@@ -117,11 +126,12 @@ export class UserService {
       })));
   }
 
+  /* get user role (is developer) */
   getRole(): Observable<string> {
     return this.http.get<string>('TravelTopia/User/userRole/'+ this.socialUser?.idToken, { responseType: 'text' as 'json' });
   }
 
-
+  /* add user trip to database */
   addUserTrip(request: Trip): Observable<any>{
     return this.http.post('TravelTopia/User/addNewTrip', request);
   }
@@ -153,6 +163,7 @@ export class UserService {
     );
   }
 
+  /* delete trip from user favourites */
   deleteTripFromUser(userID: string, tripID: string): Observable<any> {
     const request = {
       user: userID,

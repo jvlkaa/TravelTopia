@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {UserService} from "../../user/service/user.service";
 import {RouteCordinates} from "../../route/model/routeCordinates";
@@ -28,14 +28,14 @@ import { boundingExtent } from 'ol/extent';
 import {Trip} from "../../trip/model/trip";
 import {TripService} from "../../trip/service/trip.service";
 import {UserTrip} from "../../trip/model/userTrip";
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-create-trip-view',
   templateUrl: './create-trip-view.component.html',
   styleUrls: ['./create-trip-view.component.css']
 })
-export class CreateTripViewComponent implements OnInit{
+export class CreateTripViewComponent implements OnInit, OnDestroy {
   private map!: Map;
   //routes added to the trip
   private routeIds: string[] = [];
@@ -60,6 +60,8 @@ export class CreateTripViewComponent implements OnInit{
   //trip properties
   tripName: string = '';
   description: string = '';
+  //list routes depends on login/logout user
+  private loginStatusSubscription: Subscription | undefined;
 
   constructor(public userService: UserService,
               private routeService: RouteService,
@@ -82,8 +84,19 @@ export class CreateTripViewComponent implements OnInit{
     });
     this.map.addLayer(this.routeLayer);
     this.map.addLayer(this.tripLayer);
+    this.loginStatusSubscription = this.userService.loginStatus$.subscribe(() => {
+      this.listRoutes();
+    });
+
     this.listRoutes();
   }
+
+  ngOnDestroy() {
+    if (this.loginStatusSubscription) {
+      this.loginStatusSubscription.unsubscribe();
+    }
+  }
+
 
   /* routes from database to show as a list */
   listRoutes(){
@@ -99,6 +112,7 @@ export class CreateTripViewComponent implements OnInit{
     }
   }
 
+
   /* showing route preview on the map, displaying button to add the route to the trip */
   routePreview(route: RouteWithId){
     this.drawRoute(route, false);
@@ -112,6 +126,7 @@ export class CreateTripViewComponent implements OnInit{
        });
     }
   }
+
 
   /* drawing route on the map, source = true -> tripSource, source = false -> routeSource (preview) */
   drawRoute(route: RouteWithId, source: boolean, ){
@@ -164,6 +179,7 @@ export class CreateTripViewComponent implements OnInit{
     }
   }
 
+
   /* generate random color for route color */
   generateRouteColor(): string {
     const colors : string = '0123456789ABCDEF';
@@ -173,6 +189,7 @@ export class CreateTripViewComponent implements OnInit{
     }
     return color;
   }
+
 
   /* adding route from preview to trip */
   addRouteToTrip(route: RouteWithId){
@@ -202,6 +219,7 @@ export class CreateTripViewComponent implements OnInit{
     const distanceContent = document.getElementById('distance-container')!;
     distanceContent.innerHTML = 'Dystans: ' + this.calculateDistance().toFixed(2) + ' km';
   }
+
 
   /* removing last route from trip */
   removeRouteFromTrip(){
@@ -252,6 +270,7 @@ export class CreateTripViewComponent implements OnInit{
     }
   }
 
+
   /* clearing the trip */
   clearButtonClicked(){
     this.routeSource.clear();
@@ -263,6 +282,7 @@ export class CreateTripViewComponent implements OnInit{
     const distanceContent = document.getElementById('distance-container')!;
     distanceContent.innerHTML = `Dystans:`;
   }
+
 
   /* adding trip to database*/
   addButtonClicked(){
@@ -316,6 +336,7 @@ export class CreateTripViewComponent implements OnInit{
       this.addTripSuccess = 'Nie można dodać wycieczki do bazy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
     setTimeout(() => {this.addTripSuccess = null;}, 3000);
   }
+
 
   /* adding trip to database and user favourites */
   addUserButtonClicked() {
@@ -372,6 +393,7 @@ export class CreateTripViewComponent implements OnInit{
     setTimeout(() => {this.addTripSuccess = null;}, 3000);
   }
 
+
   calculateTripDifficulty(routesId: string[]): Observable<"łatwa" | "normalna" | "trudna">{
     const routeObservables = routesId.map(id => this.routeService.getRouteByID(id));
 
@@ -409,6 +431,7 @@ export class CreateTripViewComponent implements OnInit{
       })
     );
   }
+
 
   /* calculating route distance */
   calculateDistance(): number {
