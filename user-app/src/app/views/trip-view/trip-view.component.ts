@@ -335,8 +335,7 @@ export class TripViewComponent implements OnInit{
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          if(this.userService.isLoggedin)
-            this.isFavourite$ = this.checkUserFavourites();
+          this.router.navigate(['trips/my-trips']);
         }, 3000);
       },
       error: (err: any) => {
@@ -351,5 +350,21 @@ export class TripViewComponent implements OnInit{
     return this.userService.getTripIdsFromUser(this.userService.socialUser!.idToken!).pipe(
       map(trips => trips.includes(this.view_trip?.id!))
     );
+  }
+
+
+  /* calculating route distance */
+  calculateDistance(): number {
+    let distance = 0;
+    for (let r of this.routes) {
+      for (let i = 1; i < r.routePoints.length; i++) {
+        distance = distance +
+          Math.sqrt(
+            Math.pow((r.routePoints[i - 1].latitude - r.routePoints[i].latitude), 2) +
+            (Math.pow((r.routePoints[i - 1].longitude - r.routePoints[i].longitude), 2)))
+          * 73;
+      }
+    }
+    return distance
   }
 }

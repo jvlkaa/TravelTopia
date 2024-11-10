@@ -39,7 +39,6 @@ export class CreateTripViewComponent implements OnInit{
   private map!: Map;
   //routes added to the trip
   private routeIds: string[] = [];
-  private routesCordinates: RouteCordinates[] = [];
   //list of routes
   public routes: RouteWithId[] = [];
   //list of added routes to the trip
@@ -99,7 +98,6 @@ export class CreateTripViewComponent implements OnInit{
       });
     }
   }
-
 
   /* showing route preview on the map, displaying button to add the route to the trip */
   routePreview(route: RouteWithId){
@@ -200,6 +198,9 @@ export class CreateTripViewComponent implements OnInit{
         );
       })
     }
+    //calculating distance of all routes
+    const distanceContent = document.getElementById('distance-container')!;
+    distanceContent.innerHTML = 'Dystans: ' + this.calculateDistance().toFixed(2) + ' km';
   }
 
   /* removing last route from trip */
@@ -239,9 +240,16 @@ export class CreateTripViewComponent implements OnInit{
           );
         })
       }
+      //calculating distance of all routes
+      const distanceContent = document.getElementById('distance-container')!;
+      distanceContent.innerHTML = 'Dystans: ' + this.calculateDistance().toFixed(2) + ' km';
     }
-    else
+    else {
       this.listRoutes();
+      //reset distance
+      const distanceContent = document.getElementById('distance-container')!;
+      distanceContent.innerHTML = `Dystans:`;
+    }
   }
 
   /* clearing the trip */
@@ -251,6 +259,9 @@ export class CreateTripViewComponent implements OnInit{
     this.routePreviewID = null;
     this.routesTrip = [];
     this.listRoutes();
+    //reset distance
+    const distanceContent = document.getElementById('distance-container')!;
+    distanceContent.innerHTML = `Dystans:`;
   }
 
   /* adding trip to database*/
@@ -286,6 +297,8 @@ export class CreateTripViewComponent implements OnInit{
                          this.tripSource.clear();
                          this.routesTrip = [];
                          this.listRoutes();
+                         const distanceContent = document.getElementById('distance-container')!;
+                         distanceContent.innerHTML = `Dystans:`;
                      },
                      error: (err) => {
                          this.addTripSuccess = 'Wystąpił błąd';
@@ -338,6 +351,8 @@ export class CreateTripViewComponent implements OnInit{
                           this.tripSource.clear();
                           this.routesTrip = [];
                           this.listRoutes();
+                          const distanceContent = document.getElementById('distance-container')!;
+                          distanceContent.innerHTML = `Dystans:`;
                       },
                       error: (err) => {
                           this.addTripSuccess = 'Wystąpił błąd';
@@ -393,5 +408,20 @@ export class CreateTripViewComponent implements OnInit{
         return dominantDifficulty;
       })
     );
+  }
+
+  /* calculating route distance */
+  calculateDistance(): number {
+    let distance = 0;
+    for (let r of this.routesTrip) {
+      for (let i = 1; i < r.routePoints.length; i++) {
+        distance = distance +
+          Math.sqrt(
+            Math.pow((r.routePoints[i - 1].latitude - r.routePoints[i].latitude), 2) +
+            (Math.pow((r.routePoints[i - 1].longitude - r.routePoints[i].longitude), 2)))
+          * 73;
+      }
+    }
+    return distance
   }
 }

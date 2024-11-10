@@ -19,6 +19,10 @@
           <td><strong>Opis wycieczki:</strong></td>
           <td>{{ this.view_trip.description || '-' }}</td>
         </tr>
+        <tr>
+          <td><strong>Szacowany Dystans:</strong></td>
+          <td>{{ this.calculateDistance().toFixed(2) }} km</td>
+        </tr>
       </table>
     </div>
     <h3> Trasy:</h3>

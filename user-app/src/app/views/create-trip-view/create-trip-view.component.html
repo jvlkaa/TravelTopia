@@ -19,6 +19,7 @@
       <label class="text-label"> Opisz wycieczkę (opcjonalnie) </label>
       <textarea class="text-area" [(ngModel)]="description" rows="6"></textarea>
     </div>
+    <div id="distance-container">Dystans: </div>
     <button class="button-el" (click)="clearButtonClicked()"> Wyczyść </button>
     <div *ngIf="userService.isLoggedin">
       <button *ngIf="userService.isDeveloper" class="button-el" (click)="addButtonClicked()"> Dodaj wycieczkę </button>

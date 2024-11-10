@@ -124,12 +124,6 @@
     text-align: center;
 }
 
-.latLng {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
 #div_map{
     display: flex;
     flex-direction: column;

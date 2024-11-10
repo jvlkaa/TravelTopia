@@ -39,7 +39,6 @@ export class CreateRouteViewComponent implements OnInit {
   private coordinates: { lat: number; lng: number } | undefined;
   private route: { lat: number; lng: number }[] = [];
   private markerCenter: { lat: number; lng: number } | undefined;
-  private distance = 0;
   private pointsSource: VectorSource = new VectorSource();
   private pointsLayer: VectorLayer = new VectorLayer({
     source: this.pointsSource
@@ -48,7 +47,6 @@ export class CreateRouteViewComponent implements OnInit {
   private routeLayer: VectorLayer = new VectorLayer({
     source: this.routeSource
   });
-  private routeInfo: Overlay;
 
   public addRouteSuccess: string | null = null;
   // route properties - from route creator
@@ -88,36 +86,19 @@ export class CreateRouteViewComponent implements OnInit {
       this.showPointCoordinates(event);
       this.addMarkerToMap(event);
     });
-    //information about the route
-    const routePopupContainer = document.getElementById('popup')!;
-    const routePopupCloser = document.getElementById('popup-closer')!;
-    this.routeInfo = new Overlay({
-      element: routePopupContainer,
-    });
-    this.map.addOverlay(this.routeInfo);
-    routePopupCloser.onclick = () => {
-      this.routeInfo.setPosition(undefined);
-    };
-    //event - displaying information about the route
-    this.map.on('singleclick', (event: MapBrowserEvent<any>) => {
-      this.map.forEachFeatureAtPixel(event.pixel, (feature: any, layer: any) => {
-        if (layer === this.routeLayer) {
-          this.openInfoWindow(event.coordinate);
-        }
-      });
-    });
   }
 
   /* calculating route distance */
-  calculateDistance(route: google.maps.LatLngLiteral[]) {
-    this.distance = 0;
-    for (let i = 1; i < route.length; i++) {
-      this.distance = this.distance +
+  calculateDistance(): number {
+    let distance = 0;
+    for (let i = 1; i < this.route.length; i++) {
+      distance = distance +
         Math.sqrt(
-          Math.pow((route[i - 1].lat - route[i].lat), 2) +
-          (Math.pow((route[i - 1].lng - route[i].lng), 2)))
+          Math.pow((this.route[i - 1].lat - this.route[i].lat), 2) +
+          (Math.pow((this.route[i - 1].lng - this.route[i].lng), 2)))
         * 73;
     }
+    return distance
   }
 
   /* calculating center of the map camera */
@@ -125,15 +106,6 @@ export class CreateRouteViewComponent implements OnInit {
     if (this.route!.length > 0) {
       this.markerCenter = this.route![Math.floor(this.route!.length / 2)];
     }
-  }
-
-  /* showing information about the route */
-  openInfoWindow(coordinate: number[]) {
-    this.calculateCenterMarker()
-    this.calculateDistance(this.route!);
-    const popupContent = document.getElementById('popup-content')!;
-    popupContent.innerHTML = `<p>Distance: ${this.distance.toFixed(2)} km </p>`;
-    this.routeInfo.setPosition(coordinate);
   }
 
   /* showing the location of clicked place on the map */
@@ -216,6 +188,9 @@ export class CreateRouteViewComponent implements OnInit {
       //changing layer
       this.map.removeLayer(this.pointsLayer);
       this.map.addLayer(this.routeLayer);
+      //calculating route distance
+      const distanceContent = document.getElementById('distance-container')!;
+      distanceContent.innerHTML = 'Szacowany dystans: ' + this.calculateDistance().toFixed(2) + ' km';
     }
   }
 
@@ -227,14 +202,10 @@ export class CreateRouteViewComponent implements OnInit {
     this.map.removeLayer(this.routeLayer);
     this.map.addLayer(this.pointsLayer);
 
-    const popupContent = document.getElementById('popup-content')!;
-    popupContent.innerHTML = ``;
+    const distanceContent = document.getElementById('distance-container')!;
+    distanceContent.innerHTML = `Szacowany dystans:`;
   }
 
-  /* cordinates getter */
-  getCoordinates() {
-    return this.coordinates;
-  }
 
   /* adding route to database - developers mode */
   addButtonClicked() {

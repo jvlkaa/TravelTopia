@@ -296,8 +296,7 @@ export class RouteViewComponent implements OnInit {
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          if(this.userService.isLoggedin)
-            this.isFavourite$ = this.checkUserFavourites();
+          this.router.navigate(['routes/my-routes']);
         }, 3000);
       },
       error: (err: any) => {

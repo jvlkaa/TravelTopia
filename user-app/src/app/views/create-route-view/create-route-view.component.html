@@ -53,6 +53,7 @@
           </select>
         </div>
       </div>
+      <div id="distance-container">Szacowany dystans: </div>
       <div id="input-container">
         <label class="input-label">Podaj nazwę trasy:</label>
         <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
@@ -68,10 +69,6 @@
         <button *ngIf="userService.isDeveloper" class="add-route" (click)="addButtonClicked()">Dodaj trasę </button>
         <button *ngIf="!userService.isDeveloper"  class="add-route" (click)="addUserButtonClicked()">Dodaj trasę</button>
       </div>
-    </div>
-    <div class="latLng">
-      <div class="lat">Latitude: {{getCoordinates()?.lat}}</div>
-      <div class="lng">Longitude: {{getCoordinates()?.lng}}</div>
     </div>
   </div>
 </div>
