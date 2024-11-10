@@ -2,29 +2,16 @@
   <div id="filter-section">
     <h2>Filtruj</h2>
     <label class="filter-label">nazwa</label>
-    <input id="find-text-area" type="text" placeholder="Wyszukaj"/>
-    <label class="filter-label"> typ trasy </label>
-    <select class="select-type" >
-      <option value="morze" class="option"> morze </option>
-      <option value="jezioro" class="option"> jezioro </option>
-      <option value="góry" class="option"> góry </option>
-      <option value="las" class="option"> las </option>
-      <option value="miejska" class="option"> miejska </option>
-      <option value="polna" class="option"> polna </option>
-      <option value="dolina" class="option"> dolina </option>
-      <option value="wzgórza" class="option"> wzgórza </option>
-      <option value="plaża" class="option"> plaża </option>
-      <option value="rzeka" class="option"> rzeka </option>
-    </select>
+    <input id="find-text-area" type="text" placeholder="Wyszukaj" [(ngModel)]="filterTripName"/>
     <label class="filter-label"> trudność trasy </label>
-    <select class="select-type" >
+    <select class="select-type" [(ngModel)]="filterTripDifficulty">
       <option value="łatwa" class="option"> łatwa </option>
       <option value="normalna" class="option"> normalna </option>
       <option value="trudna" class="option"> trudna </option>
     </select>
     <div id="filter-buttons">
-      <button class="filter-button" >wyszukaj</button>
-      <button class="filter-button" (click)="listTrips()">resetuj</button>
+      <button class="filter-button" (click)="filterTrips()">wyszukaj</button>
+      <button class="filter-button" (click)="resetTrips()">resetuj</button>
     </div>
   </div>
   <div id="title">

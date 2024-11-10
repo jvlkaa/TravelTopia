@@ -18,7 +18,7 @@ namespace backend_app.Controllers
         private readonly TripService tripService;
 
         public UserController(UserService userService, RouteService routeService, TripService tripService)
-        { 
+        {
             this.userService = userService;
             this.routeService = routeService;
             this.tripService = tripService;
@@ -83,6 +83,23 @@ namespace backend_app.Controllers
             var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
 
             var result = await routeService.GetFilteredUserRoutesAsync(userRoutes, name, type, difficulty);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpGet("{user}/tripsFilter")]
+        public async Task<IActionResult> GetFilteredTrips(string user, [FromQuery] string? name = null, [FromQuery] string? difficulty = null)
+        {
+            var payload = await VerifyGoogleToken(user);
+            var userTrips = await userService.getTripsFromUserAsync(payload.Subject);
+
+            var result = await tripService.GetFilteredUserTripsAsync(userTrips, name, difficulty);
             if (result == null)
             {
                 return NotFound();

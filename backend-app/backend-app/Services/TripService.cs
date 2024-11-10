@@ -81,6 +81,35 @@ namespace backend_app.Services
             }
         }
 
+        public async Task<List<Trip>> GetFilteredUserTripsAsync(List<string> userTripsIds, string name, string difficulty)
+        {
+            var filter = FilterDefinition<Trip>.Empty;
+
+            if (userTripsIds.Count != 0)
+            {
+                filter &= Builders<Trip>.Filter.In(x => x.id, userTripsIds);
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                filter &= Builders<Trip>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+            }
+            if (!string.IsNullOrEmpty(difficulty))
+            {
+                filter &= Builders<Trip>.Filter.Eq(x => x.difficulty, difficulty);
+            }
+
+            var result = await trips.Find(filter).ToListAsync();
+
+            if (result == null)
+            {
+                return new List<Trip>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
         public async Task<List<Trip>> GetFilteredTripsAsync(string name, string difficulty)
         {
             var filter = FilterDefinition<Trip>.Empty;

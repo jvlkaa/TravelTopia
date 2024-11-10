@@ -28,7 +28,6 @@ export class RoutesUserViewComponent implements OnInit{
     });
   }
 
-  // to do: filter users routes
   filterRoutes() {
     const filter: RoutesFilter = {
       name: this.filterRouteName ?? "",

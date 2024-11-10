@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../user/service/user.service";
 import {TripWithId} from "../../trip/model/tripWithId";
+import {TripsFilter} from "../../trip/model/tripsFilter";
 
 @Component({
   selector: 'app-trips-user-view',
@@ -9,7 +10,8 @@ import {TripWithId} from "../../trip/model/tripWithId";
 })
 export class TripsUserViewComponent  implements OnInit{
   public trips: TripWithId[] = [];
-  public filterText: string | undefined;
+  public filterTripName: string | undefined;
+  public filterTripDifficulty: string | undefined;
 
   constructor(private userService: UserService) {
   }
@@ -24,8 +26,20 @@ export class TripsUserViewComponent  implements OnInit{
     });
   }
 
-  // to do: filter users trips
-  filterRoutes() {
+  filterTrips() {
+    const filter: TripsFilter = {
+      name: this.filterTripName ?? "",
+      difficulty: this.filterTripDifficulty ?? ""
+    }
 
+    this.userService.getUserFilteredTrips(this.userService.socialUser!.idToken, filter).subscribe((trips: TripWithId[]) => {
+      this.trips = trips
+    });
+  }
+
+  resetTrips() {
+    this.filterTripName = undefined;
+    this.filterTripDifficulty = undefined;
+    this.listTrips();
   }
 }
