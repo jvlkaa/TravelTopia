@@ -10,6 +10,7 @@ import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
 import {map} from "rxjs/operators";
 import {Point} from "../../point/model/point";
+import {RoutesFilter} from "../../route/model/routesFilter";
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +69,15 @@ export class UserService {
   /* filter user favourite routes */
   getRoutesFromUserByString(user: string, text: string): Observable<RouteWithId[]>{
     return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/' + user +'/' + text + '/list')
+  }
+
+  getUserFilteredRoutes(user: string, filter: RoutesFilter): Observable<RouteWithId[]> {
+    const params = new HttpParams()
+      .set('name', filter.name)
+      .set('type', filter.type)
+      .set('difficulty', filter.difficulty);
+
+    return this.http.get<RouteWithId[]>('TravelTopia/User/' + user + '/routesFilter', { params })
   }
 
   /* add route to user favourites*/

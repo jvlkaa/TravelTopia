@@ -121,9 +121,43 @@ namespace backend_app.Services
             }
         }
 
+        public async Task<List<Models.Route>> GetFilteredUserRoutesAsync(List<string> userRoutesIds, string name, string type, string difficulty)
+        {
+            var filter = FilterDefinition<Models.Route>.Empty;
+
+            if (userRoutesIds.Count != 0)
+            {
+                filter &= Builders<Models.Route>.Filter.In(x => x.id, userRoutesIds);
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                filter &= Builders<Models.Route>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+            }
+            if (!string.IsNullOrEmpty(type))
+            {
+                filter &= Builders<Models.Route>.Filter.Eq(x => x.type, type);
+            }
+            if (!string.IsNullOrEmpty(difficulty))
+            {
+                filter &= Builders<Models.Route>.Filter.Eq(x => x.difficulty, difficulty);
+            }
+
+            var result = await routes.Find(filter).ToListAsync();
+
+            if (result == null)
+            {
+                return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
         public async Task<List<Models.Route>> GetFilteredRoutesAsync(string name, string type, string difficulty)
         {
             var filter = FilterDefinition<Models.Route>.Empty;
+            filter &= Builders<Models.Route>.Filter.Eq(x => x.userCreated, false);
 
             if (!string.IsNullOrEmpty(name))
             {

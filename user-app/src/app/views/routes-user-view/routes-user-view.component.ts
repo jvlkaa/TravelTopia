@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {RouteWithId} from "../../route/model/routeWithId";
 import {UserService} from "../../user/service/user.service";
 import {RouteService} from "../../route/service/route.service";
+import {RoutesFilter} from "../../route/model/routesFilter";
 
 @Component({
   selector: 'app-routes-user-view',
@@ -10,7 +11,9 @@ import {RouteService} from "../../route/service/route.service";
 })
 export class RoutesUserViewComponent implements OnInit{
   public routes: RouteWithId[] = [];
-  public filterText: string | undefined;
+  public filterRouteName: string | undefined;
+  public filterRouteType: string | undefined;
+  public filterRouteDifficulty: string | undefined;
 
   constructor(private userService: UserService) {
   }
@@ -27,8 +30,21 @@ export class RoutesUserViewComponent implements OnInit{
 
   // to do: filter users routes
   filterRoutes() {
-    this.userService.getRoutesFromUserByString(this.userService.socialUser!.idToken, this.filterText!).subscribe((routes: RouteWithId[]) => {
+    const filter: RoutesFilter = {
+      name: this.filterRouteName ?? "",
+      type: this.filterRouteType ?? "",
+      difficulty: this.filterRouteDifficulty ?? ""
+    };
+
+    this.userService.getUserFilteredRoutes(this.userService.socialUser!.idToken, filter).subscribe((routes: RouteWithId[]) => {
       this.routes = routes;
     });
+  }
+
+  resetRoutes() {
+    this.filterRouteName = undefined;
+    this.filterRouteType = undefined;
+    this.filterRouteDifficulty = undefined;
+    this.listRoutes();
   }
 }

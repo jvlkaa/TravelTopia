@@ -76,6 +76,23 @@ namespace backend_app.Controllers
             }
         }
 
+        [HttpGet("{user}/routesFilter")]
+        public async Task<IActionResult> GetFilteredRoutes(string user, [FromQuery] string? name = null, string? type = null, string? difficulty = null)
+        {
+            var payload = await VerifyGoogleToken(user);
+            var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
+
+            var result = await routeService.GetFilteredUserRoutesAsync(userRoutes, name, type, difficulty);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
         [HttpGet("{user}/TripIds")]
         public async Task<IActionResult> GetTripsByString(string user)
         {
