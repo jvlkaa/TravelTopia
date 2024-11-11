@@ -23,6 +23,8 @@ export class UserService {
   private loginStatusSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isLoggedin);
   loginStatus$: Observable<boolean> = this.loginStatusSubject.asObservable();
   isDeveloper: boolean = false;
+  private isDeveloperSubject = new BehaviorSubject<boolean>(false);
+  isDeveloper$ = this.isDeveloperSubject.asObservable();
 
   constructor(private http: HttpClient, private routeSerivce: RouteService, private tripService: TripService) { }
 
@@ -37,6 +39,10 @@ export class UserService {
   setLoginStatus(status: boolean): void {
     this.isLoggedin = status;
     this.loginStatusSubject.next(status);
+  }
+
+  setIsDeveloper(value: boolean) {
+    this.isDeveloperSubject.next(value);
   }
 
   /* get route ids from specific user */

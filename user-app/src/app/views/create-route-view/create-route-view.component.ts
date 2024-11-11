@@ -28,7 +28,6 @@ import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
 import {UserRoute} from "../../route/model/userRoute";
 import * as turf from "@turf/turf";
-import {distance} from "@turf/turf";
 
 @Component({
   selector: 'app-create-route-view',

@@ -63,6 +63,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   description: string = '';
   //list routes depends on login/logout user
   private loginStatusSubscription: Subscription | undefined;
+  private isDeveloperSubscription: Subscription | undefined;
 
   constructor(public userService: UserService,
               private routeService: RouteService,
@@ -88,6 +89,9 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     this.loginStatusSubscription = this.userService.loginStatus$.subscribe(() => {
       this.listRoutes();
     });
+    this.isDeveloperSubscription = this.userService.isDeveloper$.subscribe(() => {
+      this.listRoutes();
+    });
 
     this.listRoutes();
   }
@@ -95,6 +99,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.loginStatusSubscription) {
       this.loginStatusSubscription.unsubscribe();
+      this.isDeveloperSubscription?.unsubscribe();
     }
   }
 

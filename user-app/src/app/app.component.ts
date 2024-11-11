@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
       this.userService.isLoggedin = true;
       this.userService.getRole().subscribe({
         next: (role: string | null) => {
-          console.log(this.userService.socialUser?.idToken);
           if (role === 'developer') {
             this.userService.isDeveloper = true;
+            this.userService.setIsDeveloper(true);
           }
         }
       });
@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
             next: (role: string | null) => {
               if (role === 'developer') {
                 this.userService.isDeveloper = true;
+                this.userService.setIsDeveloper(true);
               }
             }
           });
@@ -62,6 +63,7 @@ export class AppComponent implements OnInit {
     });
 
   }
+
 
   logoutGoogle(): void{
     if (this.socialAuthService.authState) {
