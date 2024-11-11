@@ -10,30 +10,26 @@
   <div *ngIf="this.view_route" id="route-info">
     <h1> {{ this.view_route.name}} </h1>
     <table class="route-info-table">
-      <tr>
-        <td><strong>Typ trasy:</strong></td>
-        <td>{{ this.view_route.type }}</td>
+      <tr class="route-info-row">
+        <td class="route-info-title"><strong>Typ trasy:</strong></td>
+        <td class="route-info-data">{{ this.view_route.type }}</td>
       </tr>
-      <tr>
-        <td><strong>Trudność trasy:</strong></td>
-        <td>{{ this.view_route.difficulty }}</td>
+      <tr class="route-info-row">
+        <td class="route-info-title"><strong>Trudność trasy:</strong></td>
+        <td class="route-info-data">{{ this.view_route.difficulty }}</td>
       </tr>
-      <tr>
-        <td><strong>Szacowany dystans:</strong></td>
-        <td>{{ calculateDistance(this.view_route.routePoints) }} km</td>
+      <tr class="route-info-row">
+        <td class="route-info-title"><strong>Szacowany dystans:</strong></td>
+        <td class="route-info-data">{{ calculateDistance(this.view_route.routePoints) }} km</td>
       </tr>
-      <tr>
-        <td><strong>Szacowany czas pokonania trasy:</strong></td>
-        <td>{{ getViewRouteTimeHours() }} h {{ getViewRouteTimeMinutes() }} min</td>
+      <tr class="route-info-row">
+        <td class="route-info-title"><strong>Szacowany czas pokonania trasy:</strong></td>
+        <td class="route-info-data">{{ getViewRouteTimeHours() }} h {{ getViewRouteTimeMinutes() }} min</td>
       </tr>
-      <tr>
-        <td><strong>Wymagany sprzęt:</strong></td>
-        <td>{{ this.view_route.equipment || 'brak' }}</td>
-      </tr>
-      <tr>
-        <td><strong>Opis trasy:</strong></td>
-        <td>{{ this.view_route.description || '-' }}</td>
-      </tr>
+      <tr class="route-info-row-title">Wymagany sprzęt: </tr>
+      <tr class="route-info-row-data">{{ this.view_route.equipment || 'brak' }} </tr>
+      <tr class="route-info-row-title">Opis trasy:</tr>
+      <tr class="route-info-row-data">{{ this.view_route.description || '-' }}</tr>
     </table>
   </div>
   <div id="user-option-container">
