@@ -217,8 +217,11 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
       })
     }
     //calculating distance of all routes
-    const distanceContent = document.getElementById('distance-container')!;
-    distanceContent.innerHTML = 'Dystans: ' + this.calculateDistance().toFixed(2) + ' km';
+    const distanceContent = document.getElementById('distance-value')!;
+    distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
+    distanceContent.style.color = 'black';
+    distanceContent.style.borderStyle = 'solid';
+    distanceContent.style.borderStyle = 'thin';
   }
 
 
@@ -260,14 +263,20 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
         })
       }
       //calculating distance of all routes
-      const distanceContent = document.getElementById('distance-container')!;
-      distanceContent.innerHTML = 'Dystans: ' + this.calculateDistance().toFixed(2) + ' km';
+      const distanceContent = document.getElementById('distance-value')!;
+      distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
+      distanceContent.style.color = 'black';
+      distanceContent.style.borderStyle = 'solid';
+      distanceContent.style.borderStyle = 'thin';
     }
     else {
       this.listRoutes();
       //reset distance
-      const distanceContent = document.getElementById('distance-container')!;
-      distanceContent.innerHTML = `Dystans:`;
+      const distanceContent = document.getElementById('distance-value')!;
+      distanceContent.innerHTML = `utwórz najpierw wycieczkę`;
+      distanceContent.style.color = 'lightgray';
+      distanceContent.style.borderStyle = 'solid';
+      distanceContent.style.borderStyle = 'thin';
     }
   }
 
@@ -280,8 +289,11 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     this.routesTrip = [];
     this.listRoutes();
     //reset distance
-    const distanceContent = document.getElementById('distance-container')!;
-    distanceContent.innerHTML = `Dystans:`;
+    const distanceContent = document.getElementById('distance-value')!;
+    distanceContent.innerHTML = `utwórz najpierw wycieczkę`;
+    distanceContent.style.color = 'lightgray';
+    distanceContent.style.borderStyle = 'solid';
+    distanceContent.style.borderStyle = 'thin';
   }
 
 
@@ -318,8 +330,11 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
                          this.tripSource.clear();
                          this.routesTrip = [];
                          this.listRoutes();
-                         const distanceContent = document.getElementById('distance-container')!;
-                         distanceContent.innerHTML = `Dystans:`;
+                         const distanceContent = document.getElementById('distance-value')!;
+                         distanceContent.innerHTML = `utwórz najpierw wycieczkę`;
+                         distanceContent.style.color = 'lightgray';
+                         distanceContent.style.borderStyle = 'solid';
+                         distanceContent.style.borderStyle = 'thin';
                      },
                      error: (err) => {
                          this.addTripSuccess = 'Wystąpił błąd';
@@ -373,8 +388,11 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
                           this.tripSource.clear();
                           this.routesTrip = [];
                           this.listRoutes();
-                          const distanceContent = document.getElementById('distance-container')!;
-                          distanceContent.innerHTML = `Dystans:`;
+                          const distanceContent = document.getElementById('distance-value')!;
+                          distanceContent.innerHTML = `utwórz najpierw wycieczkę`;
+                          distanceContent.style.color = 'lightgray';
+                          distanceContent.style.borderStyle = 'solid';
+                          distanceContent.style.borderStyle = 'thin';
                       },
                       error: (err) => {
                           this.addTripSuccess = 'Wystąpił błąd';

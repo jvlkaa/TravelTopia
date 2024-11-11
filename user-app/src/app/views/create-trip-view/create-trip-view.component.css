@@ -66,6 +66,44 @@
   padding-bottom: 10px;
 }
 
+#distance-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  background: lavender;
+  border-radius: 20px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-color: black;
+  border-width: 2px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+#distance-label {
+  width: 50%;
+  font-size: medium;
+}
+
+#distance-value {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: medium;
+  align-self: center;
+  background-color: white;
+  width: 50%;
+  height: 100%;
+  border-radius: 20px;
+  border-style: solid;
+  border-width: thin;
+  border-left-width: thin;
+  color: lightgray;
+}
+
 #trip-name-label {
   margin-top: 20px;
   background: lavender;

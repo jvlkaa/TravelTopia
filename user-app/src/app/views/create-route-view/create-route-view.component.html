@@ -53,10 +53,13 @@
           </select>
         </div>
       </div>
-      <div id="distance-container">Szacowany dystans: </div>
       <div id="input-container">
         <label class="input-label">Podaj nazwę trasy:</label>
         <input type="text" [(ngModel)]="routeName" placeholder="Wpisz nazwe trasy" class="route-name-input" />
+      </div>
+      <div id="distance-container">
+        <p id="distance-label">Szacowany dystans:</p>
+        <div id="distance-value"> utwórz najpierw trasę </div>
       </div>
     </div>
     <div class="buttons">

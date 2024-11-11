@@ -278,6 +278,44 @@
   flex-direction: row;
 }
 
+#distance-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  background: lavender;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-right-style: none;
+  border-color: black;
+  border-width: 2px;
+  border-top: none;
+  box-sizing: border-box;
+}
+
+#distance-label {
+  width: 50%;
+}
+
+#distance-value {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  background-color: white;
+  width: 50%;
+  height: 100%;
+  border-bottom-right-radius: 20px;
+  border-left-style: solid;
+  border-left-color: lightgray;
+  border-left-width: thin;
+  color: lightgray;
+}
+
 .hour-label{
   width: 100%;
   background: lavender;

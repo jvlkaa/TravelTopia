@@ -28,6 +28,7 @@ import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
 import {UserRoute} from "../../route/model/userRoute";
 import * as turf from "@turf/turf";
+import {distance} from "@turf/turf";
 
 @Component({
   selector: 'app-create-route-view',
@@ -189,8 +190,11 @@ export class CreateRouteViewComponent implements OnInit {
       this.map.removeLayer(this.pointsLayer);
       this.map.addLayer(this.routeLayer);
       //calculating route distance
-      const distanceContent = document.getElementById('distance-container')!;
-      distanceContent.innerHTML = 'Szacowany dystans: ' + this.calculateDistance().toFixed(2) + ' km';
+      const distanceContent = document.getElementById('distance-value')!;
+      distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
+      distanceContent.style.color = 'black';
+      distanceContent.style.borderLeftStyle = 'solid';
+      distanceContent.style.borderLeftWidth = 'thin';
     }
   }
 
@@ -202,8 +206,11 @@ export class CreateRouteViewComponent implements OnInit {
     this.map.removeLayer(this.routeLayer);
     this.map.addLayer(this.pointsLayer);
 
-    const distanceContent = document.getElementById('distance-container')!;
-    distanceContent.innerHTML = `Szacowany dystans:`;
+    const distanceContent = document.getElementById('distance-value')!;
+    distanceContent.innerHTML = `utwórz najpierw trasę`;
+    distanceContent.style.color = 'lightgray';
+    distanceContent.style.borderLeftStyle = 'solid';
+    distanceContent.style.borderLeftWidth = 'thin';
   }
 
 

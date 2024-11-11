@@ -28,7 +28,6 @@ namespace backend_app.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> GoogleLogin([FromBody] string idToken)
         {
-            Console.WriteLine(idToken);
             var payload = await VerifyGoogleToken(idToken);
             if (payload == null)
                 return BadRequest("Invalid Google token.");
@@ -39,7 +38,7 @@ namespace backend_app.Controllers
                 user = new User
                 {
                     googleId = payload.Subject,
-                    role = "user",
+                    role = (payload.Email == "traveltopiadeveloper@gmail.com" ? "developer" : "user"),
                     firstName = payload.GivenName,
                     lastName = payload.FamilyName,
                     email = payload.Email,
