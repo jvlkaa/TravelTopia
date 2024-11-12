@@ -1,7 +1,6 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {UserService} from "../../user/service/user.service";
-import {RouteCordinates} from "../../route/model/routeCordinates";
 import {RouteWithId} from "../../route/model/routeWithId";
 // @ts-ignore
 import Map from 'ol/Map';

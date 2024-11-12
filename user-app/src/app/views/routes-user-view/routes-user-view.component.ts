@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteWithId} from "../../route/model/routeWithId";
 import {UserService} from "../../user/service/user.service";
-import {RouteService} from "../../route/service/route.service";
 import {RoutesFilter} from "../../route/model/routesFilter";
 
 @Component({

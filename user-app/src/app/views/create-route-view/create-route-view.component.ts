@@ -1,4 +1,4 @@
-import {Component, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {Route} from "../../route/model/route";
 // @ts-ignore
@@ -23,8 +23,6 @@ import TileLayer from 'ol/layer/Tile';
 import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 // @ts-ignore
 import { MapBrowserEvent } from 'ol';
-// @ts-ignore
-import Overlay from 'ol/Overlay';
 import {UserService} from "../../user/service/user.service";
 import {UserRoute} from "../../route/model/userRoute";
 import * as turf from "@turf/turf";
@@ -37,7 +35,6 @@ import * as turf from "@turf/turf";
 export class CreateRouteViewComponent implements OnInit {
   private map!: Map;
   // map elements
-  private coordinates: { lat: number; lng: number } | undefined;
   private route: { lat: number; lng: number }[] = [];
   private markerCenter: { lat: number; lng: number } | undefined;
   private pointsSource: VectorSource = new VectorSource();
@@ -84,7 +81,6 @@ export class CreateRouteViewComponent implements OnInit {
     this.map.addLayer(this.pointsLayer);
     //event - adding markers
     this.map.on('click', (event: MapBrowserEvent<any>) => {
-      this.showPointCoordinates(event);
       this.addMarkerToMap(event);
     });
   }
@@ -108,14 +104,6 @@ export class CreateRouteViewComponent implements OnInit {
     }
   }
 
-  /* showing the location of clicked place on the map */
-  showPointCoordinates(event: MapBrowserEvent<any>) {
-    const lonLat = toLonLat(event.coordinate);
-    this.coordinates = {
-      lat: lonLat[1],
-      lng: lonLat[0]
-    };
-  }
 
   /* adding marker on the map in the place clicked by the user - to create custome route */
   addMarkerToMap(event: MapBrowserEvent<any>) {

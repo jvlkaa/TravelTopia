@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Route} from "../model/route";
-import {Routes} from "../model/routes";
 import {RouteWithId} from "../model/routeWithId";
 import {Point} from "../../point/model/point";
 import {RoutesFilter} from "../model/routesFilter";
-import {absoluteFromSourceFile} from "@angular/compiler-cli";
 
 @Injectable({
   providedIn: 'root'

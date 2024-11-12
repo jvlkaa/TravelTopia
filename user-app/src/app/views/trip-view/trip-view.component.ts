@@ -29,7 +29,7 @@ import Overlay from 'ol/Overlay';
 // @ts-ignore
 import XYZ from 'ol/source/XYZ';
 // @ts-ignore
-import { boundingExtent, getCenter } from 'ol/extent';
+import { boundingExtent } from 'ol/extent';
 import {UserService} from "../../user/service/user.service";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
@@ -52,8 +52,6 @@ export class TripViewComponent implements OnInit{
     source: this.tripSource,
     zIndex: 1
   });
-  private markerCenterPopup: Point;
-  private distance = 0;
   public operationSuccess: string | null = null;
   // add/delete button for the user
   public isFavourite$: Observable<boolean> | null = null;

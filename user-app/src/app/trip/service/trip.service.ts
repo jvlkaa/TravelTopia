@@ -3,7 +3,6 @@ import {Trip} from "../model/trip";
 import {Observable} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {TripWithId} from "../model/tripWithId";
-import {RouteWithId} from "../../route/model/routeWithId";
 import {TripsFilter} from "../model/tripsFilter";
 
 @Injectable({

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteWithId} from "../../route/model/routeWithId";
-import {PointService} from "../../point/service/point.service";
 import {RouteService} from "../../route/service/route.service";
 // @ts-ignore
 import { Point, LineString } from 'ol/geom';
