@@ -22,25 +22,21 @@ export class RouteService {
       return this.http.get<RouteWithId[]>( 'TravelTopia/Route');
   }
 
-  getRoutesList(): Observable<RouteListElement>{
-    return this.http.get<RouteListElement>( 'TravelTopia/Route/list');
+  getRoutesList(): Observable<RouteListElement[]>{
+    return this.http.get<RouteListElement[]>( 'TravelTopia/Route/list');
   }
 
   getRoute(name: string): Observable<RouteWithId>{
     return this.http.get<RouteWithId>('TravelTopia/Route' + '/' + name)
   }
 
-  getRoutesByString(text: string): Observable<RouteWithId[]>{
-    return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/' + text + '/list')
-  }
-
-  getFilteredRoutes(filter: RoutesFilter): Observable<RouteWithId[]>{
+  getFilteredRoutes(filter: RoutesFilter): Observable<RouteListElement[]>{
     const params = new HttpParams()
       .set('name', filter.name)
       .set('type', filter.type)
       .set('difficulty', filter.difficulty);
 
-    return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/filter', { params })
+    return this.http.get<RouteListElement[]>('TravelTopia/Route' + '/filter', { params })
   }
 
   getRouteByID(id: string): Observable<RouteWithId>{

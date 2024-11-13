@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {TripService} from "../../trip/service/trip.service";
-import {TripWithId} from "../../trip/model/tripWithId";
 import {TripsFilter} from "../../trip/model/tripsFilter";
 import {TripListElement} from "../../trip/model/tripListElement";
 
@@ -34,7 +33,7 @@ export class TripsViewComponent implements OnInit {
       difficulty: this.filterTripDifficulty ?? ""
     };
 
-    this.tripService.getFilteredTrips(filter).subscribe((trips: TripWithId[]) => {
+    this.tripService.getFilteredTrips(filter).subscribe((trips: TripListElement[]) => {
       this.trips = trips;
     });
   }

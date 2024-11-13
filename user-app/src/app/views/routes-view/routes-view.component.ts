@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {RouteWithId} from "../../route/model/routeWithId";
 import {RouteService} from "../../route/service/route.service";
+import {RoutesFilter} from "../../route/model/routesFilter";
+import {RouteListElement} from "../../route/model/routeListElement";
 // @ts-ignore
 import { Point, LineString } from 'ol/geom';
 // @ts-ignore
 import { fromLonLat, toLonLat  } from 'ol/proj';
 // @ts-ignore
 import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
-import {RoutesFilter} from "../../route/model/routesFilter";
 
 @Component({
   selector: 'app-routes-view',
@@ -16,7 +16,7 @@ import {RoutesFilter} from "../../route/model/routesFilter";
 })
 export class RoutesViewComponent implements OnInit {
 
-public routes: RouteWithId[] = [];
+public routes: RouteListElement[] = [];
 public filterRouteName: string | undefined;
 public filterRouteType: string | undefined;
 public filterRouteDifficulty: string | undefined;
@@ -30,7 +30,7 @@ public filterRouteDifficulty: string | undefined;
 
   /* routes from database to show as a list */
   listRoutes(){
-    this.routeService.getRoutes().subscribe((routes: RouteWithId[]) => {
+    this.routeService.getRoutesList().subscribe((routes: RouteListElement[]) => {
       this.routes = routes;
     });
   }
@@ -42,7 +42,7 @@ public filterRouteDifficulty: string | undefined;
       difficulty: this.filterRouteDifficulty ?? ""
     };
 
-    this.routeService.getFilteredRoutes(filter).subscribe((routes: RouteWithId[]) => {
+    this.routeService.getFilteredRoutes(filter).subscribe((routes: RouteListElement[]) => {
       this.routes = routes;
     });
   }

@@ -29,11 +29,11 @@ export class TripService {
     return this.http.get<TripWithId>('TravelTopia/Trip' + '/' + name)
   }
 
-  getFilteredTrips(filter: TripsFilter): Observable<TripWithId[]> {
+  getFilteredTrips(filter: TripsFilter): Observable<TripListElement[]> {
     const params = new HttpParams()
         .set('name', filter.name)
         .set('difficulty', filter.difficulty);
 
-    return this.http.get<TripWithId[]>('TravelTopia/Trip' + '/filter', { params })
+    return this.http.get<TripListElement[]>('TravelTopia/Trip' + '/filter', { params })
   }
 }
