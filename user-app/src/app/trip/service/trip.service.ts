@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {TripWithId} from "../model/tripWithId";
 import {TripsFilter} from "../model/tripsFilter";
+import {TripListElement} from "../model/tripListElement";
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,8 @@ export class TripService {
     return this.http.post('TravelTopia/Trip', request);
   }
 
-  getTrips(): Observable<TripWithId[]>{
-    return this.http.get<TripWithId[]>( 'TravelTopia/Trip');
+  getTripsList(): Observable<TripListElement[]>{
+    return this.http.get<TripListElement[]>( 'TravelTopia/Trip/list');
   }
 
   getTripByID(id: string): Observable<TripWithId>{

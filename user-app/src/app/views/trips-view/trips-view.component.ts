@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TripService} from "../../trip/service/trip.service";
 import {TripWithId} from "../../trip/model/tripWithId";
 import {TripsFilter} from "../../trip/model/tripsFilter";
+import {TripListElement} from "../../trip/model/tripListElement";
 
 @Component({
   selector: 'app-trips-view',
@@ -9,7 +10,7 @@ import {TripsFilter} from "../../trip/model/tripsFilter";
   styleUrls: ['./trips-view.component.css']
 })
 export class TripsViewComponent implements OnInit {
-  public trips: TripWithId[] = [];
+  public trips: TripListElement[] = [];
   public filterTripName: string | undefined;
   public filterTripDifficulty: string | undefined;
 
@@ -22,7 +23,7 @@ export class TripsViewComponent implements OnInit {
 
   /* trips from database to show as a list */
   listTrips(){
-    this.tripService.getTrips().subscribe((trips: TripWithId[]) => {
+    this.tripService.getTripsList().subscribe((trips: TripListElement[]) => {
       this.trips = trips;
     });
   }

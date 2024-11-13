@@ -5,6 +5,7 @@ import {Route} from "../model/route";
 import {RouteWithId} from "../model/routeWithId";
 import {Point} from "../../point/model/point";
 import {RoutesFilter} from "../model/routesFilter";
+import {RouteListElement} from "../model/routeListElement";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class RouteService {
 
   getRoutes(): Observable<RouteWithId[]>{
       return this.http.get<RouteWithId[]>( 'TravelTopia/Route');
+  }
+
+  getRoutesList(): Observable<RouteListElement>{
+    return this.http.get<RouteListElement>( 'TravelTopia/Route/list');
   }
 
   getRoute(name: string): Observable<RouteWithId>{
