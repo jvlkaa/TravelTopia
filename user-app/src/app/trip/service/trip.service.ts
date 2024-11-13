@@ -21,8 +21,8 @@ export class TripService {
     return this.http.get<TripListElement[]>( 'TravelTopia/Trip/list');
   }
 
-  getTripByID(id: string): Observable<TripWithId>{
-    return this.http.get<TripWithId>('TravelTopia/Trip' + '/id/' + id)
+  getTripListElementByID(id: string): Observable<TripListElement>{
+    return this.http.get<TripListElement>('TravelTopia/Trip' + '/list/id/' + id)
   }
 
   getTrip(name: string): Observable<TripWithId>{
@@ -33,7 +33,6 @@ export class TripService {
     const params = new HttpParams()
         .set('name', filter.name)
         .set('difficulty', filter.difficulty);
-
     return this.http.get<TripListElement[]>('TravelTopia/Trip' + '/filter', { params })
   }
 }

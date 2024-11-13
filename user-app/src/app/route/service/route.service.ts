@@ -43,6 +43,10 @@ export class RouteService {
     return this.http.get<RouteWithId>('TravelTopia/Route' + '/id/' + id)
   }
 
+  getRouteListElementByID(id: string): Observable<RouteWithId>{
+    return this.http.get<RouteWithId>('TravelTopia/Route' + '/list/id/' + id)
+  }
+
   getRoutesNearPoint(point: Point): Observable<RouteWithId[]>{
     const lat = point.latitude;
     const lon = point.longitude;

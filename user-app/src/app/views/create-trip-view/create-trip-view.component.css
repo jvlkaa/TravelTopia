@@ -162,8 +162,7 @@
 .add-trip-success {
   padding: 5px 5px;
   border: 1px  black;
-  background-color: lightsteelblue;
-  color: black;
+  background-color: mediumpurple;
   border-radius: 20px;
   text-align: center;
 }

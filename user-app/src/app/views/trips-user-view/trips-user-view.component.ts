@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../user/service/user.service";
-import {TripWithId} from "../../trip/model/tripWithId";
 import {TripsFilter} from "../../trip/model/tripsFilter";
+import {TripListElement} from "../../trip/model/tripListElement";
 
 @Component({
   selector: 'app-trips-user-view',
@@ -9,7 +9,7 @@ import {TripsFilter} from "../../trip/model/tripsFilter";
   styleUrls: ['./trips-user-view.component.css']
 })
 export class TripsUserViewComponent  implements OnInit{
-  public trips: TripWithId[] = [];
+  public trips: TripListElement[] = [];
   public filterTripName: string | undefined;
   public filterTripDifficulty: string | undefined;
 
@@ -19,9 +19,9 @@ export class TripsUserViewComponent  implements OnInit{
     this.listTrips();
   }
 
-  /* trips from database  (user favourites ) to show as a list */
+  /* trips from database  (user favourites) to show as a list */
   listTrips(){
-    this.userService.getTripsFromUser(this.userService.socialUser!.idToken).subscribe((trips: TripWithId[]) => {
+    this.userService.getTripsListFromUser(this.userService.socialUser!.idToken).subscribe((trips: TripListElement[]) => {
       this.trips = trips
     });
   }
@@ -32,7 +32,7 @@ export class TripsUserViewComponent  implements OnInit{
       difficulty: this.filterTripDifficulty ?? ""
     }
 
-    this.userService.getUserFilteredTrips(this.userService.socialUser!.idToken, filter).subscribe((trips: TripWithId[]) => {
+    this.userService.getUserFilteredTrips(this.userService.socialUser!.idToken, filter).subscribe((trips: TripListElement[]) => {
       this.trips = trips
     });
   }

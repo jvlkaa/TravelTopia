@@ -6,12 +6,13 @@ import {RouteService} from "../../route/service/route.service";
 import {SocialUser} from "@abacritt/angularx-social-login";
 import {UserRoute} from "../../route/model/userRoute";
 import {Trip} from "../../trip/model/trip";
-import {TripWithId} from "../../trip/model/tripWithId";
 import {TripService} from "../../trip/service/trip.service";
 import {map} from "rxjs/operators";
 import {Point} from "../../point/model/point";
 import {RoutesFilter} from "../../route/model/routesFilter";
 import {TripsFilter} from "../../trip/model/tripsFilter";
+import {RouteListElement} from "../../route/model/routeListElement";
+import {TripListElement} from "../../trip/model/tripListElement";
 
 @Injectable({
   providedIn: 'root'
@@ -59,40 +60,44 @@ export class UserService {
     );
   }
 
+  /* get routes (id, name) from specific user */
+  getRoutesListFromUser(user: string): Observable<RouteListElement[]> {
+    return this.getRouteIdsFromUser(user).pipe(
+      mergeMap((routesId: string[]) =>
+        forkJoin(routesId.map(routeId => this.routeSerivce.getRouteListElementByID(routeId)))
+      )
+    );
+  }
+
   /* get trip ids from specific user */
   getTripIdsFromUser(user: string): Observable<string[]>{
     return this.http.get<string[]>( 'TravelTopia/User/' + user + '/TripIds');
   }
 
   /* get trips from specific user */
-  getTripsFromUser(user: string): Observable<TripWithId[]> {
+  getTripsListFromUser(user: string): Observable<TripListElement[]> {
     return this.getTripIdsFromUser(user).pipe(
       mergeMap((tripsId: string[]) =>
-        forkJoin(tripsId.map(tripId => this.tripService.getTripByID(tripId)))
+        forkJoin(tripsId.map(tripId => this.tripService.getTripListElementByID(tripId)))
       )
     );
   }
 
-  /* filter user favourite routes */
-  getRoutesFromUserByString(user: string, text: string): Observable<RouteWithId[]>{
-    return this.http.get<RouteWithId[]>('TravelTopia/Route' + '/' + user +'/' + text + '/list')
-  }
-
-  getUserFilteredRoutes(user: string, filter: RoutesFilter): Observable<RouteWithId[]> {
+  getUserFilteredRoutes(user: string, filter: RoutesFilter): Observable<RouteListElement[]> {
     const params = new HttpParams()
       .set('name', filter.name)
       .set('type', filter.type)
       .set('difficulty', filter.difficulty);
 
-    return this.http.get<RouteWithId[]>('TravelTopia/User/' + user + '/routesFilter', { params })
+    return this.http.get<RouteListElement[]>('TravelTopia/User/' + user + '/routesFilter', { params })
   }
 
-  getUserFilteredTrips(user: string, filter: TripsFilter): Observable<TripWithId[]> {
+  getUserFilteredTrips(user: string, filter: TripsFilter): Observable<TripListElement[]> {
     const params = new HttpParams()
         .set('name', filter.name)
         .set('difficulty', filter.difficulty);
 
-    return this.http.get<TripWithId[]>('TravelTopia/User/' + user + '/tripsFilter', { params })
+    return this.http.get<TripListElement[]>('TravelTopia/User/' + user + '/tripsFilter', { params })
   }
 
   /* add route to user favourites*/

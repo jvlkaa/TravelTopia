@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {RouteWithId} from "../../route/model/routeWithId";
 import {UserService} from "../../user/service/user.service";
 import {RoutesFilter} from "../../route/model/routesFilter";
+import {RouteListElement} from "../../route/model/routeListElement";
 
 @Component({
   selector: 'app-routes-user-view',
@@ -9,7 +9,7 @@ import {RoutesFilter} from "../../route/model/routesFilter";
   styleUrls: ['./routes-user-view.component.css']
 })
 export class RoutesUserViewComponent implements OnInit{
-  public routes: RouteWithId[] = [];
+  public routes: RouteListElement[] = [];
   public filterRouteName: string | undefined;
   public filterRouteType: string | undefined;
   public filterRouteDifficulty: string | undefined;
@@ -20,9 +20,9 @@ export class RoutesUserViewComponent implements OnInit{
     this.listRoutes();
   }
 
-  /* routes from database  (user favourites ) to show as a list */
+  /* routes from database (user favourites) to show as a list */
   listRoutes(){
-    this.userService.getRoutesFromUser(this.userService.socialUser!.idToken).subscribe((routes: RouteWithId[]) => {
+    this.userService.getRoutesListFromUser(this.userService.socialUser!.idToken).subscribe((routes: RouteListElement[]) => {
       this.routes = routes
     });
   }
@@ -34,7 +34,7 @@ export class RoutesUserViewComponent implements OnInit{
       difficulty: this.filterRouteDifficulty ?? ""
     };
 
-    this.userService.getUserFilteredRoutes(this.userService.socialUser!.idToken, filter).subscribe((routes: RouteWithId[]) => {
+    this.userService.getUserFilteredRoutes(this.userService.socialUser!.idToken, filter).subscribe((routes: RouteListElement[]) => {
       this.routes = routes;
     });
   }
