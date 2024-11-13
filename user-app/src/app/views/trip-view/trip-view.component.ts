@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import * as turf from '@turf/turf';
 // @ts-ignore
 import Map from 'ol/Map';
@@ -36,6 +36,7 @@ import {TripService} from "../../trip/service/trip.service";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {forkJoin, Observable} from "rxjs";
 import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-trip-view',
@@ -62,7 +63,7 @@ export class TripViewComponent implements OnInit{
   constructor(private routeService: RouteService, private tripService: TripService,
               private urlRoute: ActivatedRoute,
               public userService: UserService,
-              private router: Router) {
+              private location: Location) {
   }
 
   setViewTrip(trip: TripWithId){
@@ -208,7 +209,6 @@ export class TripViewComponent implements OnInit{
 
   /* get routes from the trip */
   generateTrip(){
-
     // get routes from trip
     const tripRoutes = this.view_trip!.routes.map(routeId =>
       this.routeService.getRouteByID(routeId)
@@ -237,6 +237,7 @@ export class TripViewComponent implements OnInit{
   }
 
 
+  /* drawing route on the map */
   drawRoute(route: RouteWithId){
     let color = this.generateRouteColor();
     const lineCoordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
@@ -334,7 +335,7 @@ export class TripViewComponent implements OnInit{
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          this.router.navigate(['trips/my-trips']);
+          this.location.back();
         }, 3000);
       },
       error: (err: any) => {

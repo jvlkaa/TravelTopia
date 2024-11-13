@@ -1,5 +1,5 @@
 import {RouteService} from "../../route/service/route.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {Component, OnInit} from '@angular/core';
 import * as turf from '@turf/turf';
@@ -18,7 +18,7 @@ import Feature from 'ol/Feature';
 // @ts-ignore
 import { Point, LineString } from 'ol/geom';
 // @ts-ignore
-import { fromLonLat, toLonLat  } from 'ol/proj';
+import { fromLonLat  } from 'ol/proj';
 // @ts-ignore
 import TileLayer from 'ol/layer/Tile';
 // @ts-ignore
@@ -34,6 +34,7 @@ import { boundingExtent } from 'ol/extent';
 import {UserService} from "../../user/service/user.service";
 import {Observable, of} from "rxjs";
 import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-route-view',
@@ -61,20 +62,24 @@ export class RouteViewComponent implements OnInit {
   constructor(private routeService: RouteService,
               private urlRoute: ActivatedRoute,
               public userService: UserService,
-              private router: Router) {
+              private location: Location) {
   }
+
 
   setViewRoute(route: RouteWithId){
     this.view_route = route;
   }
 
+
   getViewRouteTimeHours() :number {
     return Math.floor(this.view_route?.time! / 60);
   }
 
+
   getViewRouteTimeMinutes() :number {
     return this.view_route?.time! % 60;
   }
+
 
   ngOnInit() {
     this.urlRoute.params.subscribe(params => {
@@ -140,6 +145,7 @@ export class RouteViewComponent implements OnInit {
     }
   }
 
+
   /* satellite vision */
   openInfoWindow(coordinate: number[]) {
     this.calculateCenterMarker()
@@ -161,6 +167,7 @@ export class RouteViewComponent implements OnInit {
     const pictureButton = document.getElementById('picture-map')!;
     pictureButton.onclick = () => { this.displaySatelliteLayer(); };
   }
+
 
   /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
   displaySatelliteLayer(){
@@ -192,6 +199,7 @@ export class RouteViewComponent implements OnInit {
     closeButton.style.display = 'none';
   }
 
+
   /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
   removeSatelliteLayer() {
     if (this.satelliteLayer) {
@@ -218,6 +226,7 @@ export class RouteViewComponent implements OnInit {
       closeButton.style.display = 'inline';
     }
   }
+
 
   /* showing chosen route from list from database */
   drawRouteFromDataBase() {
@@ -271,9 +280,9 @@ export class RouteViewComponent implements OnInit {
     this.map.addLayer(this.routeLayer);
   }
 
+
   /* adding route to favourites */
   addButtonClicked(){
-
     this.userService.addRouteToUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
       next: (message: string) => {
         this.operationSuccess = message;
@@ -289,6 +298,7 @@ export class RouteViewComponent implements OnInit {
     });
   }
 
+
   /* deleting route from users favourites */
   deleteButtonClicked(){
     this.userService.deleteRouteFromUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
@@ -296,7 +306,7 @@ export class RouteViewComponent implements OnInit {
         this.operationSuccess = message;
         setTimeout(() => {
           this.operationSuccess = null;
-          this.router.navigate(['routes/my-routes']);
+          this.location.back();
         }, 3000);
       },
       error: (err: any) => {
@@ -304,6 +314,7 @@ export class RouteViewComponent implements OnInit {
       }
     });
   }
+
 
   /* checking if the route is in user favourites */
   checkUserFavourites(): Observable<boolean> {
