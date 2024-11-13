@@ -55,16 +55,28 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<List<Trip>> GetTripsAsync()
+        public async Task<List<TripListElement>> GetTripsAsync()
         {
             var result = await trips.Find(x => x.userCreated == false).ToListAsync();
+
             if(result.Count == 0)
             {
-                return new List<Trip>(0);
+                return new List<TripListElement>(0);
             }
             else
             {
-                return result;
+                var tripsList = new List<TripListElement>();
+
+                result.ForEach(trip =>
+                {
+                    tripsList.Add(new TripListElement
+                    {
+                        id = trip.id,
+                        name = trip.name
+                    });
+                });
+
+                return tripsList;
             }
         }
 
@@ -81,7 +93,26 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<List<Trip>> GetFilteredUserTripsAsync(List<string> userTripsIds, string name, string difficulty)
+        public async Task<TripListElement> GetTripListElementByIdAsync(string id)
+        {
+            var result = await trips.Find(x => x.id == id).SingleOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                var trip = new TripListElement
+                {
+                    id = result.id,
+                    name = result.name
+                };
+
+                return trip;
+            }
+        }
+
+        public async Task<List<TripListElement>> GetFilteredUserTripsAsync(List<string> userTripsIds, string name, string difficulty)
         {
             var filter = FilterDefinition<Trip>.Empty;
 
@@ -102,15 +133,26 @@ namespace backend_app.Services
 
             if (result == null)
             {
-                return new List<Trip>(0);
+                return new List<TripListElement>(0);
             }
             else
             {
-                return result;
+                var filteredTrips = new List<TripListElement>();
+
+                result.ForEach(trip =>
+                {
+                    filteredTrips.Add(new TripListElement
+                    {
+                        id = trip.id,
+                        name = trip.name
+                    });
+                });
+
+                return filteredTrips;
             }
         }
 
-        public async Task<List<Trip>> GetFilteredTripsAsync(string name, string difficulty)
+        public async Task<List<TripListElement>> GetFilteredTripsAsync(string name, string difficulty)
         {
             var filter = FilterDefinition<Trip>.Empty;
             filter &= Builders<Trip>.Filter.Eq(x => x.userCreated, false);
@@ -128,11 +170,22 @@ namespace backend_app.Services
 
             if (result == null)
             {
-                return new List<Trip>(0);
+                return new List<TripListElement>(0);
             }
             else
             {
-                return result;
+                var filteredTrips = new List<TripListElement>();
+
+                result.ForEach(trip =>
+                {
+                    filteredTrips.Add(new TripListElement
+                    {
+                        id = trip.id,
+                        name = trip.name
+                    });
+                });
+
+                return filteredTrips;
             }
         }
 

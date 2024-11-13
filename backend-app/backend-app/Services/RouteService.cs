@@ -20,16 +20,28 @@ namespace backend_app.Services
             this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.RouteCollectionName);
         }
 
-        public async Task<List<Models.Route>> GetRoutesAsync()
+        public async Task<List<RouteListElement>> GetRoutesAsync()
         {
             var result = await routes.Find(x => x.userCreated == false).ToListAsync();
+
             if (result.Count == 0)
             {
-                return new List<Models.Route>(0);
+                return new List<RouteListElement>(0);
             }
             else
             {
-                return result;
+                var routesList = new List<RouteListElement>();
+
+                result.ForEach(route =>
+                {
+                    routesList.Add(new RouteListElement
+                    {
+                        id = route.id,
+                        name = route.name
+                    });
+                });
+
+                return routesList;
             }
         } 
 
@@ -77,7 +89,8 @@ namespace backend_app.Services
                 longitude = longitude
             };
 
-            var allRoutes = await GetRoutesAsync();
+            var allRoutes = await routes.Find(x => x.userCreated == false).ToListAsync();
+
 
             var result = allRoutes.Where(x =>
             {
@@ -121,7 +134,26 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<List<Models.Route>> GetFilteredUserRoutesAsync(List<string> userRoutesIds, string name, string type, string difficulty)
+        public async Task<RouteListElement> GetRouteListElementByIdAsync(string id)
+        {
+            var result = await routes.Find(x => x.id == id).SingleOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                var route = new RouteListElement
+                {
+                    id = result.id,
+                    name = result.name
+                };
+
+                return route;
+            }
+        }
+
+        public async Task<List<RouteListElement>> GetFilteredUserRoutesAsync(List<string> userRoutesIds, string name, string type, string difficulty)
         {
             var filter = FilterDefinition<Models.Route>.Empty;
 
@@ -146,15 +178,26 @@ namespace backend_app.Services
 
             if (result == null)
             {
-                return new List<Models.Route>(0);
+                return new List<RouteListElement>(0);
             }
             else
             {
-                return result;
+                var filteredRoutes = new List<RouteListElement>();
+
+                result.ForEach(trip =>
+                {
+                    filteredRoutes.Add(new RouteListElement
+                    {
+                        id = trip.id,
+                        name = trip.name
+                    });
+                });
+
+                return filteredRoutes;
             }
         }
 
-        public async Task<List<Models.Route>> GetFilteredRoutesAsync(string name, string type, string difficulty)
+        public async Task<List<RouteListElement>> GetFilteredRoutesAsync(string name, string type, string difficulty)
         {
             var filter = FilterDefinition<Models.Route>.Empty;
             filter &= Builders<Models.Route>.Filter.Eq(x => x.userCreated, false);
@@ -176,11 +219,22 @@ namespace backend_app.Services
 
             if (result == null)
             {
-                return new List<Models.Route>(0);
+                return new List<RouteListElement>(0);
             }
             else
             {
-                return result;
+                var filteredRoutes = new List<RouteListElement>();
+
+                result.ForEach(trip =>
+                {
+                    filteredRoutes.Add(new RouteListElement
+                    {
+                        id = trip.id,
+                        name = trip.name
+                    });
+                });
+
+                return filteredRoutes;
             }
 
         }

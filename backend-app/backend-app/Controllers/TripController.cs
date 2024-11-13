@@ -26,7 +26,7 @@ namespace backend_app.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public async Task<IActionResult> GetTrips()
         {
             var trips = await tripService.GetTripsAsync();
@@ -58,6 +58,20 @@ namespace backend_app.Controllers
         public async Task<IActionResult> GetTripById(string id)
         {
             var result = await tripService.GetTripByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpGet("list/id/{id}")]
+        public async Task<IActionResult> GetTripListElementById(string id)
+        {
+            var result = await tripService.GetTripListElementByIdAsync(id);
             if (result == null)
             {
                 return NotFound();

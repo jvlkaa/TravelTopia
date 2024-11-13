@@ -26,7 +26,7 @@ namespace backend_app.Controllers
             return CreatedAtAction(nameof(Post), route);
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public async Task<IActionResult> GetRoutes()
         {
             var routes = await routeService.GetRoutesAsync();
@@ -72,6 +72,20 @@ namespace backend_app.Controllers
         public async Task<IActionResult> GetRouteById(string id)
         {
             var result = await routeService.GetRouteByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpGet("list/id/{id}")]
+        public async Task<IActionResult> GetRouteListElementById(string id)
+        {
+            var result = await routeService.GetRouteListElementByIdAsync(id);
             if (result == null)
             {
                 return NotFound();
