@@ -29,27 +29,6 @@
   border-left-style: solid;
 }
 
-#popup{
-  background: whitesmoke;
-  box-shadow: 0px 2px 5px 0px;
-  border-radius: 20px;
-}
-
-#popup-content{
-  font-family: "Calibri Light";
-  font-weight: bold;
-  font-size: small;
-  background: whitesmoke;
-  padding: 1px;
-  border-radius: 20px;
-}
-
-#popup-closer{
-  background: lavender;
-  border-style: solid;
-  border-width: 1px;
-}
-
 #map-create-container{
   grid-area: 2 / 1 / 11 / 4;
   display: flex;

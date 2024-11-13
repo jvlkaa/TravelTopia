@@ -1,5 +1,4 @@
 <div id="trip-container">
-  <div id="name"></div>
   <div id="trip-map">
     <div id="map" class="map"></div>
     <div id="popup" class="ol-popup">
@@ -7,38 +6,32 @@
       <div id="popup-content"></div>
     </div>
   </div>
-  <div id="trip-info">
-    <div *ngIf="this.view_trip" id="information">
-      <h1> {{ this.view_trip.name}} </h1>
-      <table class="trip-info-table">
-        <tr>
-          <td><strong>Trudność wycieczki:</strong></td>
-          <td>{{ this.view_trip.difficulty }}</td>
-        </tr>
-        <tr>
-          <td><strong>Opis wycieczki:</strong></td>
-          <td>{{ this.view_trip.description || '-' }}</td>
-        </tr>
-        <tr>
-          <td><strong>Szacowany Dystans:</strong></td>
-          <td>{{ this.calculateDistance().toFixed(2) }} km</td>
-        </tr>
-      </table>
-    </div>
-    <h3> Trasy:</h3>
-    <div id="routes">
-      <ul *ngIf="this.routes" id="route-container">
+  <div *ngIf="this.view_trip" id="trip-info">
+    <div id="trip-title"> {{ this.view_trip.name}} </div>
+    <table class="trip-info-table">
+      <tr class="trip-info-row">
+        <td class="trip-info-title"><strong>Trudność wycieczki:</strong></td>
+        <td class="trip-info-data">{{ this.view_trip.difficulty }}</td>
+      </tr>
+      <tr class="trip-info-row">
+        <td class="trip-info-title"><strong>Szacowany Dystans:</strong></td>
+        <td class="trip-info-data">{{ this.calculateDistance().toFixed(2) }} km</td>
+      </tr>
+      <tr class="trip-info-row-title">Opis wycieczki:</tr>
+      <tr class="trip-info-row-data">{{ this.view_trip.description || '-' }}</tr>
+    </table>
+    <div *ngIf="this.routes" id="route-container">
+      <ul>
+        <div id="routes-label">Trasy:</div>
         <li *ngFor="let route of this.routes" class="li-routes">
           <a [routerLink]="['/route', route.name]" class="a-routes">{{ route.name }}</a>
         </li>
       </ul>
-      <p *ngIf="this.routes.length === 0">Brak elementów do wyświetlenia</p>
     </div>
-  </div>
-  <div id="user-option-container">
+    <p *ngIf="this.routes.length === 0">Brak elementów do wyświetlenia</p>
     <div id="user-container" *ngIf="userService.isLoggedin">
-      <button class="add_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
-      <button class="add_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
+      <button class="favourite_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
+      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
       <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
     </div>
   </div>
