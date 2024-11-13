@@ -30,6 +30,7 @@ import {UserTrip} from "../../trip/model/userTrip";
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as turf from "@turf/turf";
+
 @Component({
   selector: 'app-create-trip-view',
   templateUrl: './create-trip-view.component.html',
@@ -69,6 +70,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
               private tripService: TripService) {
   }
 
+
   ngOnInit() {
     this.map = new Map({
       layers: [
@@ -94,6 +96,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
 
     this.listRoutes();
   }
+
 
   ngOnDestroy() {
     if (this.loginStatusSubscription) {
@@ -122,14 +125,12 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   routePreview(route: RouteWithId){
     this.drawRoute(route, false);
     this.routePreviewID = route.id;
-    //calculate zoom if the preview route is the first one
-    if(this.routesTrip.length === 0) {
-       const coordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
-       const routeEdges = boundingExtent(coordinates);
-       this.map.getView().fit(routeEdges, {
-          padding: [200, 200, 200, 200],
-       });
-    }
+    //calculate zoom
+    const coordinates = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+    const routeEdges = boundingExtent(coordinates);
+    this.map.getView().fit(routeEdges, {
+      padding: [100, 100, 100, 100],
+    });
   }
 
 
@@ -226,6 +227,8 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     distanceContent.style.color = 'black';
     distanceContent.style.borderStyle = 'solid';
     distanceContent.style.borderStyle = 'thin';
+    // calculating zoom
+    this.calculateZoom();
   }
 
 
@@ -272,6 +275,8 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
       distanceContent.style.color = 'black';
       distanceContent.style.borderStyle = 'solid';
       distanceContent.style.borderStyle = 'thin';
+      // calculating zoom
+      this.calculateZoom();
     }
     else {
       this.listRoutes();
@@ -417,6 +422,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   }
 
 
+  /* calctulating trip difficulty depended on routes difficulty */
   calculateTripDifficulty(routesId: string[]): Observable<"łatwa" | "normalna" | "trudna">{
     const routeObservables = routesId.map(id => this.routeService.getRouteByID(id));
 
@@ -455,7 +461,8 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     );
   }
 
-    /* calculating route distance */
+
+  /* calculating route distance */
   calculateDistance(): number {
      let distance = 0;
      for (let r of this.routesTrip) {
@@ -467,5 +474,22 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
          }
      }
      return parseFloat(distance.toFixed(2));
+  }
+
+
+  /* calculating zoom map to see all routes in trip */
+  calculateZoom() {
+    let coordinates: number[][] = [];
+    this.routesTrip.forEach(route => {
+      const points = route.routePoints.map(point => fromLonLat([point.longitude, point.latitude]));
+      coordinates = coordinates.concat(points);
+    });
+
+    const extent = boundingExtent(coordinates);
+    this.map.getView().fit(extent, {
+      size: this.map.getSize(),
+      maxZoom: 16,
+      padding: [100, 100, 100, 100]
+    });
   }
 }
