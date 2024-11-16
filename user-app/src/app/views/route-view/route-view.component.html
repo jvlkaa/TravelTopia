@@ -1,4 +1,4 @@
-<div id="route-container">
+<div class="main-container">
   <div id="route-map">
     <div id="map" class="map"></div>
     <div id="popup" class="ol-popup">
@@ -6,6 +6,7 @@
       <div id="popup-content"></div>
     </div>
   </div>
+
   <div *ngIf="this.view_route" id="route-info">
     <div id="route-title"> {{ this.view_route.name}} </div>
     <table class="route-info-table">
@@ -30,9 +31,10 @@
       <tr class="route-info-row-title">Opis trasy:</tr>
       <tr class="route-info-row-data">{{ this.view_route.description || '-' }}</tr>
     </table>
+
     <div id="user-container" *ngIf="userService.isLoggedin">
-      <button class="favourite_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trase z ulubionych </button>
-      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trase do ulubionych </button>
+      <button class="favourite_button"  *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()"> Usuń trasę z ulubionych </button>
+      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()"> Dodaj trasę do ulubionych </button>
       <div *ngIf="operationSuccess" class="add-route-success">{{ operationSuccess }}</div>
     </div>
   </div>

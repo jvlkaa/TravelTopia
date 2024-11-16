@@ -27,6 +27,7 @@ export class TripsViewComponent implements OnInit {
     });
   }
 
+  /* trips filtration */
   filterTrips() {
     const filter: TripsFilter = {
       name: this.filterTripName ?? "",
@@ -38,6 +39,7 @@ export class TripsViewComponent implements OnInit {
     });
   }
 
+  /* reset filtration */
   resetTrips() {
     this.filterTripName = undefined;
     this.filterTripDifficulty = undefined;

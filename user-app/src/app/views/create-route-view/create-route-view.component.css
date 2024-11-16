@@ -1,4 +1,4 @@
-#map-container {
+.main-container {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -29,7 +29,7 @@
   border-left-style: solid;
 }
 
-#map-create-container{
+#route-create-container{
   grid-area: 2 / 1 / 11 / 4;
   display: flex;
   flex-direction: column;
@@ -38,143 +38,8 @@
   width: 100%;
 }
 
-#map-create-container > * {
+#route-create-container > * {
   width: 100%;
-}
-
-.lat, .lng, .trasa-button, .clear-button  {
-    background-color: lavender;
-    padding: 10px 20px;
-    margin: 5px;
-}
-
-.buttons{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-.trasa-button, .clear-button {
-  width: 100%;
-  transition: background-color 0.2s;
-}
-
-.trasa-button:hover, .clear-button:hover {
-  background-color: #c4b9de;
-
-}
-
-.add-route{
-  background-color: lavender;
-  padding: 10px 20px;
-  width: 100%;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  transition: background-color 0.2s;
-}
-
-.add-route:hover {
-  background-color: #c4b9de;
-}
-
-.route-input {
-    display: flex;
-    align-items: center;
-}
-
-#add-route-section{
-  width: 100%;
-}
-
-.route-name-input {
-    width: 100%;
-    background-color: white;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border-top-style: none;
-}
-
-.add-route-success {
-    padding: 5px 5px;
-    border: 1px  black;
-    background-color: mediumpurple;
-    border-radius: 20px;
-    text-align: center;
-}
-
-#div_map{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-#menu_bar{
-    background-color: lavender;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-#title{
-    font-family: "Calibri Light";
-    height: 100%;
-    padding-left: 30px;
-}
-
-.menu_button{
-    font-family: "Calibri Light";
-    font-size: larger;
-    font-weight: bolder;
-    background-color: lavender;
-    width: 30%;
-    border: none;
-    border-radius: 50px;
-}
-
-#menu_buttons{
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-}
-
-.menu_button:hover{
-    background-color: #c4b9de;
-}
-
-#information-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    padding: 20px;
-}
-
-#info{
-    font-family: "Arial";
-    font-weight: bolder;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background-color: white;
-    width: 60%;
-}
-
-#list-container {
-    flex: 1;
-    padding: 1em;
-    border-left: 1px solid #ddd;
-    text-align: center;
-}
-
-#li-routes{
-    background-color: lavender;
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 5px;
-    list-style-type: none;
-}
-
-#li-routes:hover{
-    background-color: #c4b9de;
 }
 
 .route-properties{
@@ -256,58 +121,7 @@
   flex-direction: row;
 }
 
-#distance-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-  background: lavender;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  text-align: center;
-  font-family: "Calibri Light";
-  font-weight: bold;
-  border-style: outset;
-  border-right-style: none;
-  border-color: black;
-  border-width: 2px;
-  border-top: none;
-  box-sizing: border-box;
-}
-
-#distance-label {
-  width: 50%;
-}
-
-#distance-value {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-self: center;
-  background-color: white;
-  width: 50%;
-  height: 100%;
-  border-bottom-right-radius: 20px;
-  border-left-style: solid;
-  border-left-color: lightgray;
-  border-left-width: thin;
-  color: lightgray;
-}
-
-.hour-label{
-  width: 100%;
-  background: lavender;
-  padding: 10px;
-  text-align: center;
-  font-family: "Calibri Light";
-  font-weight: bold;
-  border-style: outset;
-  border-color: black;
-  border-width: 2px;
-  border-top: none;
-}
-
-.minutes-label{
+.properties-label{
   width: 100%;
   background: lavender;
   padding: 10px;
@@ -351,7 +165,7 @@
   border-top: none;
 }
 
-#input-container {
+.input-container {
   display: flex;
   flex-direction: column;
 }
@@ -369,4 +183,99 @@
   border-width: 2px;
   border-top: none;
   box-sizing: border-box;
+}
+
+.route-name-input {
+  width: 100%;
+  background-color: white;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border-top-style: none;
+}
+
+.distance-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  background: lavender;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-style: outset;
+  border-right-style: none;
+  border-color: black;
+  border-width: 2px;
+  border-top: none;
+  box-sizing: border-box;
+}
+
+#distance-label {
+  width: 50%;
+}
+
+#distance-value {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  background-color: white;
+  width: 50%;
+  height: 100%;
+  border-bottom-right-radius: 20px;
+  border-left-style: solid;
+  border-left-color: lightgray;
+  border-left-width: thin;
+  color: lightgray;
+}
+
+.buttons{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.route-create-button, .clear-button  {
+  background-color: lavender;
+  padding: 10px 20px;
+  margin: 5px;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.route-create-button:hover, .clear-button:hover {
+  background-color: #c4b9de;
+
+}
+
+.route-input {
+  display: flex;
+  align-items: center;
+}
+
+.add-route-section{
+  width: 100%;
+}
+
+.add-route{
+  background-color: lavender;
+  padding: 10px 20px;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.2s;
+}
+
+.add-route:hover {
+  background-color: #c4b9de;
+}
+
+.add-route-success {
+  padding: 5px 5px;
+  border: 1px  black;
+  background-color: mediumpurple;
+  border-radius: 20px;
+  text-align: center;
 }

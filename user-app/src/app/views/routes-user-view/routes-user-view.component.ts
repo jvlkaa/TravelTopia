@@ -27,6 +27,7 @@ export class RoutesUserViewComponent implements OnInit{
     });
   }
 
+  /* routes filtration */
   filterRoutes() {
     const filter: RoutesFilter = {
       name: this.filterRouteName ?? "",
@@ -39,6 +40,7 @@ export class RoutesUserViewComponent implements OnInit{
     });
   }
 
+  /* reset filtration */
   resetRoutes() {
     this.filterRouteName = undefined;
     this.filterRouteType = undefined;

@@ -19,13 +19,14 @@ export class TripsUserViewComponent  implements OnInit{
     this.listTrips();
   }
 
-  /* trips from database  (user favourites) to show as a list */
+  /* trips from database (user favourites) to show as a list */
   listTrips(){
     this.userService.getTripsListFromUser(this.userService.socialUser!.idToken).subscribe((trips: TripListElement[]) => {
       this.trips = trips
     });
   }
 
+  /* trips filtration */
   filterTrips() {
     const filter: TripsFilter = {
       name: this.filterTripName ?? "",
@@ -37,6 +38,7 @@ export class TripsUserViewComponent  implements OnInit{
     });
   }
 
+  /* reset filtration */
   resetTrips() {
     this.filterTripName = undefined;
     this.filterTripDifficulty = undefined;

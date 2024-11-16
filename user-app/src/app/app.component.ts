@@ -10,14 +10,12 @@ import {NavigationEnd, Router} from "@angular/router";
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  //---------------------------------------------------------------------
-  //----------------------- Google Authentication -----------------------
-  //---------------------------------------------------------------------
   isMenuOpen = false;
 
   constructor(private socialAuthService: SocialAuthService,
               public userService: UserService,  private router: Router ) {}
 
+  /* login management */
   ngOnInit() {
     // restore user from storage
     const userStorage = sessionStorage.getItem('user');
@@ -35,6 +33,7 @@ export class AppComponent implements OnInit {
       });
     }
 
+    //authentication
     this.socialAuthService.authState.subscribe((user) => {
       if(user){
         this.userService.socialUser = user;
@@ -65,6 +64,7 @@ export class AppComponent implements OnInit {
   }
 
 
+  /* logout with AuthService, fields and storage management*/
   logoutGoogle(): void{
     if (this.socialAuthService.authState) {
       this.socialAuthService.authState.subscribe(user => {
@@ -82,6 +82,8 @@ export class AppComponent implements OnInit {
     sessionStorage.removeItem('user');
   }
 
+
+  /* dropdown menu management */
   accountMenu(){
     this.isMenuOpen = !this.isMenuOpen;
   }

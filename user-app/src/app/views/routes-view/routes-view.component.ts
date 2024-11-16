@@ -2,12 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {RoutesFilter} from "../../route/model/routesFilter";
 import {RouteListElement} from "../../route/model/routeListElement";
-// @ts-ignore
-import { Point, LineString } from 'ol/geom';
-// @ts-ignore
-import { fromLonLat, toLonLat  } from 'ol/proj';
-// @ts-ignore
-import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 
 @Component({
   selector: 'app-routes-view',
@@ -35,6 +29,7 @@ public filterRouteDifficulty: string | undefined;
     });
   }
 
+  /* routes filtration */
   filterRoutes() {
     const filter: RoutesFilter = {
       name: this.filterRouteName ?? "",
@@ -47,6 +42,7 @@ public filterRouteDifficulty: string | undefined;
     });
   }
 
+  /* reset filtration */
   resetRoutes() {
     this.filterRouteName = undefined;
     this.filterRouteType = undefined;

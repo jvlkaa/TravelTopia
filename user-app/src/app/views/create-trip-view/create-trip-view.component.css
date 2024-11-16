@@ -6,10 +6,18 @@
   grid-row-gap: 0px;
 }
 
-.map-and-properties{
+#choose-routes-title {
+  grid-area: 1 / 1 / 2 / 4;
+  background-color: lavender;
+  border-top-style: solid;
+  border-top-width: thin;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  font-family: "Calibri Light";
+  font-weight: bolder;
+  font-size: xx-large;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
 #chosen-routes-title {
@@ -35,12 +43,11 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
-
-.clear-button {
-  background-color: lavender;
-  padding: 10px 20px;
-  border-radius: 20px;
-  margin: 5px;
+.trip-properties{
+  grid-area: 6 / 4 / 11 / 7;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
 }
 
 .route-name-input {
@@ -48,22 +55,6 @@
   padding: 10px 20px;
   border-top-style: none;
   border-bottom-style: none;
-}
-
-.buttons{
-  display: flex;
-  align-items: center;
-}
-
-.clear-button {
-  width: 100%;
-}
-
-.trip-properties{
-  grid-area: 6 / 4 / 11 / 7;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 10px;
 }
 
 #distance-container {
@@ -83,11 +74,6 @@
   margin-bottom: 10px;
 }
 
-#distance-label {
-  width: 50%;
-  font-size: medium;
-}
-
 #distance-value {
   display: flex;
   flex-direction: column;
@@ -104,7 +90,12 @@
   color: lightgray;
 }
 
-#trip-name-label {
+.trip-properties-el{
+  display: flex;
+  flex-direction: column;
+}
+
+#name-label {
   margin-top: 20px;
   background: lavender;
   padding: 10px;
@@ -118,12 +109,12 @@
   border-width: 2px;
 }
 
-.trip-properties-el{
-  display: flex;
-  flex-direction: column;
+#distance-label {
+  width: 50%;
+  font-size: medium;
 }
 
-.text-label{
+#description-label{
   background: lavender;
   padding: 10px;
   text-align: center;
@@ -159,12 +150,30 @@
     background-color: #c4b9de;
 }
 
-.add-trip-success {
-  padding: 5px 5px;
-  border: 1px  black;
-  background-color: mediumpurple;
-  border-radius: 20px;
-  text-align: center;
+.routes{
+  grid-area: 2 / 1 / 11 / 4;
+  width: 100%;
+  display: flex;
+}
+
+.trip-routes{
+  display: flex;
+  grid-area: 2 / 7 / 11 / 10;
+  width: 100%;
+}
+
+.route-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  align-items: center;
+  width: 100%;
+}
+
+.route-container > * {
+  width: 70%;
 }
 
 .li-routes{
@@ -192,6 +201,16 @@
   font-size: large;
 }
 
+.a-routes:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+.li-routes:hover{
+  background-color: #c4b9de;
+  box-shadow: 0px 10px 20px black;
+}
+
 #route-preview {
   background-color: white;
   font-family: "Calibri Light";
@@ -207,6 +226,11 @@
   transition: background-color 0.3s;
 }
 
+#route-preview:hover {
+  background-color: mediumpurple;
+  color: white;
+}
+
 #route-add {
   background-color: white;
   font-family: "Calibri Light";
@@ -220,6 +244,11 @@
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   transition: background-color 0.3s;
+}
+
+#route-add:hover {
+  background-color: mediumpurple;
+  color: white;
 }
 
 #route-remove {
@@ -242,56 +271,6 @@
   color: white;
 }
 
-#route-preview:hover {
-  background-color: mediumpurple;
-  color: white;
-}
-
-#route-add:hover {
-  background-color: mediumpurple;
-  color: white;
-}
-
-.a-routes:active {
-  color: inherit;
-  text-decoration: none;
-}
-
-.li-routes:hover{
-  background-color: #c4b9de;
-  box-shadow: 0px 10px 20px black;
-}
-
-
-.add-route{
-}
-
-.trip-routes{
-  display: flex;
-  grid-area: 2 / 7 / 11 / 10;
-  width: 100%;
-}
-
-#choose-routes-title {
-  grid-area: 1 / 1 / 2 / 4;
-  background-color: lavender;
-  border-top-style: solid;
-  border-top-width: thin;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Calibri Light";
-  font-weight: bolder;
-  font-size: xx-large;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
-}
-
-.routes{
-  grid-area: 2 / 1 / 11 / 4;
-  width: 100%;
-  display: flex;
-}
-
 p {
   width: 100%;
   font-family: "Calibri Light";
@@ -300,17 +279,10 @@ p {
   text-align: center;
 }
 
-.route-container {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  align-items: center;
-  width: 100%;
+.add-trip-success {
+  padding: 5px 5px;
+  border: 1px  black;
+  background-color: mediumpurple;
+  border-radius: 20px;
+  text-align: center;
 }
-
-.route-container > * {
-  width: 70%;
-}
-

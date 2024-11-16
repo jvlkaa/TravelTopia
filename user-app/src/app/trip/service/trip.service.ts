@@ -13,22 +13,27 @@ export class TripService {
 
   constructor(private http: HttpClient) { }
 
+  /* add trip */
   addTrip(request: Trip): Observable<any>{
     return this.http.post('TravelTopia/Trip', request);
   }
 
+  /* get all trips (only id, name) */
   getTripsList(): Observable<TripListElement[]>{
     return this.http.get<TripListElement[]>( 'TravelTopia/Trip/list');
   }
 
+  /* get trip by id (only id, name) */
   getTripListElementByID(id: string): Observable<TripListElement>{
     return this.http.get<TripListElement>('TravelTopia/Trip' + '/list/id/' + id)
   }
 
+  /* get trip by name */
   getTrip(name: string): Observable<TripWithId>{
     return this.http.get<TripWithId>('TravelTopia/Trip' + '/' + name)
   }
 
+  /* filtration of trips (return id, name) */
   getFilteredTrips(filter: TripsFilter): Observable<TripListElement[]> {
     const params = new HttpParams()
         .set('name', filter.name)

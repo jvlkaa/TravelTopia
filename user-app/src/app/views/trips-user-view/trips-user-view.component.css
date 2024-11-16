@@ -1,9 +1,25 @@
-#list-container {
+.main-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(8, 1fr);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
+}
+
+#title {
+  grid-area: 1 / 2 / 2 / 6;
+  background-color: lavender;
+  font-family: "Calibri Light";
+  text-align: center;
+  border-top-style: solid;
+  border-top-width: thin;
+  border-left-style: solid;
+  border-left-width: thin;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+h2{
+  font-family: "Calibri Light";
 }
 
 #filter-section{
@@ -25,18 +41,6 @@
 
 #filter-section > * {
   width: 80%;
-}
-
-#title {
-  grid-area: 1 / 2 / 2 / 6;
-  background-color: lavender;
-  font-family: "Calibri Light";
-  text-align: center;
-  border-top-style: solid;
-  border-top-width: thin;
-  border-left-style: solid;
-  border-left-width: thin;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
 .filter-label {
@@ -68,10 +72,6 @@
   justify-content: space-evenly;
 }
 
-h2{
-  font-family: "Calibri Light";
-}
-
 #find-text-area{
   border-radius: 20px;
   border-style: solid;
@@ -96,7 +96,6 @@ h2{
 #find-button:hover{
   background-color: #c4b9de;
 }
-
 
 #li-trips{
   background-color: lavender;

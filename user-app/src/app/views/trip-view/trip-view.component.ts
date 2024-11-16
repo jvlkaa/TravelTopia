@@ -2,6 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {ActivatedRoute} from "@angular/router";
 import * as turf from '@turf/turf';
+import {UserService} from "../../user/service/user.service";
+import {TripWithId} from "../../trip/model/tripWithId";
+import {TripService} from "../../trip/service/trip.service";
+import {RouteWithId} from "../../route/model/routeWithId";
+import {catchError, forkJoin, Observable, of, switchMap} from "rxjs";
+import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -30,13 +37,6 @@ import Overlay from 'ol/Overlay';
 import XYZ from 'ol/source/XYZ';
 // @ts-ignore
 import { boundingExtent } from 'ol/extent';
-import {UserService} from "../../user/service/user.service";
-import {TripWithId} from "../../trip/model/tripWithId";
-import {TripService} from "../../trip/service/trip.service";
-import {RouteWithId} from "../../route/model/routeWithId";
-import {forkJoin, Observable} from "rxjs";
-import { map } from 'rxjs/operators';
-import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-trip-view',
@@ -44,21 +44,25 @@ import {Location} from '@angular/common';
   styleUrls: ['./trip-view.component.css']
 })
 export class TripViewComponent implements OnInit{
-  public view_trip : TripWithId | undefined;
-  public  routes: RouteWithId[] = [];   // TO DO: change to model only with id, name (and points?)
   private map!: Map;
+  // presenting trip and its routes
+  public view_trip : TripWithId | undefined;
+  public  routes: RouteWithId[] = [];
+
+  // map elements
   private popupSatellite: Overlay;
   private tripSource: VectorSource = new VectorSource();
   private tripLayer: VectorLayer = new VectorLayer({
     source: this.tripSource,
     zIndex: 1
   });
-  public operationSuccess: string | null = null;
-  // add/delete button for the user
-  public isFavourite$: Observable<boolean> | null = null;
   // layer allows to see route "live"
   private satelliteLayer: TileLayer | null = null;
   private isSatelliteLayerVisible: boolean = false;
+  public operationSuccess: string | null = null;
+
+  // add/delete button for the user
+  public isFavourite$: Observable<boolean> | null = null;
 
   constructor(private routeService: RouteService, private tripService: TripService,
               private urlRoute: ActivatedRoute,
@@ -70,8 +74,8 @@ export class TripViewComponent implements OnInit{
     this.view_trip = trip;
   }
 
-
   ngOnInit() {
+    // getting trip, setting  map and events
     this.urlRoute.params.subscribe(params => {
       this.tripService.getTrip(params['name']).subscribe((trip : TripWithId) => {
         this.setViewTrip(trip);
@@ -106,11 +110,11 @@ export class TripViewComponent implements OnInit{
             }
           });
         });
+
         this.generateTrip();
       })
     });
   }
-
 
   /* calculating center of the trip camera map */
   calculateCenterMarker() {
@@ -124,7 +128,6 @@ export class TripViewComponent implements OnInit{
     this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
     this.map.addLayer(this.tripLayer);
   }
-
 
   /* sattelite vision */
   openInfoWindow(coordinate: number[]) {
@@ -146,7 +149,6 @@ export class TripViewComponent implements OnInit{
     const pictureButton = document.getElementById('picture-map')!;
     pictureButton.onclick = () => { this.displaySatelliteLayer(); };
   }
-
 
   /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
   displaySatelliteLayer(){
@@ -178,7 +180,6 @@ export class TripViewComponent implements OnInit{
     closeButton.style.display = 'none';
   }
 
-
   /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
   removeSatelliteLayer() {
     if (this.satelliteLayer) {
@@ -206,7 +207,6 @@ export class TripViewComponent implements OnInit{
     }
   }
 
-
   /* get routes from the trip */
   generateTrip(){
     // get routes from trip
@@ -214,17 +214,24 @@ export class TripViewComponent implements OnInit{
       this.routeService.getRouteByID(routeId)
     );
 
-    forkJoin(tripRoutes).subscribe((tripRoutes: RouteWithId[]) => {
-      this.routes = tripRoutes;
-      this.generateTripOnMap();
-      if(this.userService.isLoggedin)
-        this.isFavourite$ = this.checkUserFavourites();
-    }, error => {
-      console.error(error);
+    forkJoin(tripRoutes).pipe(
+        switchMap((tripRoutes: RouteWithId[]) => {
+          this.routes = tripRoutes;
+          this.generateTripOnMap();
+          if (this.userService.isLoggedin) {
+            return this.checkUserFavourites();
+          }
+          return [];
+        }),
+        catchError(error => {
+          console.error(error);
+          return of(false);
+        })
+    ).subscribe(favourites => {
+      this.isFavourite$ = of(favourites);
     });
 
   }
-
 
   /* generate random color for route color */
   generateRouteColor(): string {
@@ -236,6 +243,20 @@ export class TripViewComponent implements OnInit{
     return color;
   }
 
+  /* drawing marker on the map */
+  drawMarker(point: Point){
+    const marker= new Feature({
+      geometry: point
+    });
+    marker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.tripSource.addFeature(marker);
+  }
 
   /* drawing route on the map */
   drawRoute(route: RouteWithId){
@@ -250,35 +271,11 @@ export class TripViewComponent implements OnInit{
         width: 4
       })
     }));
-    // marker - starting point
-    const startMarker = new Feature({
-      geometry: new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude]))
-    });
-    startMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
-    // marker - end point
-    const endMarker = new Feature({
-      geometry: new Point(fromLonLat(
-        [route.routePoints[route.routePoints.length - 1].longitude,
-          route.routePoints[route.routePoints.length - 1].latitude]))
-    });
-    endMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
+    // markers: start and finish
+    this.drawMarker(new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude])));
+    this.drawMarker(new Point(fromLonLat([route.routePoints[route.routePoints.length - 1].longitude, route.routePoints[route.routePoints.length - 1].latitude])));
     this.tripSource.addFeature(lineFeature);
-    this.tripSource.addFeature(startMarker);
-    this.tripSource.addFeature(endMarker);
   }
-
 
   /* calculating zoom map */
   calculateZoom() {
@@ -296,7 +293,6 @@ export class TripViewComponent implements OnInit{
     });
   }
 
-
   /* showing chosen trip from list from database */
   generateTripOnMap() {
     this.tripSource.clear();
@@ -308,7 +304,6 @@ export class TripViewComponent implements OnInit{
         this.drawRoute(r);
     });
   }
-
 
   /* adding trip to favourites */
   addButtonClicked(){
@@ -327,7 +322,6 @@ export class TripViewComponent implements OnInit{
     });
   }
 
-
   /* deleting trip from favourites */
   deleteButtonClicked(){
     this.userService.deleteTripFromUser(this.userService.socialUser!.idToken, this.view_trip!.id).subscribe({
@@ -344,14 +338,12 @@ export class TripViewComponent implements OnInit{
     });
   }
 
-
   /* checking if the trip is in user favourites */
   checkUserFavourites(): Observable<boolean> {
     return this.userService.getTripIdsFromUser(this.userService.socialUser!.idToken!).pipe(
       map(trips => trips.includes(this.view_trip?.id!))
     );
   }
-
 
   /* calculating route distance */
   calculateDistance(): number {

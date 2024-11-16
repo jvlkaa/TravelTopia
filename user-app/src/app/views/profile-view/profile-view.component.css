@@ -1,4 +1,4 @@
-#profile-section{
+.profile-section{
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -22,7 +22,7 @@ h1{
   border-top-right-radius: 20px;
 }
 
-#information-section {
+.information-section {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -36,9 +36,6 @@ h1{
   justify-content: center;
   font-family: "Calibri Light";
   font-size: larger;
-}
-
-.td{
 }
 
 tr {

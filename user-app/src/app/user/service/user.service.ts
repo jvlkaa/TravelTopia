@@ -20,9 +20,11 @@ import {TripListElement} from "../../trip/model/tripListElement";
 export class UserService {
 
   socialUser!: SocialUser | null;
+
   isLoggedin: boolean = false;
   private loginStatusSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isLoggedin);
   loginStatus$: Observable<boolean> = this.loginStatusSubject.asObservable();
+
   isDeveloper: boolean = false;
   private isDeveloperSubject = new BehaviorSubject<boolean>(false);
   isDeveloper$ = this.isDeveloperSubject.asObservable();
@@ -83,6 +85,7 @@ export class UserService {
     );
   }
 
+  /* filtration of user routes */
   getUserFilteredRoutes(user: string, filter: RoutesFilter): Observable<RouteListElement[]> {
     const params = new HttpParams()
       .set('name', filter.name)
@@ -92,6 +95,7 @@ export class UserService {
     return this.http.get<RouteListElement[]>('TravelTopia/User/' + user + '/routesFilter', { params })
   }
 
+  /* filtration of user trips*/
   getUserFilteredTrips(user: string, filter: TripsFilter): Observable<TripListElement[]> {
     const params = new HttpParams()
         .set('name', filter.name)

@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {Route} from "../../route/model/route";
+import {UserService} from "../../user/service/user.service";
+import {UserRoute} from "../../route/model/userRoute";
+import * as turf from "@turf/turf";
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -23,9 +26,6 @@ import TileLayer from 'ol/layer/Tile';
 import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 // @ts-ignore
 import { MapBrowserEvent } from 'ol';
-import {UserService} from "../../user/service/user.service";
-import {UserRoute} from "../../route/model/userRoute";
-import * as turf from "@turf/turf";
 
 @Component({
   selector: 'app-create-route-view',
@@ -45,7 +45,7 @@ export class CreateRouteViewComponent implements OnInit {
   private routeLayer: VectorLayer = new VectorLayer({
     source: this.routeSource
   });
-
+  //message success
   public addRouteSuccess: string | null = null;
   // route properties - from route creator
   routeName: string = '';
@@ -58,7 +58,6 @@ export class CreateRouteViewComponent implements OnInit {
   // set hours options to 0-20 and minutes to 0-59
   hours: number[] = Array.from({ length: 21 }, (_, i) => i);
   minutes: number[] = Array.from({ length: 60 }, (_, i) => i);
-
 
   constructor(public userService: UserService, private routeService: RouteService) {
   }
@@ -104,7 +103,6 @@ export class CreateRouteViewComponent implements OnInit {
     }
   }
 
-
   /* adding marker on the map in the place clicked by the user - to create custome route */
   addMarkerToMap(event: MapBrowserEvent<any>) {
     //add marker only if the route does not exist
@@ -128,7 +126,22 @@ export class CreateRouteViewComponent implements OnInit {
     this.pointsSource.addFeature(marker);
   }
 
-  /* drawing route */
+  /* drawing marker on the map */
+  drawMarker(point: Point){
+    const marker= new Feature({
+      geometry: point
+    });
+    marker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.routeSource.addFeature(marker);
+  }
+
+  /* drawing route on the map */
   drawButtonClicked() {
     this.routeSource.clear();
     if (this.route.length > 1) {
@@ -144,31 +157,9 @@ export class CreateRouteViewComponent implements OnInit {
         })
       }));
       this.routeSource.addFeature(lineFeature);
-      // start
-      const markerA = new Feature({
-        geometry: new Point(fromLonLat([this.route[0].lng, this.route[0].lat]))
-      });
-      markerA.setStyle(new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          src: '../assets/location-icon.png',
-          scale: 0.05
-        })
-      }));
-      this.routeSource.addFeature(markerA);
-      // finish
-      const markerB = new Feature({
-        geometry: new Point(fromLonLat([this.route[this.route.length - 1].lng,
-          this.route[this.route.length - 1].lat]))
-      });
-      markerB.setStyle(new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          src: '../assets/location-icon.png',
-          scale: 0.05
-        })
-      }));
-      this.routeSource.addFeature(markerB);
+      // start and finish markers
+      this.drawMarker(new Point(fromLonLat([this.route[0].lng, this.route[0].lat])));
+      this.drawMarker(new Point(fromLonLat([this.route[this.route.length - 1].lng, this.route[this.route.length - 1].lat])));
       //center of view
       this.calculateCenterMarker();
       const centerLonLat = fromLonLat([this.markerCenter!.lng, this.markerCenter!.lat]);
@@ -200,11 +191,14 @@ export class CreateRouteViewComponent implements OnInit {
     distanceContent.style.borderLeftWidth = 'thin';
   }
 
-
-  /* adding route to database - developers mode */
-  addButtonClicked() {
+  convertTimeToMinutes(){
     let time: number = Number(60 * this.selectedHour);
     time +=  Number(this.selectedMinute);
+    return time
+  }
+
+  /* adding route to database - developers mode (Route model used)*/
+  addButtonClicked() {
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: Route = {
         name: this.routeName,
@@ -214,7 +208,7 @@ export class CreateRouteViewComponent implements OnInit {
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
         description: this.description,
-        time: time
+        time: this.convertTimeToMinutes()
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
@@ -241,10 +235,8 @@ export class CreateRouteViewComponent implements OnInit {
     setTimeout(() => {this.addRouteSuccess = null;}, 3000);
   }
 
-  /* adding route to database - to user favourites */
+  /* adding route to database - to user favourites (UserRoute model used) */
   addUserButtonClicked() {
-    let time: number = Number(60 * this.selectedHour);
-    time +=  Number(this.selectedMinute);
     if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
       const idList: UserRoute = {
         name: this.routeName,
@@ -254,7 +246,7 @@ export class CreateRouteViewComponent implements OnInit {
         equipment: this.equipment,
         difficulty: this.selectedDifficulty,
         description: this.description,
-        time: time,
+        time: this.convertTimeToMinutes(),
         userIdToken: this.userService.socialUser!.idToken
       };
       for (let r of this.route) {

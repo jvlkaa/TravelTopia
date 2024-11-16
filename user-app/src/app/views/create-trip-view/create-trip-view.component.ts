@@ -2,6 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {RouteService} from "../../route/service/route.service";
 import {UserService} from "../../user/service/user.service";
 import {RouteWithId} from "../../route/model/routeWithId";
+import {Trip} from "../../trip/model/trip";
+import {TripService} from "../../trip/service/trip.service";
+import {UserTrip} from "../../trip/model/userTrip";
+import {forkJoin, Observable, Subscription} from 'rxjs';
+import { map } from 'rxjs/operators';
+import * as turf from "@turf/turf";
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -24,12 +30,6 @@ import { Style, Icon, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 import Feature from 'ol/Feature';
 // @ts-ignore
 import { boundingExtent } from 'ol/extent';
-import {Trip} from "../../trip/model/trip";
-import {TripService} from "../../trip/service/trip.service";
-import {UserTrip} from "../../trip/model/userTrip";
-import {forkJoin, Observable, Subscription} from 'rxjs';
-import { map } from 'rxjs/operators';
-import * as turf from "@turf/turf";
 
 @Component({
   selector: 'app-create-trip-view',
@@ -38,13 +38,11 @@ import * as turf from "@turf/turf";
 })
 export class CreateTripViewComponent implements OnInit, OnDestroy {
   private map!: Map;
-  //routes added to the trip
-  private routeIds: string[] = [];
   //list of routes
   public routes: RouteWithId[] = [];
   //list of added routes to the trip
   public routesTrip: RouteWithId[] = [];
-  //map elements
+  //map elements:
   //trip layer
   private tripSource: VectorSource = new VectorSource();
   private tripLayer: VectorLayer = new VectorLayer({
@@ -69,7 +67,6 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
               private routeService: RouteService,
               private tripService: TripService) {
   }
-
 
   ngOnInit() {
     this.map = new Map({
@@ -97,14 +94,12 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     this.listRoutes();
   }
 
-
   ngOnDestroy() {
     if (this.loginStatusSubscription) {
       this.loginStatusSubscription.unsubscribe();
       this.isDeveloperSubscription?.unsubscribe();
     }
   }
-
 
   /* routes from database to show as a list */
   listRoutes(){
@@ -120,7 +115,6 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /* showing route preview on the map, displaying button to add the route to the trip */
   routePreview(route: RouteWithId){
     this.drawRoute(route, false);
@@ -133,6 +127,20 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* set marker on the map */
+  setMarker(point: Point){
+    const marker= new Feature({
+      geometry: point
+    });
+    marker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    return marker;
+  }
 
   /* drawing route on the map, source = true -> tripSource, source = false -> routeSource (preview) */
   drawRoute(route: RouteWithId, source: boolean, ){
@@ -149,30 +157,10 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
         width: 4
       })
     }));
-    // marker - starting point
-    const startMarker = new Feature({
-      geometry: new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude]))
-    });
-    startMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
-    // marker - end point
-    const endMarker = new Feature({
-      geometry: new Point(fromLonLat(
-        [route.routePoints[route.routePoints.length - 1].longitude,
-          route.routePoints[route.routePoints.length - 1].latitude]))
-    });
-    endMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
+    // markers start and finish
+    const startMarker = this.setMarker(new Point(fromLonLat([route.routePoints[0].longitude, route.routePoints[0].latitude])));
+    const endMarker = this.setMarker(new Point(fromLonLat([route.routePoints[route.routePoints.length - 1].longitude, route.routePoints[route.routePoints.length - 1].latitude])));
+
     if(source){
       this.tripSource.addFeature(lineFeature);
       this.tripSource.addFeature(startMarker);
@@ -185,7 +173,6 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /* generate random color for route color */
   generateRouteColor(): string {
     const colors : string = '0123456789ABCDEF';
@@ -196,31 +183,14 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     return color;
   }
 
-
   /* adding route from preview to trip */
   addRouteToTrip(route: RouteWithId){
     this.routePreviewID = null;
     this.routesTrip.push(route);
     this.drawRoute(route, true);
     // get routes near last point of the last route in the trip
-    if(this.userService.isLoggedin && !this.userService.isDeveloper) {
-        this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
-          this.routes = routesNearPoint;
-          //delete routes which are added to the trip from the list
-          this.routes = this.routes.filter(routeExist =>
-            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
-          );
-        })
-    }
-    else{
-      this.routeService.getRoutesNearPoint(route.routePoints[route.routePoints.length - 1]).subscribe((routesNearPoint: RouteWithId[]) => {
-        this.routes = routesNearPoint;
-        //delete routes which are added to the trip from the list
-        this.routes = this.routes.filter(routeExist =>
-          !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
-        );
-      })
-    }
+    // user logged - only finding from user routes; else from all routes
+    this.setRoutesAfterAddOrRemoveRoute(route.routePoints[route.routePoints.length - 1]);
     //calculating distance of all routes
     const distanceContent = document.getElementById('distance-value')!;
     distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
@@ -231,44 +201,24 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     this.calculateZoom();
   }
 
-
   /* removing last route from trip */
   removeRouteFromTrip(){
     this.routesTrip.pop();
 
+    //map layer management
     const tripSourceFeatures = this.tripSource.getFeatures();
-
     const lastRoute = tripSourceFeatures.reverse().find((feature: { getGeometry: () => any; }) => feature.getGeometry() instanceof LineString);
     this.tripSource.removeFeature(lastRoute);
-
     const pointFeatures = tripSourceFeatures.filter((feature: { getGeometry: () => any; }) => feature.getGeometry() instanceof Point);
     const lastStartMarker = pointFeatures[0];
     const lastEndMarker = pointFeatures[1];
     this.tripSource.removeFeature(lastStartMarker);
     this.tripSource.removeFeature(lastEndMarker);
 
-    // get routes near last point of the last route in the trip;
-    // if there is no routes in the trip then list all routes
     if(this.routesTrip.length !=0) {
-      const lastRoutePoint = this.routesTrip[this.routesTrip.length - 1].routePoints[this.routesTrip[this.routesTrip.length - 1].routePoints.length - 1];
-      if(this.userService.isLoggedin && !this.userService.isDeveloper) {
-        this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, lastRoutePoint).subscribe((routesNearPoint: RouteWithId[]) => {
-          this.routes = routesNearPoint;
-          //delete routes which are added to the trip from the list
-          this.routes = this.routes.filter(routeExist =>
-            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
-          );
-        })
-      }
-      else {
-        this.routeService.getRoutesNearPoint(lastRoutePoint).subscribe((routesNearPoint: RouteWithId[]) => {
-          this.routes = routesNearPoint;
-          //delete routes which are added to the trip from the list
-          this.routes = this.routes.filter(routeExist =>
-            !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
-          );
-        })
-      }
+      // get routes near last point of the last route in the trip;
+      // if there is no routes in the trip then list all routes
+      this.setRoutesAfterAddOrRemoveRoute(this.routesTrip[this.routesTrip.length - 1].routePoints[this.routesTrip[this.routesTrip.length - 1].routePoints.length - 1]);
       //calculating distance of all routes
       const distanceContent = document.getElementById('distance-value')!;
       distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
@@ -289,6 +239,27 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* set avaiable routes near point after adding/deleting route - if user is logged in filter routes from user; else from all routes */
+  setRoutesAfterAddOrRemoveRoute(point: Point){
+    if(this.userService.isLoggedin && !this.userService.isDeveloper) {
+      this.userService.getUserRoutesNearPoint(this.userService.socialUser?.idToken!, point).subscribe((routesNearPoint: RouteWithId[]) => {
+        this.routes = routesNearPoint;
+        //delete routes which are added to the trip from the list
+        this.routes = this.routes.filter(routeExist =>
+          !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+        );
+      })
+    }
+    else{
+      this.routeService.getRoutesNearPoint(point).subscribe((routesNearPoint: RouteWithId[]) => {
+        this.routes = routesNearPoint;
+        //delete routes which are added to the trip from the list
+        this.routes = this.routes.filter(routeExist =>
+          !this.routesTrip.some(tripRoute => tripRoute.id === routeExist.id)
+        );
+      })
+    }
+  }
 
   /* clearing the trip */
   clearButtonClicked(){
@@ -305,8 +276,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     distanceContent.style.borderStyle = 'thin';
   }
 
-
-  /* adding trip to database*/
+  /* adding trip to database; Trip model and trip service used */
   addButtonClicked(){
     this.routeSource.clear();
     this.routePreviewID = null;
@@ -363,7 +333,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   }
 
 
-  /* adding trip to database and user favourites */
+  /* adding trip to database and user favourites; UserTrip model and user service used */
   addUserButtonClicked() {
     this.routeSource.clear();
     this.routePreviewID = null;
@@ -422,7 +392,8 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
   }
 
 
-  /* calctulating trip difficulty depended on routes difficulty */
+  /* calctulating trip difficulty depended on routes difficulty:
+  choose difficulty that occurs most often; if they occur the same number of times, choose the more difficult one */
   calculateTripDifficulty(routesId: string[]): Observable<"łatwa" | "normalna" | "trudna">{
     const routeObservables = routesId.map(id => this.routeService.getRouteByID(id));
 
@@ -461,7 +432,6 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     );
   }
 
-
   /* calculating route distance */
   calculateDistance(): number {
      let distance = 0;
@@ -475,7 +445,6 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
      }
      return parseFloat(distance.toFixed(2));
   }
-
 
   /* calculating zoom map to see all routes in trip */
   calculateZoom() {

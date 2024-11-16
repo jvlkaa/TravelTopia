@@ -31,18 +31,6 @@
   align-items: center;
 }
 
-#google-login{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  font-family: "Calibri Light";
-  font-size: larger;
-  font-weight: bolder;
-  margin: 10px;
-  width: 20%;
-}
-
 .menu_button{
   font-family: "Calibri Light";
   font-size: larger;
@@ -80,17 +68,6 @@
 
 #user_button:hover{
   background-color: #c4b9de;
-}
-
-#account_button{
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.account-menu {
-  position: relative;
-  display: inline-block;
 }
 
 .dropdown-menu {

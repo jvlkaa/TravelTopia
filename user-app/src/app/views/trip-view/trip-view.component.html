@@ -1,4 +1,4 @@
-<div id="trip-container">
+<div class="main-container">
   <div id="trip-map">
     <div id="map" class="map"></div>
     <div id="popup" class="ol-popup">
@@ -6,8 +6,10 @@
       <div id="popup-content"></div>
     </div>
   </div>
+
   <div *ngIf="this.view_trip" id="trip-info">
     <div id="trip-title"> {{ this.view_trip.name}} </div>
+
     <table class="trip-info-table">
       <tr class="trip-info-row">
         <td class="trip-info-title"><strong>Trudność wycieczki:</strong></td>
@@ -20,6 +22,7 @@
       <tr class="trip-info-row-title">Opis wycieczki:</tr>
       <tr class="trip-info-row-data">{{ this.view_trip.description || '-' }}</tr>
     </table>
+
     <div *ngIf="this.routes" id="route-container">
       <ul>
         <div id="routes-label">Trasy:</div>
@@ -29,9 +32,10 @@
       </ul>
     </div>
     <p *ngIf="this.routes.length === 0">Brak elementów do wyświetlenia</p>
+
     <div id="user-container" *ngIf="userService.isLoggedin">
-      <button class="favourite_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczke z ulubionych </button>
-      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczke do ulubionych </button>
+      <button class="favourite_button" *ngIf="isFavourite$ | async" (click)="deleteButtonClicked()">Usuń wycieczkę z ulubionych </button>
+      <button class="favourite_button" *ngIf="!(isFavourite$ | async)" (click)="addButtonClicked()">Dodaj wycieczkę do ulubionych </button>
       <div *ngIf="operationSuccess" class="add-trip-success">{{ operationSuccess }}</div>
     </div>
   </div>

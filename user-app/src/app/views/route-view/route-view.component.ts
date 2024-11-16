@@ -3,6 +3,10 @@ import {ActivatedRoute} from "@angular/router";
 import {RouteWithId} from "../../route/model/routeWithId";
 import {Component, OnInit} from '@angular/core';
 import * as turf from '@turf/turf';
+import {UserService} from "../../user/service/user.service";
+import {Observable} from "rxjs";
+import { map } from 'rxjs/operators';
+import {Location} from '@angular/common';
 // @ts-ignore
 import Map from 'ol/Map';
 // @ts-ignore
@@ -31,10 +35,6 @@ import Overlay from 'ol/Overlay';
 import XYZ from 'ol/source/XYZ';
 // @ts-ignore
 import { boundingExtent } from 'ol/extent';
-import {UserService} from "../../user/service/user.service";
-import {Observable, of} from "rxjs";
-import { map } from 'rxjs/operators';
-import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-route-view',
@@ -43,8 +43,11 @@ import {Location} from '@angular/common';
 })
 export class RouteViewComponent implements OnInit {
 
-  public view_route : RouteWithId | undefined;
   private map!: Map;
+  //presenting route
+  public view_route : RouteWithId | undefined;
+
+  //map elements
   private routeSource: VectorSource = new VectorSource();
   private routeLayer: VectorLayer = new VectorLayer({
     source: this.routeSource,
@@ -56,6 +59,7 @@ export class RouteViewComponent implements OnInit {
   // layer allows to see route "live"
   private satelliteLayer: TileLayer | null = null;
   private isSatelliteLayerVisible: boolean = false;
+
   // add/delete button for the user
   public isFavourite$: Observable<boolean> | null = null;
 
@@ -65,16 +69,13 @@ export class RouteViewComponent implements OnInit {
               private location: Location) {
   }
 
-
   setViewRoute(route: RouteWithId){
     this.view_route = route;
   }
 
-
   getViewRouteTimeHours() :number {
     return Math.floor(this.view_route?.time! / 60);
   }
-
 
   getViewRouteTimeMinutes() :number {
     return this.view_route?.time! % 60;
@@ -83,6 +84,7 @@ export class RouteViewComponent implements OnInit {
 
   ngOnInit() {
     this.urlRoute.params.subscribe(params => {
+      //getting route, setting map and events
       this.routeService.getRoute(params['name']).subscribe((route : RouteWithId) => {
         this.setViewRoute(route);
 
@@ -117,13 +119,13 @@ export class RouteViewComponent implements OnInit {
             }
           });
         });
+
         this.drawRouteFromDataBase();
         if(this.userService.isLoggedin)
           this.isFavourite$ = this.checkUserFavourites();
       })
     });
   }
-
 
   /* calculating route distance */
   calculateDistance(route: Point[]) {
@@ -137,14 +139,12 @@ export class RouteViewComponent implements OnInit {
     return parseFloat(distance.toFixed(2));
   }
 
-
   /* calculating center of the map camera */
   calculateCenterMarker() {
     if (this.view_route!.routePoints.length > 0) {
       this.markerCenter = this.view_route!.routePoints[Math.floor(this.view_route!.routePoints.length / 2)];
     }
   }
-
 
   /* satellite vision */
   openInfoWindow(coordinate: number[]) {
@@ -167,7 +167,6 @@ export class RouteViewComponent implements OnInit {
     const pictureButton = document.getElementById('picture-map')!;
     pictureButton.onclick = () => { this.displaySatelliteLayer(); };
   }
-
 
   /* showing "live" fragment of the route using ESRI World Imagery (satellite layer)*/
   displaySatelliteLayer(){
@@ -199,7 +198,6 @@ export class RouteViewComponent implements OnInit {
     closeButton.style.display = 'none';
   }
 
-
   /* removing satellite layer - (showing fragment of the route using ESRI World Imagery) */
   removeSatelliteLayer() {
     if (this.satelliteLayer) {
@@ -227,6 +225,20 @@ export class RouteViewComponent implements OnInit {
     }
   }
 
+  /* drawing marker on the map */
+  drawMarker(point: Point){
+    const marker= new Feature({
+      geometry: point
+    });
+    marker.setStyle(new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: '../assets/location-icon.png',
+        scale: 0.05
+      })
+    }));
+    this.routeSource.addFeature(marker);
+  }
 
   /* showing chosen route from list from database */
   drawRouteFromDataBase() {
@@ -242,32 +254,10 @@ export class RouteViewComponent implements OnInit {
       })
     }));
     this.routeSource.addFeature(lineFeature);
-    // marker - starting point
-    const startMarker = new Feature({
-      geometry: new Point(fromLonLat([this.view_route!.routePoints[0].longitude, this.view_route!.routePoints[0].latitude]))
-    });
-    startMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
-    this.routeSource.addFeature(startMarker);
-    // marker - end point
-    const endMarker = new Feature({
-      geometry: new Point(fromLonLat(
-        [this.view_route!.routePoints[this.view_route!.routePoints.length - 1].longitude,
-        this.view_route!.routePoints[this.view_route!.routePoints.length - 1].latitude]))
-    });
-    endMarker.setStyle(new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: '../assets/location-icon.png',
-        scale: 0.05
-      })
-    }));
-    this.routeSource.addFeature(endMarker);
+    //markers: start and finish
+    this.drawMarker(new Point(fromLonLat([this.view_route!.routePoints[0].longitude, this.view_route!.routePoints[0].latitude])));
+    this.drawMarker(new Point(fromLonLat([this.view_route!.routePoints[this.view_route!.routePoints.length - 1].longitude, this.view_route!.routePoints[this.view_route!.routePoints.length - 1].latitude])));
+
     // point setting center of the route
     const centerPoint = this.view_route!.routePoints[Math.floor(this.view_route!.routePoints.length / 2)];
     this.map.getView().setCenter(fromLonLat([centerPoint.longitude, centerPoint.latitude]));
@@ -276,10 +266,8 @@ export class RouteViewComponent implements OnInit {
     this.map.getView().fit(routeEdges, {
       padding: [200, 200, 200, 200],
     });
-
     this.map.addLayer(this.routeLayer);
   }
-
 
   /* adding route to favourites */
   addButtonClicked(){
@@ -298,7 +286,6 @@ export class RouteViewComponent implements OnInit {
     });
   }
 
-
   /* deleting route from users favourites */
   deleteButtonClicked(){
     this.userService.deleteRouteFromUser(this.userService.socialUser!.idToken, this.view_route!.id).subscribe({
@@ -314,7 +301,6 @@ export class RouteViewComponent implements OnInit {
       }
     });
   }
-
 
   /* checking if the route is in user favourites */
   checkUserFavourites(): Observable<boolean> {
