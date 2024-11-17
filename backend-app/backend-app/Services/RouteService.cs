@@ -20,7 +20,21 @@ namespace backend_app.Services
             this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.RouteCollectionName);
         }
 
-        public async Task<List<RouteListElement>> GetRoutesAsync()
+        public async Task<List<Models.Route>> GetRoutesAsync()
+        {
+            var result = await routes.Find(x => x.userCreated == false).ToListAsync();
+
+            if (result.Count == 0)
+            {
+                return new List<Models.Route>(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<List<RouteListElement>> GetListElementRoutesAsync()
         {
             var result = await routes.Find(x => x.userCreated == false).ToListAsync();
 

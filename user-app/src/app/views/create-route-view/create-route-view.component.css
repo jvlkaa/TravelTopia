@@ -59,7 +59,7 @@
   flex-direction: column;
 }
 
-.properties-label{
+.properties-type-label{
   width: 100%;
   background: lavender;
   padding: 10px;
@@ -69,6 +69,42 @@
   border-top-style: outset;
   border-color: black;
   border-width: 2px;
+}
+
+.properties-difficulty-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-top-style: outset;
+  border-color: black;
+  border-width: 2px;
+}
+
+.properties-hour-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-width: 2px;
+}
+
+.properties-minute-label{
+  width: 100%;
+  background: lavender;
+  padding: 10px;
+  text-align: center;
+  font-family: "Calibri Light";
+  font-weight: bold;
+  border-top-style: outset;
+  border-color: black;
+  border-width: 2px;
+  border-bottom-style: outset;
+  border-bottom-width: 2px;
 }
 
 .select-type{
@@ -131,7 +167,6 @@
   border-style: outset;
   border-color: black;
   border-width: 2px;
-  border-top: none;
 }
 
 .select-hour{

@@ -5,7 +5,7 @@
   <div id="route-create-container">
     <div class="route-properties">
       <div class="route-properties-selected-el">
-        <label class="properties-label"> Wybierz typ trasy </label>
+        <label class="properties-type-label"> Wybierz typ trasy </label>
         <select class="select-type" [(ngModel)]="selectedType">
           <option value="morze" class="option"> morze </option>
           <option value="jezioro" class="option"> jezioro </option>
@@ -21,7 +21,7 @@
       </div>
 
       <div class="route-properties-selected-el">
-        <label class="properties-label"> Wybierz trudność trasy </label>
+        <label class="properties-difficulty-label"> Wybierz trudność trasy </label>
         <select class="select-type" [(ngModel)]="selectedDifficulty">
           <option value="łatwa" class="option"> łatwa </option>
           <option value="normalna" class="option"> normalna </option>
@@ -42,13 +42,13 @@
       <div class="route-properties-el">
         <label class="text-label"> Wpisz szacowany czas pokonania trasy: </label>
         <div class="time-container">
-          <label for="hours" class="properties-label"> Godziny: </label>
+          <label for="hours" class="properties-hour-label"> Godziny: </label>
           <select id="hours"  class="select-hour" [(ngModel)]="selectedHour">
             <option *ngFor="let hour of hours" [value]="hour" class="option"> {{ hour }} </option>
           </select>
         </div>
         <div class="time-container">
-          <label for="minutes" class="properties-label"> Minuty: </label>
+          <label for="minutes" class="properties-minute-label"> Minuty: </label>
           <select id="minutes" class="select-minutes" [(ngModel)]="selectedMinute">
             <option *ngFor="let minute of minutes" [value]="minute" class="option"> {{ minute }} </option>
           </select>

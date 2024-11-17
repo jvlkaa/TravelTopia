@@ -26,10 +26,24 @@ namespace backend_app.Controllers
             return CreatedAtAction(nameof(Post), route);
         }
 
-        [HttpGet("list")]
+        [HttpGet]
         public async Task<IActionResult> GetRoutes()
         {
             var routes = await routeService.GetRoutesAsync();
+            if (routes == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(routes);
+            }
+        }
+
+        [HttpGet("list")]
+        public async Task<IActionResult> GetListElementRoutes()
+        {
+            var routes = await routeService.GetListElementRoutesAsync();
             if (routes == null)
             {
                 return NotFound();
