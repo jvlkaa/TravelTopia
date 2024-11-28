@@ -218,10 +218,7 @@ export class CreateRouteViewComponent implements OnInit {
             next: () => {
               this.addRouteSuccess = 'Dodano trasę do bazy';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
-              this.routeName = '';
-              this.description = '';
-              this.equipment = '';
-              this.clearRoute();
+              this.clearForm();
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';
@@ -258,10 +255,7 @@ export class CreateRouteViewComponent implements OnInit {
             next: () => {
               this.addRouteSuccess = 'Dodano trasę do "Moje trasy"';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
-              this.routeName = '';
-              this.description = '';
-              this.equipment = '';
-              this.clearRoute();
+              this.clearForm();
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';
@@ -274,6 +268,14 @@ export class CreateRouteViewComponent implements OnInit {
     else
       this.addRouteSuccess = 'Nie można dodać trasy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
      setTimeout(() => {this.addRouteSuccess = null;}, 3000);
+  }
+
+  /* clearing form and route on the map */
+  clearForm(){
+    this.routeName = '';
+    this.description = '';
+    this.equipment = '';
+    this.clearRoute();
   }
 }
 
