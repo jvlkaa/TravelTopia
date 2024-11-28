@@ -437,10 +437,10 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
      let distance = 0;
      for (let r of this.routesTrip) {
         for (let i = 1; i < r.routePoints.length; i++) {
-             const from = turf.point([r.routePoints[i - 1].longitude, r.routePoints[i - 1].latitude]);
-             const to = turf.point([r.routePoints[i].longitude, r.routePoints[i].latitude]);
-             const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
-             distance += distanceSegment;
+             const start = turf.point([r.routePoints[i - 1].longitude, r.routePoints[i - 1].latitude]);
+             const finish = turf.point([r.routePoints[i].longitude, r.routePoints[i].latitude]);
+             const distancePart = turf.distance(start, finish, { units: 'kilometers' });
+             distance += distancePart;
          }
      }
      return parseFloat(distance.toFixed(2));

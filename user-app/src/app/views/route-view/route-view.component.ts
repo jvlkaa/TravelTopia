@@ -131,10 +131,10 @@ export class RouteViewComponent implements OnInit {
   calculateDistance(route: Point[]) {
     let distance = 0;
     for (let i = 1; i < route.length; i++) {
-      const from = turf.point([route[i - 1].longitude, route[i - 1].latitude]);
-      const to = turf.point([route[i].longitude, route[i].latitude]);
-      const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
-      distance += distanceSegment;
+      const start = turf.point([route[i - 1].longitude, route[i - 1].latitude]);
+      const finish = turf.point([route[i].longitude, route[i].latitude]);
+      const distancePart = turf.distance(start, finish, { units: 'kilometers' });
+      distance += distancePart;
     }
     return parseFloat(distance.toFixed(2));
   }

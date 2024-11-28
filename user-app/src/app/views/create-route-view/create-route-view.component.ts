@@ -88,10 +88,10 @@ export class CreateRouteViewComponent implements OnInit {
   calculateDistance() {
     let distance = 0;
     for (let i = 1; i < this.route.length; i++) {
-      const from = turf.point([this.route[i - 1].lng, this.route[i - 1].lat]);
-      const to = turf.point([this.route[i].lng, this.route[i].lat]);
-      const distanceSegment = turf.distance(from, to, { units: 'kilometers' });
-      distance += distanceSegment;
+      const start = turf.point([this.route[i - 1].lng, this.route[i - 1].lat]);
+      const finish = turf.point([this.route[i].lng, this.route[i].lat]);
+      const distancePart = turf.distance(start, finish, { units: 'kilometers' });
+      distance += distancePart;
     }
     return parseFloat(distance.toFixed(2));
   }
@@ -142,7 +142,7 @@ export class CreateRouteViewComponent implements OnInit {
   }
 
   /* drawing route on the map */
-  drawButtonClicked() {
+  drawRoute() {
     this.routeSource.clear();
     if (this.route.length > 1) {
       //route
@@ -177,7 +177,7 @@ export class CreateRouteViewComponent implements OnInit {
   }
 
   /* clearing the created route */
-  clearButtonClicked() {
+  clearRoute() {
     this.route.splice(0, this.route.length);
     this.pointsSource.clear();
     this.routeSource.clear();
@@ -199,8 +199,8 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding route to database - developers mode (Route model used)*/
   addButtonClicked() {
-    if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
-      const idList: Route = {
+    if (this.route.length > 0 && this.routeName != '' && this.selectedType != '' && this.selectedDifficulty != '') {
+      const newRoute: Route = {
         name: this.routeName,
         routePoints: [],
         userCreated: false,
@@ -212,15 +212,16 @@ export class CreateRouteViewComponent implements OnInit {
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
-        idList.routePoints.push(point);
-        if (idList.routePoints.length == this.route.length) {
-          this.routeService.addRoute(idList).subscribe({
+        newRoute.routePoints.push(point);
+        if (newRoute.routePoints.length == this.route.length) {
+          this.routeService.addRoute(newRoute).subscribe({
             next: () => {
               this.addRouteSuccess = 'Dodano trase do bazy';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
               this.description = '';
               this.equipment = '';
+              this.clearRoute();
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';
@@ -237,8 +238,8 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* adding route to database - to user favourites (UserRoute model used) */
   addUserButtonClicked() {
-    if (this.route.length > 0 && this.routeName != '' && this.selectedType != '') {
-      const idList: UserRoute = {
+    if (this.route.length > 0 && this.routeName != '' && this.selectedType != '' && this.selectedDifficulty != '') {
+      const newRoute: UserRoute = {
         name: this.routeName,
         routePoints: [],
         userCreated: true,
@@ -251,15 +252,16 @@ export class CreateRouteViewComponent implements OnInit {
       };
       for (let r of this.route) {
         const point: Point = {latitude: r.lat, longitude: r.lng};
-        idList.routePoints.push(point);
-        if (idList.routePoints.length == this.route.length) {
-          this.userService.addRoute(idList).subscribe({
+        newRoute.routePoints.push(point);
+        if (newRoute.routePoints.length == this.route.length) {
+          this.userService.addRoute(newRoute).subscribe({
             next: () => {
               this.addRouteSuccess = 'Dodano trase do "Moje trasy"';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
               this.description = '';
               this.equipment = '';
+              this.clearRoute();
             },
             error: (err) => {
               this.addRouteSuccess = 'Wystąpił błąd';

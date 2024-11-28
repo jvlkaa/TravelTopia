@@ -67,8 +67,8 @@
     </div>
 
     <div class="buttons">
-      <button class="route-create-button" (click)="drawButtonClicked()">Stwórz trasę</button>
-      <button class="clear-button" (click)="clearButtonClicked()">Wyczyść trasę</button>
+      <button class="route-create-button" (click)="drawRoute()">Stwórz trasę</button>
+      <button class="clear-button" (click)="clearRoute()">Wyczyść trasę</button>
       <div *ngIf="addRouteSuccess" class="add-route-success">{{ addRouteSuccess }}</div>
     </div>
 
