@@ -1,6 +1,8 @@
+import {Point} from "../../point/model/point";
+
 export interface Route {
     name: string;
-    routePoints: string[];
+    routePoints: Point[];
     userCreated: boolean;
     type: string;
     equipment: string;

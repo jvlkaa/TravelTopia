@@ -155,7 +155,7 @@ export class UserService {
 
     return this.http.post('TravelTopia/User/deleteRoute', request, { headers })
       .pipe(mergeMap(() => new Observable(observer => {
-        observer.next('Pomyślnie usunięto trase z ulubionych');
+        observer.next('Pomyślnie usunięto trasę z ulubionych');
         observer.complete();
       })));
   }

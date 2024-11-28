@@ -216,7 +216,7 @@ export class CreateRouteViewComponent implements OnInit {
         if (newRoute.routePoints.length == this.route.length) {
           this.routeService.addRoute(newRoute).subscribe({
             next: () => {
-              this.addRouteSuccess = 'Dodano trase do bazy';
+              this.addRouteSuccess = 'Dodano trasę do bazy';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
               this.description = '';
@@ -256,7 +256,7 @@ export class CreateRouteViewComponent implements OnInit {
         if (newRoute.routePoints.length == this.route.length) {
           this.userService.addRoute(newRoute).subscribe({
             next: () => {
-              this.addRouteSuccess = 'Dodano trase do "Moje trasy"';
+              this.addRouteSuccess = 'Dodano trasę do "Moje trasy"';
               setTimeout(() => {this.addRouteSuccess = null;}, 3000);
               this.routeName = '';
               this.description = '';
@@ -272,7 +272,7 @@ export class CreateRouteViewComponent implements OnInit {
       }
     }
     else
-      this.addRouteSuccess = 'Nie można dodać trasy do bazy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
+      this.addRouteSuccess = 'Nie można dodać trasy. Upewnij się, że wszystkie wymagane pola są uzupełnione.';
      setTimeout(() => {this.addRouteSuccess = null;}, 3000);
   }
 }
