@@ -106,29 +106,17 @@ export class UserService {
 
   /* add route to user favourites*/
   addRouteToUser(userID: string, routeID: string): Observable<any>{
-    return this.getRouteIdsFromUser(userID).pipe(
-      mergeMap((routeIds: string[]) => {
-        if (!routeIds.includes(routeID)) {
-          const request = {
-            user: userID,
-            route: routeID
-          };
-          const headers = { 'Content-Type': 'application/json' };
+      const request = {
+        user: userID,
+        route: routeID
+      };
+      const headers = { 'Content-Type': 'application/json' };
 
-          return this.http.post('TravelTopia/User/addRoute', request, { headers })
-            .pipe(mergeMap(() => new Observable(observer => {
-              observer.next('Dodano trasę do ulubionych');
-              observer.complete();
-            })));
-        }
-        else {
-          return new Observable(observer => {
-            observer.next('Trasa została już dodana do ulubionych');
-            observer.complete();
-          });
-        }
-      })
-    );
+      return this.http.post('TravelTopia/User/addRoute', request, { headers })
+        .pipe(mergeMap(() => new Observable(observer => {
+          observer.next('Dodano trasę do ulubionych');
+          observer.complete();
+        })));
   }
 
   /* check if the route is in user favourites */
