@@ -85,7 +85,7 @@ export class RouteViewComponent implements OnInit {
   ngOnInit() {
     this.urlRoute.params.subscribe(params => {
       //getting route, setting map and events
-      this.routeService.getRoute(params['name']).subscribe((route : RouteWithId) => {
+      this.routeService.getRouteByID(params['id']).subscribe((route : RouteWithId) => {
         this.setViewRoute(route);
 
         this.map = new Map({

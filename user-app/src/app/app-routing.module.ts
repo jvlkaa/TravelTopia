@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     component: RouteViewComponent,
-    path: 'route/:name'
+    path: 'route/:id'
   },
   {
     component: RoutesUserViewComponent,
