@@ -300,7 +300,7 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
                  // adding trip to database
                  this.tripService.addTrip(trip).subscribe({
                      next: () => {
-                         this.addTripSuccess = 'Dodano wycieczke do bazy';
+                         this.addTripSuccess = 'Dodano wycieczkę do bazy';
                          setTimeout(() => {
                              this.addTripSuccess = null;
                          }, 3000);
