@@ -1,18 +1,18 @@
 <div class="profile-section" *ngIf="userService.socialUser">
   <h1>Mój profil</h1>
-  <div *ngIf="this.userService.socialUser" class="information-section">
+  <div *ngIf="this.userProfile" class="information-section">
     <table id="info-table">
       <tr>
         <td><strong>Imię:</strong></td>
-        <td>{{ userService.socialUser!.firstName || '-' }}</td>
+        <td>{{ this.userProfile.name || '-' }}</td>
       </tr>
       <tr>
         <td><strong>Nazwisko:</strong></td>
-        <td>{{ userService.socialUser!.lastName || '-' }}</td>
+        <td>{{ this.userProfile.surname || '-' }}</td>
       </tr>
       <tr>
         <td><strong>e-mail:</strong></td>
-        <td> {{ userService.socialUser!.email || '-' }}</td>
+        <td> {{ this.userProfile.email || '-' }}</td>
       </tr>
     </table>
   </div>

@@ -13,6 +13,7 @@ import {RoutesFilter} from "../../route/model/routesFilter";
 import {TripsFilter} from "../../trip/model/tripsFilter";
 import {RouteListElement} from "../../route/model/routeListElement";
 import {TripListElement} from "../../trip/model/tripListElement";
+import {UserProfile} from "../model/UserProfile";
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,11 @@ export class UserService {
 
   setIsDeveloper(value: boolean) {
     this.isDeveloperSubject.next(value);
+  }
+
+  /* get user profile */
+  getUserProfile(idToken: String): Observable<UserProfile>{
+    return this.http.get<UserProfile>( 'TravelTopia/User/getUser/' + idToken);
   }
 
   /* get route ids from specific user */
