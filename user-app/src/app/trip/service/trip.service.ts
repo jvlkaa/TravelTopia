@@ -29,8 +29,13 @@ export class TripService {
   }
 
   /* get trip by name */
-  getTrip(name: string): Observable<TripWithId>{
+  getTripByName(name: string): Observable<TripWithId>{
     return this.http.get<TripWithId>('TravelTopia/Trip' + '/' + name)
+  }
+
+  /* get trip by id */
+  getTripById(id: String):Observable<TripWithId> {
+    return this.http.get<TripWithId>('TravelTopia/Trip' + '/id/' + id)
   }
 
   /* filtration of trips (return id, name) */

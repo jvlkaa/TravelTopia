@@ -20,7 +20,7 @@
   <div id="trips-section">
     <ul id="trip-container" *ngIf="trips.length > 0">
       <li id ="li-trips" *ngFor="let trip of trips">
-        <a id ="a-trips" [routerLink]="['/trip/' + trip.name]">{{ trip.name }}</a>
+        <a id ="a-trips" [routerLink]="['/trip/' + trip.id]">{{ trip.name }}</a>
       </li>
     </ul>
     <p *ngIf="trips.length == 0">Brak elementów do wyświetlenia</p>

@@ -51,7 +51,7 @@ const routes: Routes = [
   },
   {
     component: TripViewComponent,
-    path: 'trip/:name'
+    path: 'trip/:id'
   },
   {
     component: TripsUserViewComponent,

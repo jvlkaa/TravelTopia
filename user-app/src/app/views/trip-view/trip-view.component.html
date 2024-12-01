@@ -27,7 +27,7 @@
       <ul>
         <div id="routes-label">Trasy:</div>
         <li *ngFor="let route of this.routes" class="li-routes">
-          <a [routerLink]="['/route', route.name]" class="a-routes">{{ route.name }}</a>
+          <a [routerLink]="['/route', route.id]" class="a-routes">{{ route.name }}</a>
         </li>
       </ul>
     </div>

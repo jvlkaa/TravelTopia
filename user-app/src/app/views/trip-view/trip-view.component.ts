@@ -77,7 +77,7 @@ export class TripViewComponent implements OnInit{
   ngOnInit() {
     // getting trip, setting  map and events
     this.urlRoute.params.subscribe(params => {
-      this.tripService.getTrip(params['name']).subscribe((trip : TripWithId) => {
+      this.tripService.getTripById(params['id']).subscribe((trip : TripWithId) => {
         this.setViewTrip(trip);
 
         this.map = new Map({
