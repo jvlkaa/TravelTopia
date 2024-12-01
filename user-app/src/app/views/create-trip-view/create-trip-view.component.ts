@@ -86,9 +86,11 @@ export class CreateTripViewComponent implements OnInit, OnDestroy {
     this.map.addLayer(this.tripLayer);
     this.loginStatusSubscription = this.userService.loginStatus$.subscribe(() => {
       this.listRoutes();
+      this.clearButtonClicked();
     });
     this.isDeveloperSubscription = this.userService.isDeveloper$.subscribe(() => {
       this.listRoutes();
+      this.clearButtonClicked();
     });
 
     this.listRoutes();

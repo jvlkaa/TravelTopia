@@ -181,8 +181,10 @@ export class CreateRouteViewComponent implements OnInit {
     this.route.splice(0, this.route.length);
     this.pointsSource.clear();
     this.routeSource.clear();
-    this.map.removeLayer(this.routeLayer);
-    this.map.addLayer(this.pointsLayer);
+    if(this.map.getLayers().getArray().includes(this.routeLayer)) {
+      this.map.removeLayer(this.routeLayer);
+      this.map.addLayer(this.pointsLayer);
+    }
 
     const distanceContent = document.getElementById('distance-value')!;
     distanceContent.innerHTML = `utwórz najpierw trasę`;
