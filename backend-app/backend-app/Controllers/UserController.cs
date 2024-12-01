@@ -251,5 +251,28 @@ namespace backend_app.Controllers
             await userService.UpdateRoleAsync(payload.Subject);
             return NoContent();
         }
+
+        [HttpGet("getUser/{userToken}")]
+        public async Task<IActionResult> GetUser(string userToken)
+        {
+            var payload = await VerifyGoogleToken(userToken);
+            var user = await userService.GetUserByGoogleIdAsync(payload.Subject);
+
+            if (user != null)
+            {
+                UserProfileData userProfileData = new UserProfileData
+                {
+                    name = payload.GivenName,
+                    surname = payload.FamilyName,
+                    email = payload.Email
+                };
+
+                return Ok(userProfileData);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
