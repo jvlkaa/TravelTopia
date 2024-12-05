@@ -7,97 +7,108 @@ namespace backend_app.Services
 {
     public class UserService
     {
-        private readonly IMongoCollection<Models.User> users;
+        private readonly IMongoCollection<User> users;
 
         public UserService(IOptions<TravelTopiaDatabaseConfiguration> options)
         {
             var mongoClient = new MongoClient(options.Value.ConnectionString);
             var travelTopiaDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-            this.users = travelTopiaDatabase.GetCollection<Models.User>(options.Value.UserCollectionName);
+            this.users = travelTopiaDatabase.GetCollection<User>(options.Value.UserCollectionName);
         }
 
-        public async Task<Models.User> GetUserByGoogleIdAsync(string googleId)
+        public async Task<User> GetUserByGoogleIdAsync(string googleId)
         {
-            var result = await users.Find(x => x.googleId == googleId).SingleOrDefaultAsync();
-            if (result == null)
+            var foundUser = await users.Find(user => user.googleId == googleId).SingleOrDefaultAsync();
+
+            if (foundUser == null)
             {
                 return null;
             }
             else
             {
-                return result;
+                return foundUser;
             }
         }
 
-        public async Task CreateUserAsync(User user) => await users.InsertOneAsync(user);
+        public async Task CreateUserAsync(User user)
+        {
+            await users.InsertOneAsync(user);
+        }
 
         public async Task<List<string>> getRoutesFromUserAsync(string googleId)
         {
-            var result = await GetUserByGoogleIdAsync(googleId);
+            var user = await GetUserByGoogleIdAsync(googleId);
 
-            if (result == null)
+            if (user == null)
             {
                 return new List<string>(0);
             }
             else
             {
-                return result.routesIds.ToList();
+                return user.routesIds.ToList();
             }
         }
 
         public async Task<List<string>> getTripsFromUserAsync(string googleId)
         {
-            var result = await GetUserByGoogleIdAsync(googleId);
-            if (result == null)
+            var user = await GetUserByGoogleIdAsync(googleId);
+
+            if (user == null)
             {
                 return new List<string>(0);
             }
             else
             {
-                return result.tripsIds.ToList();
+                return user.tripsIds.ToList();
             }
         }
 
         public async Task AddRouteAsync(string googleId, string routeId)
         {
-            var update = Builders<User>.Update.AddToSet(x => x.routesIds, routeId);
-            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+            var update = Builders<User>.Update.AddToSet(user => user.routesIds, routeId);
+
+            await users.UpdateOneAsync(user => user.googleId == googleId, update);
         }
 
         public async Task AddTripAsync(string googleId, string tripId)
         {
-            var update = Builders<User>.Update.AddToSet(x => x.tripsIds, tripId);
-            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+            var update = Builders<User>.Update.AddToSet(user => user.tripsIds, tripId);
+
+            await users.UpdateOneAsync(user => user.googleId == googleId, update);
         }
 
         public async Task DeleteRouteAsync(string googleId, string routeId)
         {
-            var update = Builders<User>.Update.Pull(x => x.routesIds, routeId);
-            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+            var update = Builders<User>.Update.Pull(user => user.routesIds, routeId);
+
+            await users.UpdateOneAsync(user => user.googleId == googleId, update);
         }
 
         public async Task DeleteTripAsync(string googleId, string tripId)
         {
-            var update = Builders<User>.Update.Pull(x => x.tripsIds, tripId);
-            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+            var update = Builders<User>.Update.Pull(user => user.tripsIds, tripId);
+
+            await users.UpdateOneAsync(user => user.googleId == googleId, update);
         }
 
         public async Task UpdateRoleAsync(string googleId)
         {
-            var update = Builders<User>.Update.Set(x => x.role, "developer");
-            await users.UpdateOneAsync(x => x.googleId == googleId, update);
+            var update = Builders<User>.Update.Set(user => user.role, "developer");
+
+            await users.UpdateOneAsync(user => user.googleId == googleId, update);
         }
 
         public async Task<string> GetRoleAsync(string googleId)
         {
-            var result = await GetUserByGoogleIdAsync(googleId);
-            if(result == null)
+            var user = await GetUserByGoogleIdAsync(googleId);
+
+            if (user == null)
             {
                 return string.Empty;
             }
             else
             {
-                return result.role;
+                return user.role;
             }
         }
     }

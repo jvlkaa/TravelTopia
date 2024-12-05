@@ -73,16 +73,9 @@ namespace backend_app.Controllers
             try
             {
                 var payload = await VerifyGoogleToken(token);
-                var result = await userService.getRoutesFromUserAsync(payload.Subject);
+                var routes = await userService.getRoutesFromUserAsync(payload.Subject);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(result);
-                }
+                return Ok(routes);
             }
             catch (InvalidJwtException ex)
             {
@@ -97,16 +90,9 @@ namespace backend_app.Controllers
             {
                 var payload = await VerifyGoogleToken(user);
                 var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
-                var result = await routeService.GetFilteredUserRoutesAsync(userRoutes, name, type, difficulty);
+                var filteredRoutes = await routeService.GetFilteredUserRoutesAsync(userRoutes, name, type, difficulty);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(result);
-                }
+                return Ok(filteredRoutes);
             }
             catch (InvalidJwtException ex)
             {
@@ -121,16 +107,9 @@ namespace backend_app.Controllers
             {
                 var payload = await VerifyGoogleToken(user);
                 var userTrips = await userService.getTripsFromUserAsync(payload.Subject);
-                var result = await tripService.GetFilteredUserTripsAsync(userTrips, name, difficulty);
+                var filteredTrips = await tripService.GetFilteredUserTripsAsync(userTrips, name, difficulty);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(result);
-                }
+                return Ok(filteredTrips);
             }
             catch (InvalidJwtException ex)
             {
@@ -138,22 +117,15 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpGet("{user}/TripIds")]
-        public async Task<IActionResult> GetTripsByString(string user)
+        [HttpGet("{token}/TripIds")]
+        public async Task<IActionResult> GetTripsByString(string token)
         {
             try
             {
-                var payload = await VerifyGoogleToken(user);
-                var result = await userService.getTripsFromUserAsync(payload.Subject);
+                var payload = await VerifyGoogleToken(token);
+                var trips = await userService.getTripsFromUserAsync(payload.Subject);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(result);
-                }
+                return Ok(trips);
             }
             catch (InvalidJwtException ex)
             {
@@ -166,16 +138,9 @@ namespace backend_app.Controllers
         {
             try
             {
-                var result = await routeService.GetUserRoutesByPointAsync(routes, latitude, longitude);
+                var nearRoutes = await routeService.GetUserRoutesByPointAsync(routes, latitude, longitude);
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(result);
-                }
+                return Ok(nearRoutes);
             }
             catch (InvalidJwtException ex)
             {
@@ -260,7 +225,7 @@ namespace backend_app.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
             }
             catch (InvalidJwtException ex)
@@ -282,8 +247,9 @@ namespace backend_app.Controllers
 
                 if (route.userCreated == true)
                 {
-                    var result = await routeService.deleteRouteAsync(route.id);
-                    if (result == false)
+                    var deleted = await routeService.deleteRouteAsync(route.id);
+
+                    if (deleted == false)
                     {
                         return NotFound();
                     }
@@ -310,8 +276,8 @@ namespace backend_app.Controllers
 
                 if (trip.userCreated == true)
                 {
-                    var result = await tripService.deleteTripAsync(trip.id);
-                    if (result == false)
+                    var deleted = await tripService.deleteTripAsync(trip.id);
+                    if (deleted == false)
                     {
                         return NotFound();
                     }
@@ -324,21 +290,21 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpGet("userRole/{googleId}")]
-        public async Task<IActionResult> GetRole(string googleId)
+        [HttpGet("userRole/{token}")]
+        public async Task<IActionResult> GetRole(string token)
         {
             try
             {
-                var payload = await VerifyGoogleToken(googleId);
-                var result = await userService.GetRoleAsync(payload.Subject);
+                var payload = await VerifyGoogleToken(token);
+                var role = await userService.GetRoleAsync(payload.Subject);
 
-                if (result == string.Empty)
+                if (role == string.Empty)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    return Content(result, "text/plain"); //return Ok(result);
+                    return Content(role, "text/plain");
                 }
             }
             catch (InvalidJwtException ex)
@@ -347,13 +313,15 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpPost("updateRole/{googleId}")]
-        public async Task<IActionResult> UpdateRole(string googleId)
+        [HttpPost("updateRole/{token}")]
+        public async Task<IActionResult> UpdateRole(string token)
         {
             try
             {
-                var payload = await VerifyGoogleToken(googleId);
+                var payload = await VerifyGoogleToken(token);
+
                 await userService.UpdateRoleAsync(payload.Subject);
+
                 return NoContent();
             }
             catch (InvalidJwtException ex)
@@ -362,12 +330,12 @@ namespace backend_app.Controllers
             }
         }
 
-        [HttpGet("getUser/{userToken}")]
-        public async Task<IActionResult> GetUser(string userToken)
+        [HttpGet("getUser/{token}")]
+        public async Task<IActionResult> GetUser(string token)
         {
             try
             {
-                var payload = await VerifyGoogleToken(userToken);
+                var payload = await VerifyGoogleToken(token);
                 var user = await userService.GetUserByGoogleIdAsync(payload.Subject);
 
                 if (user != null)
