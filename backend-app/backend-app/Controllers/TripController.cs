@@ -22,85 +22,75 @@ namespace backend_app.Controllers
         public async Task<IActionResult> CreateTrip(Trip trip)
         {
             await this.tripService.CreateTripAsync(trip);
-            return CreatedAtAction(nameof(CreateTrip), trip);
 
+            return CreatedAtAction(nameof(GetTripById), new { id = trip.id }, trip);
         }
 
         [HttpGet("list")]
         public async Task<IActionResult> GetTrips()
         {
             var trips = await tripService.GetTripsAsync();
-            if (trips == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(trips);
-            }
+
+            return Ok(trips);
         }
 
         [HttpGet("{name}")]
         public async Task<IActionResult> GetTrip(string name)
         {
-            var result = await tripService.GetTripAsync(name);
-            if (result == null)
+            var trip = await tripService.GetTripAsync(name);
+
+            if (trip == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(trip);
             }
         }
 
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetTripById(string id)
         {
-            var result = await tripService.GetTripByIdAsync(id);
-            if (result == null)
+            var trip = await tripService.GetTripByIdAsync(id);
+
+            if (trip == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(trip);
             }
         }
 
         [HttpGet("list/id/{id}")]
         public async Task<IActionResult> GetTripListElementById(string id)
         {
-            var result = await tripService.GetTripListElementByIdAsync(id);
-            if (result == null)
+            var trip = await tripService.GetTripListElementByIdAsync(id);
+
+            if (trip == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(trip);
             }
         }
 
         [HttpGet("filter")]
         public async Task<IActionResult> GetFilteredTrips([FromQuery] string? name = null, [FromQuery] string? difficulty = null)
         {
-            var result = await tripService.GetFilteredTripsAsync(name, difficulty);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(result);
-            }
+            var trips = await tripService.GetFilteredTripsAsync(name, difficulty);
+
+            return Ok(trips);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrip(string id)
         {
-            var result = await tripService.deleteTripAsync(id);
-            if (result)
+            if (await tripService.deleteTripAsync(id))
             {
                 return NoContent();
             }

@@ -13,6 +13,5 @@ namespace backend_app.Dto
         public string description { get; set; }
         public int time { get; set; }
         public string userIdToken {  get; set; }
-
     }
 }

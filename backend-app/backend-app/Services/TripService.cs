@@ -18,18 +18,22 @@ namespace backend_app.Services
             this.trips = travelTopiaDatabase.GetCollection<Trip>(options.Value.TripCollectionName);
         }
 
-        public async Task CreateTripAsync(Trip trip) => await trips.InsertOneAsync(trip);
+        public async Task CreateTripAsync(Trip trip)
+        {
+            await trips.InsertOneAsync(trip);
+        }
 
         public async Task<Trip> GetTripAsync(string name)
         {
-            var result = await trips.Find(x => x.name == name).SingleOrDefaultAsync();
-            if(result == null)
+            var foundTrip = await trips.Find(trip => trip.name == name).SingleOrDefaultAsync();
+
+            if(foundTrip == null)
             {
                 return null;
             }
             else
             {
-                return result;
+                return foundTrip;
             }
         }
 
@@ -44,22 +48,20 @@ namespace backend_app.Services
                 routes = trip.routes
             };
 
-            if(GetTripAsync(newTrip.name) == null)
-            {
-                return false;
-            }
-            else
+            if(await GetTripAsync(newTrip.name) == null)
             {
                 await CreateTripAsync(newTrip);
                 return true;
             }
+
+            return false;
         }
 
         public async Task<List<TripListElement>> GetTripsAsync()
         {
-            var result = await trips.Find(x => x.userCreated == false).ToListAsync();
+            var foundTrips = await trips.Find(trip => trip.userCreated == false).ToListAsync();
 
-            if(result.Count == 0)
+            if(foundTrips.Count == 0)
             {
                 return new List<TripListElement>(0);
             }
@@ -67,7 +69,7 @@ namespace backend_app.Services
             {
                 var tripsList = new List<TripListElement>();
 
-                result.ForEach(trip =>
+                foundTrips.ForEach(trip =>
                 {
                     tripsList.Add(new TripListElement
                     {
@@ -82,33 +84,35 @@ namespace backend_app.Services
 
         public async Task<Trip> GetTripByIdAsync(string id)
         {
-            var result = await trips.Find(x => x.id == id).SingleOrDefaultAsync();
-            if (result == null)
+            var foundTrip = await trips.Find(trip => trip.id == id).SingleOrDefaultAsync();
+
+            if (foundTrip == null)
             {
                 return null;
             }
             else
             {
-                return result;
+                return foundTrip;
             }
         }
 
         public async Task<TripListElement> GetTripListElementByIdAsync(string id)
         {
-            var result = await trips.Find(x => x.id == id).SingleOrDefaultAsync();
-            if (result == null)
+            var foundTrip = await trips.Find(trip => trip.id == id).SingleOrDefaultAsync();
+
+            if (foundTrip == null)
             {
                 return null;
             }
             else
             {
-                var trip = new TripListElement
+                var tripListElement = new TripListElement
                 {
-                    id = result.id,
-                    name = result.name
+                    id = foundTrip.id,
+                    name = foundTrip.name
                 };
 
-                return trip;
+                return tripListElement;
             }
         }
 
@@ -118,81 +122,81 @@ namespace backend_app.Services
 
             if (userTripsIds.Count != 0)
             {
-                filter &= Builders<Trip>.Filter.In(x => x.id, userTripsIds);
+                filter &= Builders<Trip>.Filter.In(trip => trip.id, userTripsIds);
             }
             if (!string.IsNullOrEmpty(name))
             {
-                filter &= Builders<Trip>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+                filter &= Builders<Trip>.Filter.Regex(trip => trip.name, new BsonRegularExpression(name, "i"));
             }
             if (!string.IsNullOrEmpty(difficulty))
             {
-                filter &= Builders<Trip>.Filter.Eq(x => x.difficulty, difficulty);
+                filter &= Builders<Trip>.Filter.Eq(trip => trip.difficulty, difficulty);
             }
 
-            var result = await trips.Find(filter).ToListAsync();
+            var filteredTrips = await trips.Find(filter).ToListAsync();
 
-            if (result == null)
+            if (filteredTrips == null)
             {
                 return new List<TripListElement>(0);
             }
             else
             {
-                var filteredTrips = new List<TripListElement>();
+                var filteredTripsList = new List<TripListElement>();
 
-                result.ForEach(trip =>
+                filteredTrips.ForEach(trip =>
                 {
-                    filteredTrips.Add(new TripListElement
+                    filteredTripsList.Add(new TripListElement
                     {
                         id = trip.id,
                         name = trip.name
                     });
                 });
 
-                return filteredTrips;
+                return filteredTripsList;
             }
         }
 
         public async Task<List<TripListElement>> GetFilteredTripsAsync(string name, string difficulty)
         {
             var filter = FilterDefinition<Trip>.Empty;
-            filter &= Builders<Trip>.Filter.Eq(x => x.userCreated, false);
+            filter &= Builders<Trip>.Filter.Eq(trip => trip.userCreated, false);
 
             if (!string.IsNullOrEmpty(name))
             {
-                filter &= Builders<Trip>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+                filter &= Builders<Trip>.Filter.Regex(trip => trip.name, new BsonRegularExpression(name, "i"));
             }
             if (!string.IsNullOrEmpty(difficulty))
             {
-                filter &= Builders<Trip>.Filter.Eq(x => x.difficulty, difficulty);
+                filter &= Builders<Trip>.Filter.Eq(trip => trip.difficulty, difficulty);
             }
 
-            var result = await trips.Find(filter).ToListAsync();
+            var fiteredTrips = await trips.Find(filter).ToListAsync();
 
-            if (result == null)
+            if (fiteredTrips == null)
             {
                 return new List<TripListElement>(0);
             }
             else
             {
-                var filteredTrips = new List<TripListElement>();
+                var filteredTripsList = new List<TripListElement>();
 
-                result.ForEach(trip =>
+                fiteredTrips.ForEach(trip =>
                 {
-                    filteredTrips.Add(new TripListElement
+                    filteredTripsList.Add(new TripListElement
                     {
                         id = trip.id,
                         name = trip.name
                     });
                 });
 
-                return filteredTrips;
+                return filteredTripsList;
             }
         }
 
         public async Task<bool> deleteTripAsync(string id)
         {
-            var result = await trips.DeleteOneAsync(x => x.id == id);
-            return result.DeletedCount > 0;
+            var deleted = await trips.DeleteOneAsync(trip => trip.id == id);
+            return deleted.DeletedCount > 0;
         }
     }
 }
