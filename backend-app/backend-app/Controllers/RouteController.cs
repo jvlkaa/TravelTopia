@@ -1,8 +1,10 @@
 ﻿using backend_app.Dto;
+using backend_app.Models;
 using backend_app.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver.Core.Authentication;
+using Route = backend_app.Models.Route;
 
 namespace backend_app.Controllers
 {
@@ -20,129 +22,102 @@ namespace backend_app.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Models.Route route)
+        public async Task<IActionResult> CreateRoute(Route route)
         {
             await routeService.CreateRouteAsync(route);
-            return CreatedAtAction(nameof(Post), route);
+
+            return CreatedAtAction(nameof(GetRouteById), new { id = route.id }, route);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetRoutes()
         {
             var routes = await routeService.GetRoutesAsync();
-            if (routes == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(routes);
-            }
+
+            return Ok(routes);
         }
 
         [HttpGet("list")]
         public async Task<IActionResult> GetListElementRoutes()
         {
             var routes = await routeService.GetListElementRoutesAsync();
-            if (routes == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(routes);
-            }
+
+            return Ok(routes);
         }
 
         [HttpGet("{text}/list")]
         public async Task<IActionResult> GetRoutesByString(string text)
         {
-            var result = await routeService.GetRoutesByStringAsync(text);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(result);
-            }
+            var routes = await routeService.GetRoutesByStringAsync(text);
+
+            return Ok(routes);
         }
 
         [HttpGet("NearPoint/{latitude}/{longitude}")]
         public async Task<IActionResult> GetRoutesByPoint(double latitude, double longitude)
         {
-            var result = await routeService.GetRoutesByPointAsync(latitude, longitude);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(result);
-            }
+            var routes = await routeService.GetRoutesByPointAsync(latitude, longitude);
+
+            return Ok(routes);
         }
 
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetRouteById(string id)
         {
-            var result = await routeService.GetRouteByIdAsync(id);
-            if (result == null)
+            var route = await routeService.GetRouteByIdAsync(id);
+
+            if (route == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(route);
             }
         }
 
         [HttpGet("list/id/{id}")]
         public async Task<IActionResult> GetRouteListElementById(string id)
         {
-            var result = await routeService.GetRouteListElementByIdAsync(id);
-            if (result == null)
+            var route = await routeService.GetRouteListElementByIdAsync(id);
+
+            if (route == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(route);
             }
         }
 
         [HttpGet("filter")]
         public async Task<IActionResult> GetFilteredRoutes([FromQuery] string? name = null, [FromQuery] string? type = null, [FromQuery] string? difficulty = null)
         {
-            var result = await routeService.GetFilteredRoutesAsync(name, type, difficulty);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(result);
-            }
+            var routes = await routeService.GetFilteredRoutesAsync(name, type, difficulty);
+
+            return Ok(routes);
         }
 
         [HttpGet("{name}")]
         public async Task<IActionResult> GetRoute(string name)
         {
-            var result = await routeService.GetRouteAsync(name);
-            if (result == null)
+            var route = await routeService.GetRouteAsync(name);
+
+            if (route == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(result);
+                return Ok(route);
             }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoute(string id)
         {
-            var result = await routeService.deleteRouteAsync(id);
-            if (result)
+            if (await routeService.deleteRouteAsync(id))
             {
                 return NoContent();
             }
@@ -153,10 +128,9 @@ namespace backend_app.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRoute(string id, [FromBody] Models.Route route)
+        public async Task<IActionResult> UpdateRoute(string id, [FromBody] Route route)
         {
-            var result = await routeService.replaceRouteAsync(id, route);
-            if (result)
+            if (await routeService.replaceRouteAsync(id, route))
             {
                 return NoContent();
             }

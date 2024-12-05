@@ -7,38 +7,39 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using System.Net;
+using Route = backend_app.Models.Route;
 
 namespace backend_app.Services
 {
     public class RouteService
     {
-        private readonly IMongoCollection<Models.Route> routes;
+        private readonly IMongoCollection<Route> routes;
 
         public RouteService(IOptions<TravelTopiaDatabaseConfiguration> options) {
             var mongoClient = new MongoClient(options.Value.ConnectionString);
             var travelTopiaDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-            this.routes = travelTopiaDatabase.GetCollection<Models.Route>(options.Value.RouteCollectionName);
+            this.routes = travelTopiaDatabase.GetCollection<Route>(options.Value.RouteCollectionName);
         }
 
-        public async Task<List<Models.Route>> GetRoutesAsync()
+        public async Task<List<Route>> GetRoutesAsync()
         {
-            var result = await routes.Find(x => x.userCreated == false).ToListAsync();
+            var foundRoutes = await routes.Find(route => route.userCreated == false).ToListAsync();
 
-            if (result.Count == 0)
+            if (foundRoutes.Count == 0)
             {
-                return new List<Models.Route>(0);
+                return new List<Route>(0);
             }
             else
             {
-                return result;
+                return foundRoutes;
             }
         }
 
         public async Task<List<RouteListElement>> GetListElementRoutesAsync()
         {
-            var result = await routes.Find(x => x.userCreated == false).ToListAsync();
+            var foundRoutes = await routes.Find(route => route.userCreated == false).ToListAsync();
 
-            if (result.Count == 0)
+            if (foundRoutes.Count == 0)
             {
                 return new List<RouteListElement>(0);
             }
@@ -46,7 +47,7 @@ namespace backend_app.Services
             {
                 var routesList = new List<RouteListElement>();
 
-                result.ForEach(route =>
+                foundRoutes.ForEach(route =>
                 {
                     routesList.Add(new RouteListElement
                     {
@@ -59,29 +60,31 @@ namespace backend_app.Services
             }
         } 
 
-        public async Task<Models.Route> GetRouteAsync(string name)
+        public async Task<Route> GetRouteAsync(string name)
         {
-            var result = await routes.Find(x => x.name == name).SingleOrDefaultAsync();
-            if (result == null)
+            var foundRoute = await routes.Find(route => route.name == name).SingleOrDefaultAsync();
+
+            if (foundRoute == null)
             {
                 return null;
             }
             else
             {
-                return result;
+                return foundRoute;
             }
         }
 
-        public async Task<List<Models.Route>> GetRoutesByStringAsync(string text)
+        public async Task<List<Route>> GetRoutesByStringAsync(string text)
         {
-            var result = await routes.Find(x => x.name.Contains(text)).ToListAsync();
-            if (result == null)
+            var foundRoutes = await routes.Find(route => route.name.Contains(text)).ToListAsync();
+
+            if (foundRoutes.Count == 0)
             {
-                return new List<Models.Route>(0);
+                return new List<Route>(0);
             }
             else
             {
-                return result;
+                return foundRoutes;
             }
         }
 
@@ -95,7 +98,7 @@ namespace backend_app.Services
             return distance / 1000.0;
         }
 
-        public async Task<List<Models.Route>> GetRoutesByPointAsync(double latitude, double longitude)
+        public async Task<List<Route>> GetRoutesByPointAsync(double latitude, double longitude)
         {
             Point point = new Point
             {
@@ -103,19 +106,18 @@ namespace backend_app.Services
                 longitude = longitude
             };
 
-            var allRoutes = await routes.Find(x => x.userCreated == false).ToListAsync();
+            var allRoutes = await routes.Find(route => route.userCreated == false).ToListAsync();
 
-
-            var result = allRoutes.Where(x =>
+            var nearRoutes = allRoutes.Where(x =>
             {
                 var distance = GetDistance(point, x.routePoints.First());
                 return distance < 1.0;
             }).ToList();
 
-            return result;
+            return nearRoutes;
         }
 
-        public async Task<List<Models.Route>> GetUserRoutesByPointAsync(List<string> userRouteIds, double latitude, double longitude)
+        public async Task<List<Route>> GetUserRoutesByPointAsync(List<string> userRouteIds, double latitude, double longitude)
         {
             Point point = new Point
             {
@@ -123,153 +125,159 @@ namespace backend_app.Services
                 longitude = longitude
             };
 
-            var filter = Builders<Models.Route>.Filter.In(x => x.id, userRouteIds);
+            var filter = Builders<Route>.Filter.In(route => route.id, userRouteIds);
             var userRoutes = await routes.Find(filter).ToListAsync();
 
-            var result = userRoutes.Where(x =>
+            var nearRoutes = userRoutes.Where(x =>
             {
                 var distance = GetDistance(point, x.routePoints.First());
                 return distance < 1.0;
             }).ToList();
 
-            return result;
+            return nearRoutes;
         }
 
-        public async Task<Models.Route> GetRouteByIdAsync(string id)
+        public async Task<Route> GetRouteByIdAsync(string id)
         {
-            var result = await routes.Find(x => x.id == id).SingleOrDefaultAsync();
-            if (result == null)
+            var foundRoute = await routes.Find(route => route.id == id).SingleOrDefaultAsync();
+
+            if (foundRoute == null)
             {
                 return null;
             }
             else
             {
-                return result;
+                return foundRoute;
             }
         }
 
         public async Task<RouteListElement> GetRouteListElementByIdAsync(string id)
         {
-            var result = await routes.Find(x => x.id == id).SingleOrDefaultAsync();
-            if (result == null)
+            var foundRoute = await routes.Find(route => route.id == id).SingleOrDefaultAsync();
+
+            if (foundRoute == null)
             {
                 return null;
             }
             else
             {
-                var route = new RouteListElement
+                var routeListElement = new RouteListElement
                 {
-                    id = result.id,
-                    name = result.name
+                    id = foundRoute.id,
+                    name = foundRoute.name
                 };
 
-                return route;
+                return routeListElement;
             }
         }
 
         public async Task<List<RouteListElement>> GetFilteredUserRoutesAsync(List<string> userRoutesIds, string name, string type, string difficulty)
         {
-            var filter = FilterDefinition<Models.Route>.Empty;
+            var filter = FilterDefinition<Route>.Empty;
 
             if (userRoutesIds.Count != 0)
             {
-                filter &= Builders<Models.Route>.Filter.In(x => x.id, userRoutesIds);
+                filter &= Builders<Route>.Filter.In(route => route.id, userRoutesIds);
             }
             if (!string.IsNullOrEmpty(name))
             {
-                filter &= Builders<Models.Route>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+                filter &= Builders<Route>.Filter.Regex(route => route.name, new BsonRegularExpression(name, "i"));
             }
             if (!string.IsNullOrEmpty(type))
             {
-                filter &= Builders<Models.Route>.Filter.Eq(x => x.type, type);
+                filter &= Builders<Route>.Filter.Eq(route => route.type, type);
             }
             if (!string.IsNullOrEmpty(difficulty))
             {
-                filter &= Builders<Models.Route>.Filter.Eq(x => x.difficulty, difficulty);
+                filter &= Builders<Route>.Filter.Eq(route => route.difficulty, difficulty);
             }
 
-            var result = await routes.Find(filter).ToListAsync();
+            var filteredRoutes = await routes.Find(filter).ToListAsync();
 
-            if (result == null)
+            if (filteredRoutes.Count == 0)
             {
                 return new List<RouteListElement>(0);
             }
             else
             {
-                var filteredRoutes = new List<RouteListElement>();
+                var filteredRoutesList = new List<RouteListElement>();
 
-                result.ForEach(trip =>
+                filteredRoutes.ForEach(route =>
                 {
-                    filteredRoutes.Add(new RouteListElement
+                    filteredRoutesList.Add(new RouteListElement
                     {
-                        id = trip.id,
-                        name = trip.name
+                        id = route.id,
+                        name = route.name
                     });
                 });
 
-                return filteredRoutes;
+                return filteredRoutesList;
             }
         }
 
         public async Task<List<RouteListElement>> GetFilteredRoutesAsync(string name, string type, string difficulty)
         {
-            var filter = FilterDefinition<Models.Route>.Empty;
-            filter &= Builders<Models.Route>.Filter.Eq(x => x.userCreated, false);
+            var filter = FilterDefinition<Route>.Empty;
+            filter &= Builders<Route>.Filter.Eq(route => route.userCreated, false);
 
             if (!string.IsNullOrEmpty(name))
             {
-                filter &= Builders<Models.Route>.Filter.Regex(x => x.name, new BsonRegularExpression(name, "i"));
+                filter &= Builders<Route>.Filter.Regex(route => route.name, new BsonRegularExpression(name, "i"));
             }
             if (!string.IsNullOrEmpty(type))
             {
-                filter &= Builders<Models.Route>.Filter.Eq(x => x.type, type);
+                filter &= Builders<Route>.Filter.Eq(route => route.type, type);
             }
             if (!string.IsNullOrEmpty(difficulty))
             {
-                filter &= Builders<Models.Route>.Filter.Eq(x => x.difficulty, difficulty);
+                filter &= Builders<Route>.Filter.Eq(route => route.difficulty, difficulty);
             }
 
-            var result = await routes.Find(filter).ToListAsync();
+            var filteredRoutes = await routes.Find(filter).ToListAsync();
 
-            if (result == null)
+            if (filteredRoutes.Count == 0)
             {
                 return new List<RouteListElement>(0);
             }
             else
             {
-                var filteredRoutes = new List<RouteListElement>();
+                var filteredRoutesList = new List<RouteListElement>();
 
-                result.ForEach(trip =>
+                filteredRoutes.ForEach(trip =>
                 {
-                    filteredRoutes.Add(new RouteListElement
+                    filteredRoutesList.Add(new RouteListElement
                     {
                         id = trip.id,
                         name = trip.name
                     });
                 });
 
-                return filteredRoutes;
+                return filteredRoutesList;
             }
-
         }
  
-        public async Task CreateRouteAsync(Models.Route route) => await routes.InsertOneAsync(route);
-
-        public async Task<bool> replaceRouteAsync(string id, Models.Route route)
+        public async Task CreateRouteAsync(Route route)
         {
-            var result = await routes.ReplaceOneAsync(x => x.id == id, route);
-            return result.ModifiedCount > 0;
+            await routes.InsertOneAsync(route);
+        }
+
+        public async Task<bool> replaceRouteAsync(string id, Route route)
+        {
+            var replaced = await routes.ReplaceOneAsync(oldRoute => oldRoute.id == id, route);
+
+            return replaced.ModifiedCount > 0;
         } 
 
         public async Task<bool> deleteRouteAsync(string id)
         {
-            var result = await routes.DeleteOneAsync(x => x.id == id);
-            return result.DeletedCount > 0;
+            var deleted = await routes.DeleteOneAsync(route => route.id == id);
+
+            return deleted.DeletedCount > 0;
         }
 
         public async Task<bool> addUserRoute(AddUserRoute route)
         {
-            Models.Route newRoute = new Models.Route
+            Route newRoute = new Route
             {
                 name = route.name,
                 routePoints = route.routePoints,
@@ -281,15 +289,13 @@ namespace backend_app.Services
                 time = route.time
             };
 
-            if(GetRouteAsync(newRoute.name) == null)
-            {
-                return false;
-            }
-            else
+            if (await GetRouteAsync(newRoute.name) == null)
             {
                 await CreateRouteAsync(newRoute);
                 return true;
             }
+
+            return false;
         }
     }
 }

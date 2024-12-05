@@ -67,12 +67,12 @@ namespace backend_app.Controllers
             return payload;
         }
 
-        [HttpGet("{user}/RouteIds")]
-        public async Task<IActionResult> GetRoutesByString(string user)
+        [HttpGet("{token}/RouteIds")]
+        public async Task<IActionResult> GetRoutesFromUser(string token)
         {
             try
             {
-                var payload = await VerifyGoogleToken(user);
+                var payload = await VerifyGoogleToken(token);
                 var result = await userService.getRoutesFromUserAsync(payload.Subject);
 
                 if (result == null)
@@ -217,7 +217,7 @@ namespace backend_app.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
             }
             catch (InvalidJwtException ex)
