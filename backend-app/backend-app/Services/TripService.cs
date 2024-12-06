@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 
 namespace backend_app.Services
 {
@@ -37,7 +38,7 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<bool> AddUserTrip(AddUserTrip trip)
+        public async Task<string> AddUserTripAsync(AddUserTrip trip)
         {
             Trip newTrip = new Trip
             {
@@ -48,13 +49,9 @@ namespace backend_app.Services
                 routes = trip.routes
             };
 
-            if(await GetTripAsync(newTrip.name) == null)
-            {
-                await CreateTripAsync(newTrip);
-                return true;
-            }
+            await CreateTripAsync(newTrip);
 
-            return false;
+            return newTrip.id;
         }
 
         public async Task<List<TripListElement>> GetTripsAsync()
@@ -193,7 +190,7 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<bool> deleteTripAsync(string id)
+        public async Task<bool> DeleteTripAsync(string id)
         {
             var deleted = await trips.DeleteOneAsync(trip => trip.id == id);
             return deleted.DeletedCount > 0;

@@ -73,7 +73,7 @@ namespace backend_app.Controllers
             try
             {
                 var payload = await VerifyGoogleToken(token);
-                var routes = await userService.getRoutesFromUserAsync(payload.Subject);
+                var routes = await userService.GetRoutesFromUserAsync(payload.Subject);
 
                 return Ok(routes);
             }
@@ -89,7 +89,7 @@ namespace backend_app.Controllers
             try
             {
                 var payload = await VerifyGoogleToken(user);
-                var userRoutes = await userService.getRoutesFromUserAsync(payload.Subject);
+                var userRoutes = await userService.GetRoutesFromUserAsync(payload.Subject);
                 var filteredRoutes = await routeService.GetFilteredUserRoutesAsync(userRoutes, name, type, difficulty);
 
                 return Ok(filteredRoutes);
@@ -106,7 +106,7 @@ namespace backend_app.Controllers
             try
             {
                 var payload = await VerifyGoogleToken(user);
-                var userTrips = await userService.getTripsFromUserAsync(payload.Subject);
+                var userTrips = await userService.GetTripsFromUserAsync(payload.Subject);
                 var filteredTrips = await tripService.GetFilteredUserTripsAsync(userTrips, name, difficulty);
 
                 return Ok(filteredTrips);
@@ -123,7 +123,7 @@ namespace backend_app.Controllers
             try
             {
                 var payload = await VerifyGoogleToken(token);
-                var trips = await userService.getTripsFromUserAsync(payload.Subject);
+                var trips = await userService.GetTripsFromUserAsync(payload.Subject);
 
                 return Ok(trips);
             }
@@ -172,18 +172,11 @@ namespace backend_app.Controllers
             {
                 var payload = await VerifyGoogleToken(route.userIdToken);
 
-                if (await routeService.addUserRoute(route))
-                {
-                    var newRoute = await routeService.GetRouteAsync(route.name);
+                var routeId = await routeService.AddUserRouteAsync(route);
 
-                    await userService.AddRouteAsync(payload.Subject, newRoute.id);
+                await userService.AddRouteAsync(payload.Subject, routeId);
 
-                    return NoContent();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return NoContent();
             }
             catch (InvalidJwtException ex)
             {
@@ -192,7 +185,7 @@ namespace backend_app.Controllers
         }
 
         [HttpPost("addTrip")]
-        public async Task<IActionResult> addTrip([FromBody] UserIdTripId data)
+        public async Task<IActionResult> AddTrip([FromBody] UserIdTripId data)
         {
             try
             {
@@ -215,18 +208,11 @@ namespace backend_app.Controllers
             {
                 var payload = await VerifyGoogleToken(trip.userIdToken);
 
-                if (await tripService.AddUserTrip(trip))
-                {
-                    var newTrip = await tripService.GetTripAsync(trip.name);
+                var tripId = await tripService.AddUserTripAsync(trip);
 
-                    await userService.AddTripAsync(payload.Subject, newTrip.id);
+                await userService.AddTripAsync(payload.Subject, tripId);
 
-                    return NoContent();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return NoContent();
             }
             catch (InvalidJwtException ex)
             {
@@ -247,7 +233,7 @@ namespace backend_app.Controllers
 
                 if (route.userCreated == true)
                 {
-                    var deleted = await routeService.deleteRouteAsync(route.id);
+                    var deleted = await routeService.DeleteRouteAsync(route.id);
 
                     if (deleted == false)
                     {
@@ -276,7 +262,7 @@ namespace backend_app.Controllers
 
                 if (trip.userCreated == true)
                 {
-                    var deleted = await tripService.deleteTripAsync(trip.id);
+                    var deleted = await tripService.DeleteTripAsync(trip.id);
                     if (deleted == false)
                     {
                         return NotFound();

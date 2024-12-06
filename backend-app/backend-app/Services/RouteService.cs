@@ -261,21 +261,21 @@ namespace backend_app.Services
             await routes.InsertOneAsync(route);
         }
 
-        public async Task<bool> replaceRouteAsync(string id, Route route)
+        public async Task<bool> ReplaceRouteAsync(string id, Route route)
         {
             var replaced = await routes.ReplaceOneAsync(oldRoute => oldRoute.id == id, route);
 
             return replaced.ModifiedCount > 0;
         } 
 
-        public async Task<bool> deleteRouteAsync(string id)
+        public async Task<bool> DeleteRouteAsync(string id)
         {
             var deleted = await routes.DeleteOneAsync(route => route.id == id);
 
             return deleted.DeletedCount > 0;
         }
 
-        public async Task<bool> addUserRoute(AddUserRoute route)
+        public async Task<string> AddUserRouteAsync(AddUserRoute route)
         {
             Route newRoute = new Route
             {
@@ -289,13 +289,9 @@ namespace backend_app.Services
                 time = route.time
             };
 
-            if (await GetRouteAsync(newRoute.name) == null)
-            {
-                await CreateRouteAsync(newRoute);
-                return true;
-            }
+            await CreateRouteAsync(newRoute);
 
-            return false;
+            return newRoute.id;
         }
     }
 }

@@ -117,7 +117,7 @@ namespace backend_app.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoute(string id)
         {
-            if (await routeService.deleteRouteAsync(id))
+            if (await routeService.DeleteRouteAsync(id))
             {
                 return NoContent();
             }
@@ -130,7 +130,7 @@ namespace backend_app.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRoute(string id, [FromBody] Route route)
         {
-            if (await routeService.replaceRouteAsync(id, route))
+            if (await routeService.ReplaceRouteAsync(id, route))
             {
                 return NoContent();
             }

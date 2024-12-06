@@ -90,7 +90,7 @@ namespace backend_app.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrip(string id)
         {
-            if (await tripService.deleteTripAsync(id))
+            if (await tripService.DeleteTripAsync(id))
             {
                 return NoContent();
             }

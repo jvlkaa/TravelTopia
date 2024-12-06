@@ -35,7 +35,7 @@ namespace backend_app.Services
             await users.InsertOneAsync(user);
         }
 
-        public async Task<List<string>> getRoutesFromUserAsync(string googleId)
+        public async Task<List<string>> GetRoutesFromUserAsync(string googleId)
         {
             var user = await GetUserByGoogleIdAsync(googleId);
 
@@ -49,7 +49,7 @@ namespace backend_app.Services
             }
         }
 
-        public async Task<List<string>> getTripsFromUserAsync(string googleId)
+        public async Task<List<string>> GetTripsFromUserAsync(string googleId)
         {
             var user = await GetUserByGoogleIdAsync(googleId);
 
