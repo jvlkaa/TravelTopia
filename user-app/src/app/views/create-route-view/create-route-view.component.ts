@@ -143,36 +143,38 @@ export class CreateRouteViewComponent implements OnInit {
 
   /* drawing route on the map */
   drawRoute() {
-    this.routeSource.clear();
-    if (this.route.length > 1) {
-      //route
-      const lineCoordinates = this.route.map(point => fromLonLat([point.lng, point.lat]));
-      const lineFeature = new Feature({
-        geometry: new LineString(lineCoordinates)
-      });
-      lineFeature.setStyle(new Style({
-        stroke: new Stroke({
-          color: 'magenta',
-          width: 4
-        })
-      }));
-      this.routeSource.addFeature(lineFeature);
-      // start and finish markers
-      this.drawMarker(new Point(fromLonLat([this.route[0].lng, this.route[0].lat])));
-      this.drawMarker(new Point(fromLonLat([this.route[this.route.length - 1].lng, this.route[this.route.length - 1].lat])));
-      //center of view
-      this.calculateCenterMarker();
-      const centerLonLat = fromLonLat([this.markerCenter!.lng, this.markerCenter!.lat]);
-      this.map.getView().setCenter(centerLonLat);
-      //changing layer
-      this.map.removeLayer(this.pointsLayer);
-      this.map.addLayer(this.routeLayer);
-      //calculating route distance
-      const distanceContent = document.getElementById('distance-value')!;
-      distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
-      distanceContent.style.color = 'black';
-      distanceContent.style.borderLeftStyle = 'solid';
-      distanceContent.style.borderLeftWidth = 'thin';
+    if(this.map.getLayers().getArray().includes(this.pointsLayer)) {
+      this.routeSource.clear();
+      if (this.route.length > 1) {
+        //route
+        const lineCoordinates = this.route.map(point => fromLonLat([point.lng, point.lat]));
+        const lineFeature = new Feature({
+          geometry: new LineString(lineCoordinates)
+        });
+        lineFeature.setStyle(new Style({
+          stroke: new Stroke({
+            color: 'magenta',
+            width: 4
+          })
+        }));
+        this.routeSource.addFeature(lineFeature);
+        // start and finish markers
+        this.drawMarker(new Point(fromLonLat([this.route[0].lng, this.route[0].lat])));
+        this.drawMarker(new Point(fromLonLat([this.route[this.route.length - 1].lng, this.route[this.route.length - 1].lat])));
+        //center of view
+        this.calculateCenterMarker();
+        const centerLonLat = fromLonLat([this.markerCenter!.lng, this.markerCenter!.lat]);
+        this.map.getView().setCenter(centerLonLat);
+        //changing layer
+        this.map.removeLayer(this.pointsLayer);
+        this.map.addLayer(this.routeLayer);
+        //calculating route distance
+        const distanceContent = document.getElementById('distance-value')!;
+        distanceContent.innerHTML = this.calculateDistance().toFixed(2) + ' km';
+        distanceContent.style.color = 'black';
+        distanceContent.style.borderLeftStyle = 'solid';
+        distanceContent.style.borderLeftWidth = 'thin';
+      }
     }
   }
 
